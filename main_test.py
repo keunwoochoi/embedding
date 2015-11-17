@@ -102,6 +102,7 @@ def prepare_stft():
 
 	for ind, track_id in enumerate(track_ids):
 		src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
+		pdb.set_trace()
 		SRC = librosa.stft(src, n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
 		np.save( PATH_STFT + str(track_id) + '.npy', SRC)
 		SRC_cqt = librosa.logamplitude(librosa.cqt(src, sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*8)**2, ref_power=1.0)
