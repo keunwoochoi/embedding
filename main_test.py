@@ -16,6 +16,7 @@ else:
 	print 'unknown device'
 
 if isServer:
+	print "THIS IS A SERVER NAMED %s" % device_name
 	PATH_ILM = '/import/c4dm-01/ilm10k-dataset/'
 	PATH_ILM_ACT = PATH_ILM + 'act-coordinates/'
 	PATH_ILM_AUDIO = PATH_ILM + 'ilmaudio/'
