@@ -82,7 +82,7 @@ def preprocess():
 		if boolean:
 			track_id_w_audio.append(track_ids[ind])
 			tags_matrix_w_audio.append(tags_matrix[ind])
-			dict_id_path_w_audio[track_ids[ind]] = id_path_dict[track_ids[ind]]
+			dict_id_path_w_audio[track_ids[ind]] = dict_id_path[track_ids[ind]]
 
 	cP.dump(dict_id_path_w_audio, open(PATH_DATA + "id_path_dict_w_audio.cP" , "w"))
 	cP.dump(track_id_w_audio, open(PATH_DATA + "track_ids_w_audio.cP", "w"))
