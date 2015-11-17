@@ -75,7 +75,7 @@ for ind, boolean in enumerate(audio_exists):
 		tags_matrix_w_audio.append(tags_matrix[ind])
 
 cP.dump(track_id_w_audio, open(PATH_DATA + "track_ids_w_audio.cP", "w"))
-np.save(PATH_DATA + "mood_tags_matrix_w_audio", np.array(tags_marix_w_audio))
+np.save(PATH_DATA + "mood_tags_matrix_w_audio", np.array(tags_matrix_w_audio))
 
 
 
