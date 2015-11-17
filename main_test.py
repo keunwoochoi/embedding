@@ -90,6 +90,7 @@ def preprocess():
 
 def prepare_stft():
 	import librosa
+	import time
 
 	SR = 11025
 	N_FFT = 1024
@@ -99,19 +100,23 @@ def prepare_stft():
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	num_tracks = len(track_ids)
-
+	print "prepare stft; dictionaries loaded"
 	for ind, track_id in enumerate(track_ids):
+		start = time.clock()
 		src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
-		pdb.set_trace()
-		SRC = librosa.stft(src, n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
-		np.save( PATH_STFT + str(track_id) + '.npy', SRC)
-		SRC_cqt = librosa.logamplitude(librosa.cqt(src, sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*8)**2, ref_power=1.0)
-		np.save( PATH_CQT + str(track_id) + '.npy', SRC_cqt)
-		print "STFT and CQT for %d/%d : done" % (track_id, num_tracks)
+		SRC_L = librosa.stft(src[0,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
+		SRC_R = librosa.stft(src[1,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
+		stft_time = time.clock()
+		np.save( PATH_STFT + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
+		SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
+		SRC_cqt_R = librosa.logamplitude(librosa.cqt(src[1,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
+		np.save( PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)) )
+		print "STFT and CQT for %d/%d : done, %d seconds" % (track_id, num_tracks,  src.shape[1]/SR)
+		print "Time consumed: %d in total, %d for stft, %d for cqt" % (time.clock() - start, stft_time - start, time.clock() - stft_time)
 
 
 if __name__=="__main__":
-	preprocess()
+	# preprocess()
 	print '---preprocess: done---'
 	prepare_stft()
 
