@@ -7,7 +7,7 @@ import pdb
 
 device_name = platform.node()
 
-if device_name.endswith('eecs.qmul.ac.uk'):
+if device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave']:
 	isServer = True
 	isMac = False
 	isMsi = False
