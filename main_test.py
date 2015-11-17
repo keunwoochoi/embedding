@@ -35,21 +35,21 @@ with open(PATH_ILM_META + r"collection10000-810(500)-5(1)-loglikgmm-wav.csv", 'r
 		song_id, song_path = line.split('","') #	line:"444","e/audio/x-wav/eb/1508-04.01.wav"
 		dict_id_path[int(song_id)] = song_path.split("/")[-1]
 
-cP.dump(dict_id_path, PATH_DATA + "id_path_dict.cP" )
+cP.dump(dict_id_path, open(PATH_DATA + "id_path_dict.cP" , "w"))
 
 moodnames = []
 with open(PATH_ILM_ACT + "moodnames.txt", 'r') as moodnames_fp:
 	for line in moodnames_fp:
 		moodnames.append(line.rstrip("\n"))
 
-cP.dump(moodnames, PATH_DATA + "moodnames.cP")
+cP.dump(moodnames, open(PATH_DATA + "moodnames.cP", "w"))
 
 track_ids = []
 with open(PATH_ILM_ACT + "trackids.txt", 'r') as trackids_fp:
 	for line in trackids_fp:
 		track_ids.append(int(line.rstrip("\n")))
 
-cP.dump(track_ids, PATH_DATA + "track_ids.cP")
+cP.dump(track_ids, open(PATH_DATA + "track_ids.cP", "w"))
 
 tags_matrix = []
 with open(PATH_ILM_ACT + "genretags.txt", 'r') as tags_fp:
