@@ -3,6 +3,7 @@ import os
 import sys
 import cPickle as cP
 import numpy as np
+import pdb
 
 device_name = platform.node()
 
@@ -60,6 +61,7 @@ with open(PATH_ILM_ACT + "genretags.txt", 'r') as tags_fp:
 np_tags_matrix = np.array(tags_matrix)
 np.save(PATH_DATA + "tags_matrix.np", np_tags_matrix)
 
+pdb.set_trace()
 
 
 
