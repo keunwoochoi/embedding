@@ -19,6 +19,9 @@ if isServer:
 	PATH_ILM_AUDIO = PATH_ILM + 'ilmaudio/'
 	PATH_ILM_META = PATH_ILM + 'metadata/'
 
+	PATH_HOME = "/homes/kc306/"
+	PATH_WORK = PATH_HOME + "embedding/"
+
 
 # [0] Pre-processing: make my own dictionary.
 
