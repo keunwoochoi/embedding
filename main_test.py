@@ -53,13 +53,31 @@ with open(PATH_ILM_ACT + "trackids.txt", 'r') as trackids_fp:
 cP.dump(track_ids, open(PATH_DATA + "track_ids.cP", "w"))
 
 tags_matrix = []
-with open(PATH_ILM_ACT + "genretags.txt", 'r') as tags_fp:
+with open(PATH_ILM_ACT + "moodtags.txt", 'r') as tags_fp:
 	for line in tags_fp:
 		line_array = line.rstrip("\n").split(" ")
 		tags_matrix.append(line_array)
 
-np_tags_matrix = np.array(tags_matrix)
-np.save(PATH_DATA + "tags_matrix.np", np_tags_matrix)
+np.save(PATH_DATA + "mood_tags_matrix.np", np.array(tags_matrix))
+
+audio_exists = []
+for ind, track_id in enumerate(track_ids):
+	if track_id in dict_id_path:
+		audio_exists.append(True)
+	else:
+		audio_exists.append(False)
+
+track_id_w_audio = []
+tags_matrix_w_audio = []
+for ind, boolean in enumerate(audio_exists):
+	if boolean:
+		track_id_w_audio.append(track_ids[ind])
+		tags_matrix_w_audio.append(tags_matrix[ind])
+
+cP.dump(track_id_w_audio, open(PATH_DATA + "track_ids_w_audio.cP", "w"))
+np.save(PATH_DATA + "mood_tags_matrix_w_audio", np.array(tags_marix_w_audio))
+
+
 
 pdb.set_trace()
 
