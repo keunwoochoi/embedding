@@ -156,13 +156,13 @@ if __name__=="__main__":
 	print '---preprocess: done---'
 	if len(sys.argv) < 4:
 		print_usage()
-		return 
+		sys.exit()
 	num_process = int(sys.argv[1])
 	ind_process = int(sys.argv[2])
 	task = sys.argv[3].lowercase()
 	if task not in ['stft', 'cqt']:
 		print 'wrong argument, choose stft or cqt'
-		return
+		sys.exit()
 	prepare_stft(num_process, ind_process, task)
 
 
