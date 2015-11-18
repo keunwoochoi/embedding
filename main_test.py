@@ -135,7 +135,7 @@ def prepare_stft(num_process, ind_process, task):
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	num_tracks = len(track_ids)
-	num_subsets = num_tracks/8 # because there are 8 servers I can use.
+	num_subsets = num_tracks/7 # because there are 8 servers I can use.
 	print "prepare stft; dictionaries loaded"
 	track_ids_here = track_ids[ind_process*num_subsets : min((ind_process+1)*num_subsets, num_tracks)]
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
