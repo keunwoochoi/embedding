@@ -167,8 +167,8 @@ def prepare_stft(num_process, ind_process, task, isTest):
 	else:
 		pass
 	
-	print "total timd: %d seconds" % (time.clock()-start)
-	print "average %d seconds per song" % ((time.clock()-start)/len(track_ids_here))
+	print "total timd: %0.2f seconds" % (time.clock()-start)
+	print "average %0.2f seconds per song" % ((time.clock()-start)/len(track_ids_here))
 	p.close()
 	p.join()
 
