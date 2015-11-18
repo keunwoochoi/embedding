@@ -109,7 +109,9 @@ def do_cqt(src, track_id):
 	np.save( PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)) )
 	print "Done: %s" % str(track_id)
 
-def do_load(track_id, dict_id_path):
+
+def do_load(track_id):
+	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
 	return src, sr
 
@@ -136,7 +138,6 @@ def prepare_stft(num_process, ind_process, task):
 
 	p = Pool(num_process)
 
-	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	num_tracks = len(track_ids)
 	num_subsets = num_tracks/7 # because there are 8 servers I can use.
@@ -145,11 +146,11 @@ def prepare_stft(num_process, ind_process, task):
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	
 	if task == 'stft':
-		p.map(do_load_stft, [track_ids_here, dict_id_path])
+		p.map(do_load_stft, track_ids_here)
 	elif task == 'cqt':
-		p.map(do_load_cqt, [track_ids_here, dict_id_path])
+		p.map(do_load_cqt, track_ids_here)
 	elif task == 'stft_cqt':
-		p.map(do_load_stft_cqt, [track_ids_here, dict_id_path])
+		p.map(do_load_stft_cqt, track_ids_here)
 	else:
 		pass
 	pool.close()
