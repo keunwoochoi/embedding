@@ -155,7 +155,6 @@ def prepare_stft(num_process, ind_process, task, isTest):
 		track_ids_here = track_ids[rand_ind:rand_ind+2]
 
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
-	start = time.clock()
 
 	p = Pool(num_process)
 	if task == 'stft':
@@ -169,9 +168,7 @@ def prepare_stft(num_process, ind_process, task, isTest):
 	
 	p.close()
 	p.join()
-	print "total timd: %0.2f seconds" % (time.clock()-start)
-	print "average %0.2f seconds per song" % ((time.clock()-start)/len(track_ids_here))
-	
+
 def print_usage():
 	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
 	print "number of index is based on 0"
@@ -187,7 +184,8 @@ if __name__=="__main__":
 	task = sys.argv[3].lower()
 	print num_process, " processes"
 
-	
+	start = time.clock()
+
 	if task not in ['stft', 'cqt']:
 		print 'wrong argument, choose stft or cqt'
 		sys.exit()
@@ -198,7 +196,9 @@ if __name__=="__main__":
 
 	print "#"*60
 	print "FIN - using %d processes, %d-ind batch." % (num_process, ind_process)
-
+	print "total time: %0.2f seconds" % (time.clock()-start)
+	
+	
 	print "#"*60
 
 
