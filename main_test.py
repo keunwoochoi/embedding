@@ -142,13 +142,18 @@ def do_load_stft_cqt(track_id):
 		do_cqt(src, track_id)
 		do_stft(src, track_id)
 
-def prepare_stft(num_process, ind_process, task):
+def prepare_stft(num_process, ind_process, task, isTest):
 
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	num_tracks = len(track_ids)
 	num_subsets = num_tracks/7 # because there are 8 servers I can use.
 	print "prepare stft; dictionaries loaded"
 	track_ids_here = track_ids[ind_process*num_subsets : min((ind_process+1)*num_subsets, num_tracks)]
+	
+	if isTest:
+		rand_ind = np.random.randint(len(track_ids_here)-2)
+		track_ids_here = track_ids[rand_ind:rand_ind+2]
+
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	
 	p = Pool(num_process)
@@ -166,13 +171,13 @@ def prepare_stft(num_process, ind_process, task):
 	p.join()
 
 def print_usage():
-	print "filename number_core, [number_index], [STFT or CQT]."
+	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
 	print "number of index is based on 0"
 
 if __name__=="__main__":
 	# preprocess()
 	# print '---preprocess: done---'
-	if len(sys.argv) < 4:
+	if len(sys.argv) < 5:
 		print_usage()
 		sys.exit()
 	num_process = int(sys.argv[1])
@@ -183,7 +188,10 @@ if __name__=="__main__":
 	if task not in ['stft', 'cqt']:
 		print 'wrong argument, choose stft or cqt'
 		sys.exit()
-	prepare_stft(num_process, ind_process, task)
+	if sys.argv[4] == 'test':
+		prepare_stft(num_process, ind_process, task, isTest=True)
+	else:
+		prepare_stft(num_process, ind_process, task, isTest=False)
 
 	print "#"*60
 	print "FIN - using %d processes, %d-ind batch." % (num_process, ind_process)
