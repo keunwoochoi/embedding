@@ -155,7 +155,7 @@ def prepare_stft(num_process, ind_process, task, isTest):
 		track_ids_here = track_ids[rand_ind:rand_ind+2]
 
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
-	start = time.time()
+	start = time.clock()
 
 	p = Pool(num_process)
 	if task == 'stft':
@@ -167,8 +167,8 @@ def prepare_stft(num_process, ind_process, task, isTest):
 	else:
 		pass
 	
-	print "total timd: %d seconds" % time.time()-start
-	print "average %d seconds per song" % (time.time()-start)/len(track_ids_here)
+	print "total timd: %d seconds" % time.clock()-start
+	print "average %d seconds per song" % (time.clock()-start)/len(track_ids_here)
 	p.close()
 	p.join()
 
