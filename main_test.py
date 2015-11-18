@@ -135,10 +135,9 @@ def prepare_stft(num_process, ind_process, task):
 	num_subsets = num_tracks/7 # because there are 8 servers I can use.
 	print "prepare stft; dictionaries loaded"
 	track_ids_here = track_ids[ind_process*num_subsets : min((ind_process+1)*num_subsets, num_tracks)]
-	pdb.set_trace()
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	
-	with Pool(processes=num_process) as p:
+	with Pool(num_process) as p:
 		if task == 'stft':
 			p.map(do_load_stft, track_ids_here)
 		elif task == 'cqt':
@@ -164,6 +163,8 @@ if __name__=="__main__":
 	num_process = int(sys.argv[1])
 	ind_process = int(sys.argv[2])
 	task = sys.argv[3].lower()
+	print num_process, " processes"
+	
 	if task not in ['stft', 'cqt']:
 		print 'wrong argument, choose stft or cqt'
 		sys.exit()
