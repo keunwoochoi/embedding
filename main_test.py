@@ -137,7 +137,7 @@ def prepare_stft(num_process, ind_process, task):
 	track_ids_here = track_ids[ind_process*num_subsets : min((ind_process+1)*num_subsets, num_tracks)]
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	
-	P = Pool(num_process)
+	p = Pool(num_process)
 	if task == 'stft':
 		p.map(do_load_stft, track_ids_here)
 	elif task == 'cqt':
