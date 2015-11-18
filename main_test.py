@@ -10,7 +10,7 @@ import time
 
 device_name = platform.node()
 
-if device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave']:
+if device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave', 'big-bird']:
 	isServer = True
 	isMac = False
 	isMsi = False
@@ -153,13 +153,13 @@ def print_usage():
 
 if __name__=="__main__":
 	# preprocess()
-	print '---preprocess: done---'
+	# print '---preprocess: done---'
 	if len(sys.argv) < 4:
 		print_usage()
 		sys.exit()
 	num_process = int(sys.argv[1])
 	ind_process = int(sys.argv[2])
-	task = sys.argv[3].lowercase()
+	task = sys.argv[3].lower()
 	if task not in ['stft', 'cqt']:
 		print 'wrong argument, choose stft or cqt'
 		sys.exit()
