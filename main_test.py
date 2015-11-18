@@ -161,6 +161,7 @@ def prepare_stft(num_process, ind_process, task):
 	else:
 		pass
 	
+
 	p.close()
 	p.join()
 
@@ -184,6 +185,9 @@ if __name__=="__main__":
 		sys.exit()
 	prepare_stft(num_process, ind_process, task)
 
+	print "#"*60
+	print "FIN - using %d processes, %d-ind batch." % (num_process, ind_process)
+	print "#"*60
 
 
 
