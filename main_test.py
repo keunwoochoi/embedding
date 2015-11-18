@@ -6,7 +6,12 @@ import numpy as np
 import pdb
 import librosa
 import time
+from multiprocessing import Pool
 
+SR = 11025
+N_FFT = 1024
+WIN_LEN = 1024
+HOP_LEN = 512
 
 device_name = platform.node()
 
@@ -90,45 +95,42 @@ def preprocess():
 	cP.dump(dict_id_path_w_audio, open(PATH_DATA + "id_path_dict_w_audio.cP" , "w"))
 	cP.dump(track_id_w_audio, open(PATH_DATA + "track_ids_w_audio.cP", "w"))
 	np.save(PATH_DATA + "mood_tags_matrix_w_audio", np.array(tags_matrix_w_audio))
+	'''int, int, string(stft or cqt)'''
+
+def do_stft(src, track_id):
+	SRC_L = librosa.stft(src[0,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
+	SRC_R = librosa.stft(src[1,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
+	np.save( PATH_STFT + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
+	print "Done: %s" % str(track_id)
+
+def do_cqt(src, track_id):
+	SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
+	SRC_cqt_R = librosa.logamplitude(librosa.cqt(src[1,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
+	np.save( PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)) )
+	print "Done: %s" % str(track_id)
+
+def do_load(track_id):
+	src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
+	return src, sr
+
+def do_load_stft(track_id):
+	src, sr = do_load(track_id)
+	do_stft(src, track_id)
+
+def do_load_cqt(track_id):
+	src, sr = do_load(track_id)
+	do_cqt(src, track_id)
+
+def do_load_stft_cqt(track_id):
+	src, sr = do_load(track_id)
+	do_stft(src, track_id)
+	do_cqt(src, track_id)
 
 def prepare_stft(num_process, ind_process, task):
-	'''int, int, string(stft or cqt)'''
-	def do_stft(src, track_id):
-		SRC_L = librosa.stft(src[0,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
-		SRC_R = librosa.stft(src[1,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
-		np.save( PATH_STFT + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
-		print "Done: %s" % str(track_id)
 
-	def do_cqt(src, track_id):
-		SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
-		SRC_cqt_R = librosa.logamplitude(librosa.cqt(src[1,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
-		np.save( PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)) )
-		print "Done: %s" % str(track_id)
 
-	def do_load(track_id):
-		src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
-		return src, sr
 	
-	def do_load_stft(track_id):
-		src, sr = do_load(track_id)
-		do_stft(src, track_id)
-	
-	def do_load_cqt(track_id):
-		src, sr = do_load(track_id)
-		do_cqt(src, track_id)
-	
-	def do_load_stft_cqt(track_id):
-		src, sr = do_load(track_id)
-		do_stft(src, track_id)
-		do_cqt(src, track_id)
-
-	from multiprocessing import Pool
 	p = Pool(num_process)
-
-	SR = 11025
-	N_FFT = 1024
-	WIN_LEN = 1024
-	HOP_LEN = 512
 
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
@@ -146,6 +148,8 @@ def prepare_stft(num_process, ind_process, task):
 		p.map(do_load_stft_cqt, track_ids_here)
 	else:
 		pass
+	pool.close()
+	pool.join()
 
 def print_usage():
 	print "filename number_core, [number_index], [STFT or CQT]."
