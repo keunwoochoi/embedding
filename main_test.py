@@ -145,11 +145,11 @@ def prepare_stft(num_process, ind_process, task):
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	
 	if task == 'stft':
-		p.map(do_load_stft, (track_ids_here, dict_id_path))
+		p.map(do_load_stft, [track_ids_here, dict_id_path])
 	elif task == 'cqt':
-		p.map(do_load_cqt, (track_ids_here, dict_id_path))
+		p.map(do_load_cqt, [track_ids_here, dict_id_path])
 	elif task == 'stft_cqt':
-		p.map(do_load_stft_cqt, (track_ids_here, dict_id_path))
+		p.map(do_load_stft_cqt, [track_ids_here, dict_id_path])
 	else:
 		pass
 	pool.close()
