@@ -135,7 +135,7 @@ def prepare_stft(num_process, ind_process, task):
 	num_tracks = len(track_ids)
 	num_subsets = num_tracks/8 # because there are 8 servers I can use.
 	print "prepare stft; dictionaries loaded"
-	track_ids_here = track_ids[ind_process*num_subset : min((ind_process+1)*num_subsets, num_tracks)]
+	track_ids_here = track_ids[ind_process*num_subsets : min((ind_process+1)*num_subsets, num_tracks)]
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	
 	if task == 'stft':
