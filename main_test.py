@@ -8,7 +8,7 @@ import librosa
 import time
 from multiprocessing import Pool
 
-SR = 11025
+SR = 22050
 N_FFT = 1024
 WIN_LEN = 1024
 HOP_LEN = 512
@@ -34,8 +34,8 @@ if isServer:
 	PATH_WORK = PATH_HOME + "embedding/"
 	PATH_DATA = PATH_WORK + "data/"
 
-	PATH_STFT = '/import/c4dm-01/ilm10k_audio_transformed/' + 'STFT/'
-	PATH_CQT  = '/import/c4dm-01/ilm10k_audio_transformed/' + 'CQT/'
+	PATH_STFT = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
+	PATH_CQT  = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
 
 	sys.path.append(PATH_HOME + 'modules/' + 'librosa/')
 
@@ -109,24 +109,38 @@ def do_cqt(src, track_id):
 	np.save( PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)) )
 	print "Done: %s" % str(track_id)
 
-
 def do_load(track_id):
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
 	return src, sr
 
 def do_load_stft(track_id):
-	src, sr = do_load(track_id)
-	do_stft(src, track_id)
+	if os.path.exists(PATH_STFT + str(track_id) + '.npy'):
+		pass
+	else:
+		src, sr = do_load(track_id)
+		do_stft(src, track_id)
 
 def do_load_cqt(track_id):
-	src, sr = do_load(track_id)
-	do_cqt(src, track_id)
+	if os.path.exists(PATH_CQT + str(track_id) + '.npy'):
+		pass
+	else:
+		src, sr = do_load(track_id)
+		do_cqt(src, track_id)
 
 def do_load_stft_cqt(track_id):
-	src, sr = do_load(track_id)
-	do_stft(src, track_id)
-	do_cqt(src, track_id)
+	if os.path.exists(PATH_CQT + str(track_id) + '.npy') and os.path.exists(PATH_STFT + str(track_id) + '.npy'):
+		pass
+	elif os.path.exists(PATH_CQT + str(track_id) + '.npy'):
+		src, sr = do_load(track_id)
+		do_stft(src, track_id)
+	elif os.path.exists(PATH_STFT + str(track_id) + '.npy'):
+		src, sr = do_load(track_id)
+		do_cqt(src, track_id)
+	else:
+		src, sr = do_load(track_id)
+		do_cqt(src, track_id)
+		do_stft(src, track_id)
 
 def prepare_stft(num_process, ind_process, task):
 
