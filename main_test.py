@@ -146,9 +146,12 @@ def prepare_stft(num_process, ind_process, task, isTest):
 
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	num_tracks = len(track_ids)
-	num_subsets = num_tracks/7 # because there are 8 servers I can use.
+	num_subsets = num_tracks/8 # because there are 8 servers I can use.
 	print "prepare stft; dictionaries loaded"
-	track_ids_here = track_ids[ind_process*num_subsets : min((ind_process+1)*num_subsets, num_tracks)]
+	if ind_process == 8:
+		track_ids_here = track_ids[ind_process*num_subsets : ]
+	else:
+		track_ids_here = track_ids[ind_process*num_subsets : (ind_process+1)*num_subsets]
 	
 	if isTest:
 		rand_ind = np.random.randint(len(track_ids_here)-2)
