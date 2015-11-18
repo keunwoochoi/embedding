@@ -148,8 +148,8 @@ def prepare_stft(num_process, ind_process, task):
 		else:
 			pass
 	
-	pool.close()
-	pool.join()
+	p.close()
+	p.join()
 
 def print_usage():
 	print "filename number_core, [number_index], [STFT or CQT]."
