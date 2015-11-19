@@ -29,6 +29,7 @@ def build_convnet_model(height, width, num_labels):
 	dropouts = [0] + [0.25]*(num_layers-1)
 
 	for i in xrange(num_layers):
+		print i
 		model.add(Convolution2D(num_stacks[i+1], num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
 		if dropouts[i] != 0:
 			model.add(Dropout(dropouts[i]))

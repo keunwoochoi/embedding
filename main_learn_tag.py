@@ -83,15 +83,15 @@ if __name__ == "__main__":
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	train_inds = train_inds[0:40]
-	valid_inds = valid_inds[0:10]
-	test_inds  = test_inds [0:10]
+	train_inds = train_inds[0:1]
+	valid_inds = valid_inds[0:1]
+	test_inds  = test_inds [0:1]
 	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft')
-	print "--- train data prepared ---"
+	print "--- train data prepared; %d ---" % len(train_x)
 	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft')
-	print "--- valid data prepared ---"
+	print "--- valid data prepared: %d ---" % len(valid_x)
 	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft')
-	print "--- test data prepared ---"
+	print "--- test data prepared:  %d ---" % len(test_x)
 
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
 	model.fit(train_x, train_y, nb_epoch=20, show_accuracy=True, verbose=1)
