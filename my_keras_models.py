@@ -25,12 +25,15 @@ def build_convnet_model(height, width, num_labels):
 	num_layers = 6
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
-	num_stacks = [2] + [48]*num_layers
+	num_stacks = [48]*num_layers
 	dropouts = [0] + [0.25]*(num_layers-1)
 
 	for i in xrange(num_layers):
-		print i
-		model.add(Convolution2D(num_stacks[i+1], num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
+		if i == 0:
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width) ))
+		else:
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
+		model.add(Activation('relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
 		final_height = final_height / pool_sizes[i][0]
 		final_width  = final_width  / pool_sizes[i][1]
