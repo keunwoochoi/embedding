@@ -44,7 +44,7 @@ class File_Manager():
 			rand_inds = np.random.permutation(self.filenum)
 			np.save(rand_filename, rand_inds)
 
-		return rand_inds[0:num_train], rand_inds[num_trans:num_trans+num_valid], rand_inds[num_trans+num_valid:]
+		return rand_inds[0:num_train], rand_inds[num_train:num_train+num_valid], rand_inds[num_train+num_valid:]
 
 def get_input_output_set(file_manager, indices, truths, type):
 	"""indices: list consists of integers between [0, 9320], 
