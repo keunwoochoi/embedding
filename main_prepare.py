@@ -45,7 +45,10 @@ def preprocess():
 	with open(PATH_ILM_ACT + "moodtags.txt", 'r') as tags_fp:
 		for line in tags_fp:
 			line_array = line.rstrip("\n").split(" ")
-			tags_matrix.append(line_array)
+			new_line = []
+			for element in line_array:
+				new_line.append(int(element))
+			tags_matrix.append(new_line)
 
 	np.save(PATH_DATA + "mood_tags_matrix.npy", np.array(tags_matrix))
 
@@ -157,8 +160,13 @@ def print_usage():
 	print "number of index is based on 0"
 
 if __name__=="__main__":
-	# preprocess()
+	preprocess()
 	# print '---preprocess: done---'
+
+
+	sys.exit()
+	
+
 	if len(sys.argv) < 5:
 		print_usage()
 		sys.exit()
