@@ -29,14 +29,16 @@ def build_convnet_model(height, width, num_labels):
 	dropouts = [0] + [0.25]*(num_layers-1)
 
 	for i in xrange(num_layers):
+		print i
 		model.add(Convolution2D(num_stacks[i+1], num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
+		final_height = final_height / pool_sizes[i][0]
+		final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
 			model.add(Dropout(dropouts[i]))
 		if i != 0:
 			model.add(LRN2D())
-		final_height = final_height / pool_sizes[i][0]
-		final_width  = final_width  / pool_sizes[i][1]
+		
 
 	model.add(Flatten())
 	model.add(Dense(final_height*final_num*num_stacks[-1], 1024, init='normal', activation='relu'))
