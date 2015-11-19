@@ -101,11 +101,11 @@ if __name__ == "__main__":
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 	start = time.clock()
+	len(train_y[0])
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
-	pdb.set_trace()
-	model.fit(train_x, train_y, batch_size=32, nb_epoch=40, show_accuracy=True, verbose=1)
+	model.fit(train_x, train_y, nb_epoch=40, show_accuracy=True, verbose=1)
 
 
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
