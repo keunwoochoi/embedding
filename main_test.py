@@ -116,21 +116,22 @@ def do_load(track_id):
 
 def do_load_stft(track_id):
 	if os.path.exists(PATH_STFT + str(track_id) + '.npy'):
-		pass
+		print "stft: skip this id: %d, it's already there!" % track_id
+		
 	else:
 		src, sr = do_load(track_id)
 		do_stft(src, track_id)
 
 def do_load_cqt(track_id):
 	if os.path.exists(PATH_CQT + str(track_id) + '.npy'):
-		pass
+		print "cqt :skip this id: %d, it's already there!" % track_id
 	else:
 		src, sr = do_load(track_id)
 		do_cqt(src, track_id)
 
 def do_load_stft_cqt(track_id):
 	if os.path.exists(PATH_CQT + str(track_id) + '.npy') and os.path.exists(PATH_STFT + str(track_id) + '.npy'):
-		pass
+		print "stft & cqt: skip this id: %d, it's already there!" % track_id
 	elif os.path.exists(PATH_CQT + str(track_id) + '.npy'):
 		src, sr = do_load(track_id)
 		do_stft(src, track_id)
@@ -148,7 +149,11 @@ def prepare_stft(num_process, ind_process, task, isTest):
 	num_tracks = len(track_ids)
 	num_subsets = num_tracks/8 # because there are 8 servers I can use.
 	print "prepare stft; dictionaries loaded"
-	if ind_process == 8:
+	
+	if ind_process = -1:
+		print "ind_process == -1, so will do all!"
+		track_ids_herse = track_ids
+	elif ind_process == 8:
 		track_ids_here = track_ids[ind_process*num_subsets : ]
 	else:
 		track_ids_here = track_ids[ind_process*num_subsets : (ind_process+1)*num_subsets]
