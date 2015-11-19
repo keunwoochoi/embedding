@@ -1,3 +1,6 @@
+import platform
+import os
+import sys
 
 device_name = platform.node()
 
