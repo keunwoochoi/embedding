@@ -47,7 +47,7 @@ def preprocess():
 			line_array = line.rstrip("\n").split(" ")
 			tags_matrix.append(line_array)
 
-	np.save(PATH_DATA + "mood_tags_matrix.np", np.array(tags_matrix))
+	np.save(PATH_DATA + "mood_tags_matrix.npy", np.array(tags_matrix))
 
 	audio_exists = []
 	for ind, track_id in enumerate(track_ids):
