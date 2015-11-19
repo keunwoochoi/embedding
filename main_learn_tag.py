@@ -24,10 +24,10 @@ class File_Manager():
 		return librosa.load(path, sr=SR, mono=False)
 
 	def load_stft(self, ind):
-		return np.load( PATH_STFT + str(sef.track_ids[ind]) + '.npy')
+		return np.load( PATH_STFT + str(self.track_ids[ind]) + '.npy')
 
 	def load_cqt(self, ind):
-		return np.load( PATH_CQT + str(sef.track_ids[ind]) + '.npy')
+		return np.load( PATH_CQT + str(self.track_ids[ind]) + '.npy')
 
 	def split_inds(self, num_folds):
 		"""returns index of train/valid/test songs"""
