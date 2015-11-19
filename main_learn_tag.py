@@ -94,7 +94,7 @@ if __name__ == "__main__":
 	print "--- test data prepared ---"
 
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
-	model.fit(train_x, train_y, nb_epoch=20 show_accuracy=True, verbose=1)
+	model.fit(train_x, train_y, nb_epoch=20, show_accuracy=True, verbose=1)
 
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 
