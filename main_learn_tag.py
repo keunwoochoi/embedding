@@ -85,8 +85,8 @@ if __name__ == "__main__":
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
 	train_inds = train_inds[0:25]
-	valid_inds = valid_inds[0:25]
-	test_inds  = test_inds [0:25]
+	valid_inds = valid_inds[0:15]
+	test_inds  = test_inds [0:15]
 	
 	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft')
