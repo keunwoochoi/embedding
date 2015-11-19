@@ -64,13 +64,13 @@ def get_input_output_set(file_manager, indices, truths, type):
 			tf_representation = file_manager.load_stft(i)
 		elif type=='cqt':
 			tf_representation = file_manager.load_stft(i)
-		
+
 		len_freq, num_fr, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 		width = len_freq
 		for j in xrange(num_fr/len_freq):
 			ret_x.append(tf_representation[:, j*width: (j+1)*width, :])
 			ret_y.append(truths[i,:])
-	pdb.set_trace()
+
 	return ret_x, ret_y
 
 if __name__ == "__main__":
@@ -83,15 +83,20 @@ if __name__ == "__main__":
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	train_inds = train_inds[0:10]
+	train_inds = train_inds[0:40]
+	valid_inds = valid_inds[0:10]
+	test_inds  = test_inds [0:10]
 	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft')
-	pdb.set_trace()
-	#valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft')
-	#test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft')
+	print "--- train data prepared ---"
+	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft')
+	print "--- valid data prepared ---"
+	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft')
+	print "--- test data prepared ---"
 
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
+	model.fit(train_x, train_y, nb_epoch=20 show_accuracy=True, verbose=1)
 
-
+	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 
 
 
