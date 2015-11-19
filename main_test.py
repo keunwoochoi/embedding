@@ -152,7 +152,7 @@ def prepare_stft(num_process, ind_process, task, isTest):
 	
 	if ind_process == -1:
 		print "ind_process == -1, so will do all!"
-		track_ids_herse = track_ids
+		track_ids_here = track_ids
 	elif ind_process == 8:
 		track_ids_here = track_ids[ind_process*num_subsets : ]
 	else:
