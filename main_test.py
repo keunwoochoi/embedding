@@ -150,7 +150,7 @@ def prepare_stft(num_process, ind_process, task, isTest):
 	num_subsets = num_tracks/8 # because there are 8 servers I can use.
 	print "prepare stft; dictionaries loaded"
 	
-	if ind_process = -1:
+	if ind_process == -1:
 		print "ind_process == -1, so will do all!"
 		track_ids_herse = track_ids
 	elif ind_process == 8:
