@@ -1,7 +1,8 @@
+
 SR = 22050
 N_FFT = 1024
 WIN_LEN = 1024
-HOP_LEN = 512
+HOP_LEN = 512 # 11 sec --> 512 frames
 
 file_dict = {}
 file_dict["id_path"] = "id_path_dict.cP" #dict
