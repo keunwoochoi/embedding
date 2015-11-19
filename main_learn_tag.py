@@ -9,6 +9,7 @@ import os
 import pdb
 import my_keras_models
 import cPickle as cP
+import time
 
 class File_Manager():
 	def __init__(self):
@@ -86,14 +87,23 @@ if __name__ == "__main__":
 	train_inds = train_inds[0:1]
 	valid_inds = valid_inds[0:1]
 	test_inds  = test_inds [0:1]
+	
+	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft')
-	print "--- train data prepared; %d ---" % len(train_x)
+	until = time.clock()
+	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" % (len(train_x), len(train_inds), (until-start) )
+	start = time.clock()
 	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft')
-	print "--- valid data prepared: %d ---" % len(valid_x)
+	until = time.clock()
+	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" % (len(valid_x), len(valid_inds), (until-start) )
+	start = time.clock()
 	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft')
-	print "--- test data prepared:  %d ---" % len(test_x)
-
+	until = time.clock()
+	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
+	start = time.clock()
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
+	until = time.clock()
+	print "--- keras model was built, took %d seconds ---" % (until-start)
 	model.fit(train_x, train_y, nb_epoch=20, show_accuracy=True, verbose=1)
 
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
