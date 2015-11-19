@@ -64,8 +64,8 @@ def get_input_output_set(file_manager, indices, truths, type):
 			tf_representation = file_manager.load_stft(i)
 		elif type=='cqt':
 			tf_representation = file_manager.load_stft(i)
-		pdb.set_trace()
-		len_freq, num_fr, num_ch = tf_representation[:,:,0].shape # 513, 6721, 2 for example.
+		
+		len_freq, num_fr, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 		width = len_freq
 		for j in xrange(num_fr/len_freq):
 			ret_x.append(tf_representation[:, j*width: (j+1)*width, :])
