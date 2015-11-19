@@ -105,7 +105,7 @@ if __name__ == "__main__":
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
 	pdb.set_trace()
-	model.fit(train_x, train_y, batch_size=32, validation_data=(valid_x, valid_y), nb_epoch=40, show_accuracy=True, verbose=1)
+	model.fit(train_x, train_y, batch_size=32, nb_epoch=40, show_accuracy=True, verbose=1)
 
 
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
