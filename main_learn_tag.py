@@ -12,9 +12,9 @@ import cPickle as cP
 
 class File_Manager():
 	def __init__():
-		self.track_ids = cP.load(open(PATH_DATA + file_dict["track_ids"], 'r')) #list, 100
+		self.track_ids = cP.load(open(PATH_DATA + FILE_DICT["track_ids"], 'r')) #list, 100
 		
-		self.id_path = cP.load(open(PATH_DATA + file_dict["id_path"], 'r')) #dict, 9320
+		self.id_path = cP.load(open(PATH_DATA + FILE_DICT["id_path"], 'r')) #dict, 9320
 		
 		self.filenum = len(self.track_ids)
 
@@ -75,8 +75,8 @@ def get_input_output_set(file_manager, indices, truths, type):
 
 if __name__ == "__main__":
 
-	mood_tags_matrix = np.load(PATH_DATA + file_dict["mood_tags_matrix"]) #np matrix, 9320-by-100
-	moodnames = cP.load(open(PATH_DATA + file_dict["moodnames"], 'r')) #list, 100
+	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
 	file_manager = File_Manager()
 
