@@ -69,7 +69,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 		for j in xrange(num_fr/len_freq):
 			ret_x.append(tf_representation[j*width: (j+1)*width])
 			ret_y.append(truths[i,:])
-
+	pdb.set_trace()
 	return ret_x, ret_y
 
 if __name__ == "__main__":
@@ -84,6 +84,7 @@ if __name__ == "__main__":
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
 	train_inds = train_inds[0:10]
 	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft')
+	pdb.set_trace()
 	#valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft')
 	#test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft')
 
