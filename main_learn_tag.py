@@ -84,9 +84,9 @@ if __name__ == "__main__":
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	train_inds = train_inds[0:10]
-	valid_inds = valid_inds[0:2]
-	test_inds  = test_inds [0:2]
+	train_inds = train_inds[0:25]
+	valid_inds = valid_inds[0:25]
+	test_inds  = test_inds [0:25]
 	
 	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft')
@@ -104,10 +104,11 @@ if __name__ == "__main__":
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
-	model.fit(train_x, train_y, nb_epoch=40, show_accuracy=True, verbose=1)
+	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), nb_epoch=40, show_accuracy=True, verbose=1)
+
 
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
-
+	model.evaluate(test_x, test_yshow_accuracy=True)
 
 
 
