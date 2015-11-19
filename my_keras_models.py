@@ -43,9 +43,9 @@ def build_convnet_model(height, width, num_labels):
 			model.add(LRN2D())
 
 	model.add(Flatten())
-	model.add(Dense(final_height*final_width*num_stacks[-1], 1024, init='normal', activation='relu'))
+	model.add(Dense(1024, init='normal', activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(1024, num_labels, init='normal', activation='softmax'))
+	model.add(Dense(num_labels, init='normal', activation='softmax'))
 	rmsprop = RMSprop(lr=1e-6, rho=0.9, epsilon=1e-6)
 	model.compile(loss='mean_squared_error', optimizer=rmsprop)
 	return model
