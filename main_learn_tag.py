@@ -104,6 +104,7 @@ if __name__ == "__main__":
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
+	pdb.set_trace()
 	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), nb_epoch=40, show_accuracy=True, verbose=1)
 
 
