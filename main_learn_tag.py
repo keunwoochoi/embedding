@@ -92,7 +92,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
 		print 'transpose done'
 		for j_ind in xrange(num_fr/len_freq):
-			ret_x[data_ind, :, :, :] = tf_representation[:,:, :, j_ind*width: (j_ind+1)*width])
+			ret_x[data_ind, :, :, :] = tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]
 			ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
 			print '    a loop done'
 			data_ind += 1
