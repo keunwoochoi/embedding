@@ -82,8 +82,8 @@ def get_input_output_set(file_manager, indices, truths, type):
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
 		
 		for j in xrange(num_fr/len_freq):
-			ret_x.shape
-			tf_representation[:,:, :, j*width: (j+1)*width].shape
+			print ret_x.shape
+			print tf_representation[:,:, :, j*width: (j+1)*width].shape
 			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j*width: (j+1)*width]), axis=0)
 			ret_y = np.concatenate((ret_y, np.expand_dims(truths[i,:], axis=1).transpose()), axis=0)
 
