@@ -55,8 +55,20 @@ def get_input_output_set(file_manager, indices, truths, type):
 	type = 'stft' or 'cqt', determines which function file_manager should use
 
 	"""
-	ret_x = []
-	ret_y = []
+	if type=='stft':
+		tf_representation = file_manager.load_stft(0)
+		len_freq, num_fr, num_ch = tf_representation.shape # 513, 6721, 2 for example.
+
+	elif type=='cqt':
+		tf_representation = file_manager.load_cqt(0)
+		len_freq, num_fr, num_ch = tf_representation.shape # 513, 6721, 2 for example.
+	
+	num_labels = truths.shape[1]
+	width = len_freq
+
+	ret_x = np.zeros((0, num_ch, len_freq, num_fr)) # x : 4-dim matrix, num_data - num_channel - height - width
+	ret_y = np.zeros((0, num_labels)) # y : 2-dum matrix, num_data - labels (or whatever)
+
 	if type not in ['stft', 'cqt']:
 		print "wront type in get_input_output_set, so failed to prepare data."
 
@@ -64,13 +76,13 @@ def get_input_output_set(file_manager, indices, truths, type):
 		if type == 'stft':
 			tf_representation = file_manager.load_stft(i)
 		elif type=='cqt':
-			tf_representation = file_manager.load_stft(i)
+			tf_representation = file_manager.load_cqt(i)
 
-		len_freq, num_fr, num_ch = tf_representation.shape # 513, 6721, 2 for example.
-		width = len_freq
+		tf_representation = tf_representation.transpose((2,0,1)) #len_freq, num_fr, num_ch --> num_ch, len_freq, num_fr
+		
 		for j in xrange(num_fr/len_freq):
-			ret_x.append(tf_representation[:, j*width: (j+1)*width, :])
-			ret_y.append(truths[i,:])
+			ret_x = np.concatenate((ret_x, tf_representation[:, j*width: (j+1)*width, :]), axis=3)
+			ret_y = np.concatenate((ret_y, truths[i,:]), axis=0)
 
 	return ret_x, ret_y
 
@@ -102,12 +114,14 @@ if __name__ == "__main__":
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 	start = time.clock()
 	len(train_y[0])
+	pdb.set_trace()
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
 	pdb.set_trace()
 	model.fit(train_x, train_y, batch_size=32, nb_epoch=40, validation_data=(valid_x, valid_y), show_accuracy=True, verbose=1)
-
+	
+	model.fit(train_x, train_y, nb_epoch=40)
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 	model.evaluate(test_x, test_yshow_accuracy=True)
 

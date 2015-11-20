@@ -47,6 +47,7 @@ def build_convnet_model(height, width, num_labels):
 	model.add(Dropout(0.5))
 	model.add(Dense(num_labels, init='normal', activation='softmax'))
 	rmsprop = RMSprop(lr=1e-6, rho=0.9, epsilon=1e-6)
-	model.compile(loss='mean_squared_error', optimizer=rmsprop)
+	model.compile(loss='rmse', optimizer=rmsprop)
+	
 	return model
 
