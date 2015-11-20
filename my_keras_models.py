@@ -22,7 +22,7 @@ def build_convnet_model(height, width, num_labels):
 
 	model = Sequential()
 
-	num_layers = 4
+	num_layers = 6
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
 	num_stacks = [48]*num_layers
