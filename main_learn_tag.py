@@ -57,11 +57,11 @@ def get_input_output_set(file_manager, indices, truths, type):
 	"""
 	if type=='stft':
 		tf_representation = file_manager.load_stft(0)
-		len_freq, num_fr, num_ch = tf_representation.shape # 513, 6721, 2 for example.
+		len_freq, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 
 	elif type=='cqt':
 		tf_representation = file_manager.load_cqt(0)
-		len_freq, num_fr, num_ch = tf_representation.shape # 513, 6721, 2 for example.
+		len_freq, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 	
 	num_labels = truths.shape[1]
 	width = len_freq
@@ -79,13 +79,14 @@ def get_input_output_set(file_manager, indices, truths, type):
 			tf_representation = file_manager.load_cqt(i)
 
 		tf_representation = np.expand_dims(tf_representation, axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
+		num_fr = tf_representation.shape[1]
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
 		
 		for j_ind in xrange(num_fr/len_freq):
-			print ret_x.shape
-			print tf_representation[:,:, :, j_ind*width: (j_ind+1)*width].shape
-			if tf_representation[:,:, :, j_ind*width: (j_ind+1)*width].shape[3]==308:
-				pdb.set_trace()
+			# print ret_x.shape
+			# print tf_representation[:,:, :, j_ind*width: (j_ind+1)*width].shape
+			# if tf_representation[:,:, :, j_ind*width: (j_ind+1)*width].shape[3]==308:
+			# 	pdb.set_trace()
 			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]), axis=0)
 			ret_y = np.concatenate((ret_y, np.expand_dims(truths[i,:], axis=1).transpose()), axis=0)
 
