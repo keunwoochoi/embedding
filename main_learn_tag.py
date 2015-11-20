@@ -129,7 +129,7 @@ if __name__ == "__main__":
 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1]	)
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
-	model.fit(train_x, train_y, batch_size=2, nb_epoch=40, show_accuracy=True, verbose=1)
+	model.fit(train_x, train_y, batch_size=6, nb_epoch=40, show_accuracy=True, verbose=1)
 	
 	model.fit(train_x, train_y, nb_epoch=40)
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
