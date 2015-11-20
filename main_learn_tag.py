@@ -86,7 +86,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 			print tf_representation[:,:, :, j_ind*width: (j_ind+1)*width].shape
 			if tf_representation[:,:, :, j_ind*width: (j_ind+1)*width].shape[3]==308:
 				pdb.set_trace()
-			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j*width: (j_ind+1)*width]), axis=0)
+			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]), axis=0)
 			ret_y = np.concatenate((ret_y, np.expand_dims(truths[i,:], axis=1).transpose()), axis=0)
 
 	return ret_x, ret_y
