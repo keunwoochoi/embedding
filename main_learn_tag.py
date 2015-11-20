@@ -126,7 +126,7 @@ if __name__ == "__main__":
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 	start = time.clock()
-	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=len(train_y.shape[1]))
+	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1])
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
 	pdb.set_trace()
