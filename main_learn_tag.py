@@ -47,7 +47,7 @@ class File_Manager():
 
 		return rand_inds[0:num_train], rand_inds[num_train:num_train+num_valid], rand_inds[num_train+num_valid:]
 
-def get_input_output_set(file_manager, indices, truths, type):
+def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, width_iamge=256):
 	"""indices: list consists of integers between [0, 9320], 
 	usually it is one of train_inds, valid_inds, test_inds.
 	it returns data_x and data_y.
@@ -62,9 +62,11 @@ def get_input_output_set(file_manager, indices, truths, type):
 	elif type=='cqt':
 		tf_representation = file_manager.load_cqt(0)
 		len_freq, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
-	
+	if len_freq > max_len_freq:
+		len_freq = max_len_freq
+
 	num_labels = truths.shape[1]
-	width = len_freq
+	width = width_image
 	print '   -- check number of all data --'
 	num_data = 0
 	for i in indices:
@@ -86,7 +88,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 		elif type=='cqt':
 			tf_representation = file_manager.load_cqt(i)
 
-		tf_representation = np.expand_dims(tf_representation, axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
+		tf_representation = np.expand_dims(tf_representationp[:len_freq, :, :], axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
 		# print 'expending done'
 		num_fr = tf_representation.shape[1]
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
@@ -114,22 +116,22 @@ if __name__ == "__main__":
 	test_inds  = test_inds [0:10]
 	
 	start = time.clock()
-	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft')
+	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_iamge=256)
 	until = time.clock()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" % (len(train_x), len(train_inds), (until-start) )
 	start = time.clock()
-	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft')
+	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_iamge=256)
 	until = time.clock()
 	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" % (len(valid_x), len(valid_inds), (until-start) )
 	start = time.clock()
-	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft')
+	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_iamge=256)
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 	start = time.clock()
-	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1]	)
+	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1])
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
-	model.fit(train_x, train_y, batch_size=12, nb_epoch=40, show_accuracy=True, verbose=1)
+	model.fit(train_x, train_y, batch_size=32, nb_epoch=40, show_accuracy=True, verbose=1)
 	
 	model.fit(train_x, train_y, nb_epoch=40)
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
