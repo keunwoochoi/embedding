@@ -65,13 +65,20 @@ def get_input_output_set(file_manager, indices, truths, type):
 	
 	num_labels = truths.shape[1]
 	width = len_freq
+	print '   -- check number of all data --'
+	num_data = 0
+	for i in indices:
+		tf_representation = file_manager.load_stft(i)
+		num_data += tf_representation.shape[1] / width
+	print '   -- check:done, num_data is %d --' % num_data
 
-	ret_x = np.zeros((0, num_ch, len_freq, width)) # x : 4-dim matrix, num_data - num_channel - height - width
-	ret_y = np.zeros((0, num_labels)) # y : 2-dum matrix, num_data - labels (or whatever)
+	ret_x = np.zeros((num_data, num_ch, len_freq, width)) # x : 4-dim matrix, num_data - num_channel - height - width
+	ret_y = np.zeros((num_data, num_labels)) # y : 2-dum matrix, num_data - labels (or whatever)
 
 	if type not in ['stft', 'cqt']:
 		print "wront type in get_input_output_set, so failed to prepare data."
 
+	data_ind = 0
 	for i in indices:
 		print i
 		if type == 'stft':
@@ -85,9 +92,10 @@ def get_input_output_set(file_manager, indices, truths, type):
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
 		print 'transpose done'
 		for j_ind in xrange(num_fr/len_freq):
-			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]), axis=0)
-			ret_y = np.concatenate((ret_y, np.expand_dims(truths[i,:], axis=1).transpose()), axis=0)
+			ret_x[data_ind, :, :, :] = tf_representation[:,:, :, j_ind*width: (j_ind+1)*width])
+			ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
 			print '    a loop done'
+			data_ind += 1
 		print 'this loop done'
 	return ret_x, ret_y
 
