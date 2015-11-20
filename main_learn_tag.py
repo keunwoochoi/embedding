@@ -88,7 +88,7 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 		elif type=='cqt':
 			tf_representation = file_manager.load_cqt(i)
 
-		tf_representation = np.expand_dims(tf_representationp[:len_freq, :, :], axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
+		tf_representation = np.expand_dims(tf_representation[:len_freq, :, :], axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
 		# print 'expending done'
 		num_fr = tf_representation.shape[1]
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
