@@ -22,7 +22,7 @@ def build_convnet_model(height, width, num_labels):
 
 	model = Sequential()
 
-	num_layers = 6
+	num_layers = 4
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
 	num_stacks = [48]*num_layers
@@ -47,6 +47,8 @@ def build_convnet_model(height, width, num_labels):
 	model.add(Dropout(0.5))
 	model.add(Dense(num_labels, init='normal', activation='softmax'))
 	rmsprop = RMSprop(lr=1e-6, rho=0.9, epsilon=1e-6)
+	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_squared_error', optimizer=rmsprop)
+	print '--- complie fin. ---'
 	return model
 
