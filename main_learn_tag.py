@@ -80,23 +80,23 @@ def get_input_output_set(file_manager, indices, truths, type):
 
 	data_ind = 0
 	for i in indices:
-		print i
+		# print i
 		if type == 'stft':
 			tf_representation = file_manager.load_stft(i)
 		elif type=='cqt':
 			tf_representation = file_manager.load_cqt(i)
 
 		tf_representation = np.expand_dims(tf_representation, axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
-		print 'expending done'
+		# print 'expending done'
 		num_fr = tf_representation.shape[1]
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
-		print 'transpose done'
+		#print 'transpose done'
 		for j_ind in xrange(num_fr/len_freq):
 			ret_x[data_ind, :, :, :] = tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]
 			ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
-			print '    a loop done'
+			# print '    a loop done'
 			data_ind += 1
-		print 'this loop done'
+		# print 'this loop done'
 	return ret_x, ret_y
 
 if __name__ == "__main__":
@@ -126,8 +126,6 @@ if __name__ == "__main__":
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 	start = time.clock()
-	len(train_y[0])
-	pdb.set_trace()
 	model = my_keras_models.build_convnet_model(height=train_x[0].shape[0], width=train_x[0].shape[1], num_labels=len(train_y[0]))
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
