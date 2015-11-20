@@ -80,9 +80,9 @@ def get_input_output_set(file_manager, indices, truths, type):
 
 		tf_representation = np.expand_dims(tf_representation, axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
-		pdb.set_trace()
+		
 		for j in xrange(num_fr/len_freq):
-			ret_x = np.concatenate((ret_x, tf_representation[:, j*width: (j+1)*width, :]), axis=3)
+			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j*width: (j+1)*width]), axis=0)
 			ret_y = np.concatenate((ret_y, truths[i,:]), axis=0)
 
 	return ret_x, ret_y
