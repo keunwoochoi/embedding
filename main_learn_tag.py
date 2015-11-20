@@ -47,7 +47,7 @@ class File_Manager():
 
 		return rand_inds[0:num_train], rand_inds[num_train:num_train+num_valid], rand_inds[num_train+num_valid:]
 
-def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, width_iamge=256):
+def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, width_image=256):
 	"""indices: list consists of integers between [0, 9320], 
 	usually it is one of train_inds, valid_inds, test_inds.
 	it returns data_x and data_y.
@@ -116,15 +116,15 @@ if __name__ == "__main__":
 	test_inds  = test_inds [0:10]
 	
 	start = time.clock()
-	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_iamge=256)
+	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_image=256)
 	until = time.clock()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" % (len(train_x), len(train_inds), (until-start) )
 	start = time.clock()
-	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_iamge=256)
+	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_image=256)
 	until = time.clock()
 	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" % (len(valid_x), len(valid_inds), (until-start) )
 	start = time.clock()
-	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_iamge=256)
+	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_image=256)
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 	start = time.clock()
