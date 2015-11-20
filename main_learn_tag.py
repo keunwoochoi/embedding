@@ -66,7 +66,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 	num_labels = truths.shape[1]
 	width = len_freq
 
-	ret_x = np.zeros((0, num_ch, len_freq, num_fr)) # x : 4-dim matrix, num_data - num_channel - height - width
+	ret_x = np.zeros((0, num_ch, len_freq, width)) # x : 4-dim matrix, num_data - num_channel - height - width
 	ret_y = np.zeros((0, num_labels)) # y : 2-dum matrix, num_data - labels (or whatever)
 
 	if type not in ['stft', 'cqt']:
@@ -80,7 +80,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 
 		tf_representation = np.expand_dims(tf_representation, axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
-		pdb.set_trace()
+		
 		for j in xrange(num_fr/len_freq):
 			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j*width: (j+1)*width]), axis=0)
 			ret_y = np.concatenate((ret_y, truths[i,:]), axis=0)
