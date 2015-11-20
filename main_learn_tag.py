@@ -68,7 +68,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 	print '   -- check number of all data --'
 	num_data = 0
 	for i in indices:
-		tf_representation = file_manager.load_stft(i)
+		tf_representation = np.abs(file_manager.load_stft(i)) # complext to real number!
 		num_data += tf_representation.shape[1] / width
 	print '   -- check:done, num_data is %d --' % num_data
 
