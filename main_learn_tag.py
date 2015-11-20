@@ -83,6 +83,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 		
 		for j in xrange(num_fr/len_freq):
 			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j*width: (j+1)*width]), axis=0)
+			pdb.set_trace()
 			ret_y = np.concatenate((ret_y, truths[i,:]), axis=0)
 
 	return ret_x, ret_y
