@@ -78,7 +78,7 @@ def get_input_output_set(file_manager, indices, truths, type):
 		elif type=='cqt':
 			tf_representation = file_manager.load_cqt(i)
 
-		tf_representation = tf_representation.transpose((2,0,1)) #len_freq, num_fr, num_ch --> num_ch, len_freq, num_fr
+		tf_representation =  np.expand_dims(tf_representation.transpose((2,0,1)), axis=3 )#len_freq, num_fr, num_ch --> num_ch, len_freq, num_fr
 		
 		for j in xrange(num_fr/len_freq):
 			ret_x = np.concatenate((ret_x, tf_representation[:, j*width: (j+1)*width, :]), axis=3)
