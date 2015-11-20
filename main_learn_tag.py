@@ -80,13 +80,15 @@ def get_input_output_set(file_manager, indices, truths, type):
 			tf_representation = file_manager.load_cqt(i)
 
 		tf_representation = np.expand_dims(tf_representation, axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
+		print 'expending done'
 		num_fr = tf_representation.shape[1]
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
-		
+		print 'transpose done'
 		for j_ind in xrange(num_fr/len_freq):
 			ret_x = np.concatenate((ret_x, tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]), axis=0)
 			ret_y = np.concatenate((ret_y, np.expand_dims(truths[i,:], axis=1).transpose()), axis=0)
-
+			print '    a loop done'
+		print 'this loop done'
 	return ret_x, ret_y
 
 if __name__ == "__main__":
