@@ -47,7 +47,7 @@ def build_convnet_model(height, width, num_labels):
 	model.add(Dropout(0.5))
 	model.add(Dense(256, init='normal', activation='relu'))
 	model.add(Dropout(0.5))
-	model.add(Dense(num_labels, init='normal', activation='softmax'))
+	model.add(Dense(num_labels, init='normal', activation='linear'))
 	rmsprop = RMSprop(lr=5e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_squared_error', optimizer=rmsprop)
