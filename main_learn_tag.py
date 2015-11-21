@@ -144,23 +144,23 @@ if __name__ == "__main__":
 	print "--- keras model was built, took %d seconds ---" % (until-start)
 	
 	model_name = 'test_model_latent_10'
-	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=48, nb_epoch=40, show_accuracy=True, verbose=1)
+	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=40, show_accuracy=True, verbose=1)
 	cP.dump(learning_history, open(PATH_MODEL + model_name + '.history' , "w"))
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
-	model.evaluate(test_x, test_yshow_accuracy=True)
+	model.evaluate(test_x, test_y, show_accuracy=True)
 	model.save_weights(PATH_MODEL + model_name + '_after_40.keras')
 	
 
-	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=48, nb_epoch=40, show_accuracy=True, verbose=1)
+	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=40, show_accuracy=True, verbose=1)
 	cP.dump(learning_history, open(PATH_MODEL + model_name + '.history' , "w"))
-	model.evaluate(test_x, test_yshow_accuracy=True)
+	model.evaluate(test_x, test_y, show_accuracy=True)
 	model.save_weights(PATH_MODEL + model_name + '_after_80.keras')
 
-	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=48, nb_epoch=40, show_accuracy=True, verbose=1)
+	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=40, show_accuracy=True, verbose=1)
 	cP.dump(learning_history, open(PATH_MODEL + model_name + '.history' , "w"))
-	model.evaluate(test_x, test_yshow_accuracy=True)
+	model.evaluate(test_x, test_y, show_accuracy=True)
 	model.save_weights(PATH_MODEL + model_name + '_after_120.keras')
-	
+
 
 
 
