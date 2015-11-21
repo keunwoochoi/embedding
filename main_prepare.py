@@ -180,9 +180,9 @@ def prepare_transforms(arguments):
 
 	print "#"*60
 
-def get_LSI(num_components=10):
+def get_LSI(X, num_components=10):
 	""" Latent Semantic Indexing. (equivalent of SVD for term-doc matrix.) 
-	21 Nov 2015 Keunwoo Choi
+	21 Nov 2015, Keunwoo Choi
 	
 	Here, LSI is ready for song-tag matrix, not term-doc matrix.
 	Synonym problem is expected to be attacked effectively!
@@ -193,15 +193,50 @@ def get_LSI(num_components=10):
 	It utilise sklearn.decomposition.TruncatedSVD
 	"""
 	from sklearn.decomposition import TruncatedSVD
-	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	if X == None:
+		print 'X is omitted, so just assume it is the mood tag mtx w audio.'
+		X = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+
 	svd = TruncatedSVD(n_components=num_components, random_state=42, n_iter=10)
-	svd.fit(mood_tags_matrix) # train with given matrix.
-	reduced_matrix = svd.transform(mood_tags_matrix) # 9320-by-k(10)
+	svd.fit(X) # train with given matrix. #actually, fit_transform is faster.
+	reduced_matrix = svd.transform(X) # 9320-by-k(10)
 
 	recovered_matrix = svd.inverse_transform(reduced_matrix)
+	average_error = np.sqrt(np.sum((X - recovered_matrix))**2)/(X.shape[0]*X.shape[1])
+	print "SVD done with k=%d, average error:%2.4f" % (num_components, average_error)
 
-	pdb.set_trace()
+	return reduced_matrix
 
+def get_LDA(X, num_components=10, show_topics=True):
+	""" Latent Dirichlet Allication by NMF.
+	21 Nov 2015, Keunwoo Choi
+
+	LDA for a song-tag matrix. The motivation is same as get_LSI. 
+	With NMF, it is easier to explain what each topic represent - by inspecting 'H' matrix,
+	where X ~= X' = W*H as a result of NMF. 
+	It is also good to have non-negative elements, straight-forward for both W and H.
+
+	"""
+	from sklearn.decomposition import NMF
+	if X == None:
+		print 'X is omitted, so just assume it is the mood tag mtx w audio.'
+		X = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+
+	nmf = NMF(init='nndsvd', n_components=num_components, max_iter=200)
+	W = nmf.fit_transform(X)
+	H = nmf.components_
+	print '='*60
+	print "NMF done with k=%d, average error:%2.4f" % (num_components, nmf.reconstruction_err_/(X.shape[0]*X.shape[1]))
+
+	if show_topics:
+
+		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
+		for topic_index in range( H.shape[0] ):
+			top_indices = np.argsort( H[topic_index,:] )[::-1][0:10]
+			term_ranking = [moodnames[i] for i in top_indices]
+			print "Topic %d: %s" % ( topic_index, ", ".join( term_ranking ) )
+		print '='*60
+	return W / np.max(W) # return normalised matrix, [0, 1]
 
 def print_usage():
 	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
@@ -210,10 +245,13 @@ def print_usage():
 if __name__=="__main__":
 	# preprocess() # read text file and generate dictionaries.
 	# prepare_transforms(sys.argv)
-	get_LSI(10)
+	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	for k in [2, 3, 5, 10, 20]:
+		get_LSI(X=mood_tags_matrix, num_components=k)
 
-	
-
-
+	for k in [2,3,5,10,20]:
+		W = get_LDA(X=mood_tags_matrix, num_components=k, show_topics=True)
+		filename_out = FILE_DICT["mood_latent_matrix"] % k
+		np.save(PATH_DATA + filename_out, W)
 
 
