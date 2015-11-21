@@ -115,6 +115,7 @@ if __name__ == "__main__":
 		filename_out = FILE_DICT["mood_latent_matrix"] % k
 		np.save(PATH_DATA + filename_out, W)
 
+	pdb.set_trace()
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	print 'size of mood tag matrix:'
 	print label_matrix.shape
