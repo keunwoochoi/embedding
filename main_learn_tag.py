@@ -122,9 +122,9 @@ if __name__ == "__main__":
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	train_inds = train_inds[0:60]
-	valid_inds = valid_inds[0:10]
-	test_inds  = test_inds [0:10]
+	train_inds = train_inds[0:240]
+	valid_inds = valid_inds[0:30]
+	test_inds  = test_inds [0:30]
 	
 	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
@@ -142,15 +142,25 @@ if __name__ == "__main__":
 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1])
 	until = time.clock()
 	print "--- keras model was built, took %d seconds ---" % (until-start)
-	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=48, nb_epoch=40, show_accuracy=True, verbose=1)
 	
-	model.fit(train_x, train_y, nb_epoch=40)
+	model_name = 'test_model_latent_10'
+	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=48, nb_epoch=40, show_accuracy=True, verbose=1)
+	cP.dump(learning_history, open(PATH_MODEL + model_name + '.history' , "w"))
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 	model.evaluate(test_x, test_yshow_accuracy=True)
-	pdb.set_trace()
+	model.save_weights(PATH_MODEL + model_name + '_after_40.keras')
+	
 
+	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=48, nb_epoch=40, show_accuracy=True, verbose=1)
+	cP.dump(learning_history, open(PATH_MODEL + model_name + '.history' , "w"))
+	model.evaluate(test_x, test_yshow_accuracy=True)
+	model.save_weights(PATH_MODEL + model_name + '_after_80.keras')
 
-
+	learning_history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=48, nb_epoch=40, show_accuracy=True, verbose=1)
+	cP.dump(learning_history, open(PATH_MODEL + model_name + '.history' , "w"))
+	model.evaluate(test_x, test_yshow_accuracy=True)
+	model.save_weights(PATH_MODEL + model_name + '_after_120.keras')
+	
 
 
 

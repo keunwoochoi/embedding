@@ -26,6 +26,7 @@ if isServer:
 	PATH_HOME = "/homes/kc306/"
 	PATH_WORK = PATH_HOME + "embedding/"
 	PATH_DATA = PATH_WORK + "data/"
+	PATH_MODEL= PATH_WORK + 'keras_models/'
 
 	PATH_STFT = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
 	PATH_CQT  = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
