@@ -103,10 +103,21 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 
 if __name__ == "__main__":
 
-	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	#label_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	dim_latent_feature = 10
+	try:
+		label_matrix = np.load(PATH_DATA + (FILE_DICT["mood_latent_matrix"] % dim_latent_feature )) #np matrix, 9320-by-100
+	except IOError:
+		"print let's cook the mood-latent feature matrix"
+		import main_prepare
+		mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+		label_matrix = main_prepare.get_LDA(X=mood_tags_matrix, num_components=k, show_topics=False)
+		filename_out = FILE_DICT["mood_latent_matrix"] % k
+		np.save(PATH_DATA + filename_out, W)
+
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	print 'size of mood tag matrix:'
-	print mood_tags_matrix.shape
+	print label_matrix.shape
 
 	file_manager = File_Manager()
 
@@ -116,15 +127,15 @@ if __name__ == "__main__":
 	test_inds  = test_inds [0:10]
 	
 	start = time.clock()
-	train_x, train_y = get_input_output_set(file_manager, train_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_image=256)
+	train_x, train_y = get_input_output_set(file_manager, train_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
 	until = time.clock()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" % (len(train_x), len(train_inds), (until-start) )
 	start = time.clock()
-	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_image=256)
+	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
 	until = time.clock()
 	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" % (len(valid_x), len(valid_inds), (until-start) )
 	start = time.clock()
-	test_x,  test_y  = get_input_output_set(file_manager, test_inds, mood_tags_matrix, 'stft', max_len_freq=256, width_image=256)
+	test_x,  test_y  = get_input_output_set(file_manager, test_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 	start = time.clock()
