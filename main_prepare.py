@@ -72,6 +72,7 @@ def preprocess():
 	cP.dump(track_id_w_audio, open(PATH_DATA + "track_ids_w_audio.cP", "w"))
 	np.save(PATH_DATA + "mood_tags_matrix_w_audio", np.array(tags_matrix_w_audio))
 	'''int, int, string(stft or cqt)'''
+	print '---preprocess: done---'
 
 def do_stft(src, track_id):
 	SRC_L = librosa.stft(src[0,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
@@ -154,31 +155,22 @@ def prepare_stft(num_process, ind_process, task, isTest):
 	p.join()
 	print "total time: %0.2f seconds" % (time.time()-start)
 	print "average %0.2f seconds per song" % ((time.time()-start)/len(track_ids_here))
-	
-def print_usage():
-	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
-	print "number of index is based on 0"
 
-if __name__=="__main__":
-	preprocess()
-	# print '---preprocess: done---'
-
-
-	sys.exit()
-	
-
-	if len(sys.argv) < 5:
+def prepare_transforms(arguments):
+	"""Multiprocessing-based stft or cqt conversion for all audio files. 
+	"""
+	if len(arguments) < 5:
 		print_usage()
 		sys.exit()
-	num_process = int(sys.argv[1])
-	ind_process = int(sys.argv[2])
-	task = sys.argv[3].lower()
+	num_process = int(arguments[1])
+	ind_process = int(arguments[2])
+	task = arguments[3].lower()
 	print num_process, " processes"
 	
 	if task not in ['stft', 'cqt']:
 		print 'wrong argument, choose stft or cqt'
 		sys.exit()
-	if sys.argv[4] == 'test':
+	if arguments[4] == 'test':
 		prepare_stft(num_process, ind_process, task, isTest=True)
 	else:
 		prepare_stft(num_process, ind_process, task, isTest=False)
@@ -187,6 +179,40 @@ if __name__=="__main__":
 	print "FIN - using %d processes, %d-ind batch." % (num_process, ind_process)
 
 	print "#"*60
+
+def get_LSI(num_components=10):
+	""" Latent Semantic Indexing. (equivalent of SVD for term-doc matrix.) 
+	21 Nov 2015 Keunwoo Choi
+	
+	Here, LSI is ready for song-tag matrix, not term-doc matrix.
+	Synonym problem is expected to be attacked effectively!
+	
+	First, it loads song-tag matrix, of which size is 9320-by-100 at the moment.
+	Then it reduces the matrix #song-by-#tag into #song-by-k, where k<100 and a reasonablly small
+	number to represent the semantic meaning of songs in tag space.
+	It utilise sklearn.decomposition.TruncatedSVD
+	"""
+	from sklearn.decomposition import TruncatedSVD
+	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	svd = TruncatedSVD(n_components=num_components, random_state=42, n_iter=10)
+	svd.fit(mood_tags_matrix) # train with given matrix.
+	reduced_matrix = svd.transform(mood_tags_matrix) # 9320-by-k(10)
+
+	recovered_matrix = svd.inverse_transform(reduced_matrix)
+
+	pdb.set_trace()
+
+
+def print_usage():
+	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
+	print "number of index is based on 0"
+
+if __name__=="__main__":
+	# preprocess() # read text file and generate dictionaries.
+	# prepare_transforms(sys.argv)
+	get_LSI(10)
+
+	
 
 
 

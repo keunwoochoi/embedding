@@ -10,7 +10,11 @@ if device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave', 'big-bir
 	isMsi = False
 
 else:
-	print 'unknown device'
+	isServer = False
+	if device_name == "KChoiMBPR2013.local":
+		isMac = True
+		isMsi = False
+
 
 if isServer:
 	print "THIS IS A SERVER NAMED %s" % device_name
@@ -28,4 +32,4 @@ if isServer:
 
 	sys.path.append(PATH_HOME + 'modules/' + 'librosa/')
 else:
-	print "It's not yet for laptop. "
+	PATH_DATA = 'data/'
