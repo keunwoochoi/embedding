@@ -253,5 +253,6 @@ if __name__=="__main__":
 		W = get_LDA(X=mood_tags_matrix, num_components=k, show_topics=True)
 		filename_out = FILE_DICT["mood_latent_matrix"] % k
 		np.save(PATH_DATA + filename_out, W)
+		
 
 
