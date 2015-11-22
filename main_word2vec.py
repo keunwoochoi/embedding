@@ -37,7 +37,12 @@ def prepare_wiki_text():
 	inp = 'enwiki-20151102-pages-articles.xml.bz2'
 	outp = 'wiki.en.text'
 	if os.path.exists(PATH_WIKI + outp):
-		print 'prepare_wiki_text : already done. remove %s if you want to run it again.' % outp
+		if os.path.getsize(PATH_WIKI+outp) == 0:
+			print 'There is already wiki.en.text in the path, but the size is 0, which is strange.'
+			sys.exit()
+		else:
+
+			print 'prepare_wiki_text : already done. remove %s if you want to run it again.' % outp
 		return
 	output = open(PATH_WIKI + outp, 'w')
 	wiki = WikiCorpus(PATH_WIKI + inp, lemmatize=False)
