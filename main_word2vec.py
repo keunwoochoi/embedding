@@ -5,6 +5,7 @@ from environments import *
 import gensim
 import logging
 import os.path
+import os.remove
 import sys
 import multiprocessing
 import cPickle as cP
@@ -39,11 +40,12 @@ def prepare_wiki_text():
 	if os.path.exists(PATH_WIKI + outp):
 		if os.path.getsize(PATH_WIKI+outp) == 0:
 			print 'There is already wiki.en.text in the path, but the size is 0, which is strange.'
-			sys.exit()
+			print 'Therfore I will just proceed'
+			os.remove(PATH_WIKI + outp)
 		else:
-
 			print 'prepare_wiki_text : already done. remove %s if you want to run it again.' % outp
-		return
+			return
+
 	output = open(PATH_WIKI + outp, 'w')
 	wiki = WikiCorpus(PATH_WIKI + inp, lemmatize=False)
 	space = " "
