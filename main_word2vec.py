@@ -40,7 +40,7 @@ def prepare_wiki_text():
 		print 'prepare_wiki_text : already done. remove %s if you want to run it again.' % outp
 		return
 	output = open(PATH_WIKI + outp, 'w')
-	wiki = WikiCorpus(inp, lemmatize=False, dictionary={})
+	wiki = WikiCorpus(PATH_WIKI + inp, lemmatize=False, dictionary={})
 	for text in wiki.get_texts():
 		output.write(space.join(text) + "\n")
 		i += 1
@@ -58,10 +58,10 @@ def train_word2vec_model():
 	outp2= 'wiki.en.text.vector'
 	if os.path.exists(PATH_WIKI + outp2):
 		print 'train_word2vec_model : already done. remove %s if you want to train it again.' % outp2
-		model = gensim.models.Word2Vec.load_word2vec_format(outp2, binary=False) # takes long.
+		model = gensim.models.Word2Vec.load_word2vec_format(PATH_WIKI + outp2, binary=False) # takes long.
 		return model
 
-	model = Word2Vec(LineSentence(inp), size=200, window=5, min_count=10, workers=multiprocessing.cpu_count())
+	model = Word2Vec(LineSentence(PATH_WIKI + inp), size=200, window=5, min_count=10, workers=multiprocessing.cpu_count())
 
 	# model.init_sims(replace=True) 
 	model.save(PATH_WIKI + outp)
