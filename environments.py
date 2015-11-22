@@ -28,6 +28,8 @@ if isServer:
 	PATH_DATA = PATH_WORK + "data/"
 	PATH_MODEL= PATH_WORK + 'keras_models/'
 
+	PATH_WIKI = "/import/c4dm-datasets/Wikipedia_dump/"
+
 	PATH_STFT = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
 	PATH_CQT  = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
 
