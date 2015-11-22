@@ -46,6 +46,7 @@ def prepare_wiki_text():
 		return
 	output = open(PATH_WIKI + outp, 'w')
 	wiki = WikiCorpus(PATH_WIKI + inp, lemmatize=False)
+	space = " "
 	for text in wiki.get_texts():
 		output.write(space.join(text) + "\n")
 		i += 1
