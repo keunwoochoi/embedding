@@ -4,8 +4,7 @@ from constants import *
 from environments import *
 import gensim
 import logging
-import os.path
-import os.remove
+import os
 import sys
 import multiprocessing
 import cPickle as cP
