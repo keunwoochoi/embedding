@@ -40,7 +40,7 @@ def prepare_wiki_text():
 		print 'prepare_wiki_text : already done. remove %s if you want to run it again.' % outp
 		return
 	output = open(PATH_WIKI + outp, 'w')
-	wiki = WikiCorpus(PATH_WIKI + inp, lemmatize=False, dictionary={})
+	wiki = WikiCorpus(PATH_WIKI + inp, lemmatize=False)
 	for text in wiki.get_texts():
 		output.write(space.join(text) + "\n")
 		i += 1
