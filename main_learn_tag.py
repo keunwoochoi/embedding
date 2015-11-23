@@ -109,9 +109,9 @@ def load_all_sets(label_matrix):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	train_inds = train_inds[0:30]
-	valid_inds = valid_inds[0:30]
-	test_inds  = test_inds [0:30]
+	train_inds = train_inds[0:200]
+	valid_inds = valid_inds[0:20]
+	test_inds  = test_inds [0:20]
 	
 	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
 	#prepare model
 	model_name = 'test_model_latent_10_tfidf'
-	
+
 	start = time.clock()
 	print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
  	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1])
@@ -174,7 +174,8 @@ if __name__ == "__main__":
 	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[history])
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 	model.evaluate(test_x, test_y, show_accuracy=True)
-	model.save_weights(PATH_MODEL + model_name + '_after_60.keras')
+	# model.save_weights(PATH_MODEL + model_name + '_after_60.keras') # fix h5py simbolic link error.
+	#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
 
 	print history.losses
 	print history.accs
