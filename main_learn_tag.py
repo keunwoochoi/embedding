@@ -132,15 +132,17 @@ if __name__ == "__main__":
 
 	# label matrix
 	dim_latent_feature = 10
-	try:
-		label_matrix = np.load(PATH_DATA + (FILE_DICT["mood_latent_matrix"] % dim_latent_feature )) #np matrix, 9320-by-100
-	except IOError:
+	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
+	label_matrix_filename = (FILE_DICT["mood_latent_tfidf_matrix"] % dim_latent_feature) # tfidf is better!
+	
+	if os.path.exists(PATH_DATA + label_matrix_filename):
+		label_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
+	else:
 		"print let's cook the mood-latent feature matrix"
 		import main_prepare
-		mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+		mood_tags_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
 		label_matrix = main_prepare.get_LDA(X=mood_tags_matrix, num_components=k, show_topics=False)
-		filename_out = FILE_DICT["mood_latent_matrix"] % k
-		np.save(PATH_DATA + filename_out, W)
+		np.save(PATH_DATA + label_matrix_filename, W)
 	print 'size of mood tag matrix:'
 	print label_matrix.shape
 
@@ -149,11 +151,11 @@ if __name__ == "__main__":
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	
 	#prepare model
-	model_name = 'test_model_latent_10'
+	model_name = 'test_model_latent_10_tfidf'
 	#prepare callbacks
 	history = my_keras_utils.History_Val()
 	#train!
-	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=40, show_accuracy=True, verbose=1, callbacks=[loss_history])
+	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=60, show_accuracy=True, verbose=1, callbacks=[loss_history])
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 	model.evaluate(test_x, test_y, show_accuracy=True)
 	
@@ -162,6 +164,6 @@ if __name__ == "__main__":
 	print history.val_losses
 	print history.val_accs
 
-	model.save_weights(PATH_MODEL + model_name + '_after_40.keras')
+	model.save_weights(PATH_MODEL + model_name + '_after_60.keras')
 
 
