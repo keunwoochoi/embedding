@@ -10,7 +10,7 @@ import keras
 import os
 import pdb
 import my_keras_models
-# import my_keras_utils
+import my_keras_utils
 import cPickle as cP
 import time
 #import my_plots
