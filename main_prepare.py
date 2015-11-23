@@ -240,11 +240,11 @@ def get_LDA(X, num_components=10, show_topics=True):
 
 def get_tfidf():
 	"""Compute tf-idf weighted matrix for song-moodtag matrix """
-	if os.path.exists(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix):
+	if os.path.exists(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"]):
 		print 'get_tfidf() returns pre-computed tf-idf matrix'
 		return np.load(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
 
-	mood_tags_matrix = FILE_DICT["mood_tags_matrix"] # linear tf value.. # 9380-by-100
+	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) # linear tf value.. # 9380-by-100
 	
 	mood_tags_matrix = np.log(1 + mood_tags_matrix) # log-weigted tf
 
@@ -258,6 +258,9 @@ def get_tfidf():
 	idf_matrix = np.tile(idf, (N_songs,1)) # idf matrix
 
 	mood_tags_tfidf_matrix = np.multiply(mood_tags_matrix, idf_matrix)
+	max_val = np.max(mood_tags_tfidf_matrix)
+	if max_cal != 0:
+		mood_tags_tfidf_matrix = mood_tags_tfidf_matrix / max_val
 	np.save(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
 	return mood_tags_tfidf_matrix
 
