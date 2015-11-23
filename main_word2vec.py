@@ -61,15 +61,16 @@ def prepare_wiki_text():
 def train_word2vec_model():
 
 	logger = init_logger()
+	dim = 200
 	inp = 'wiki.en.text'
-	outp = 'wiki.en.text.model'
-	outp2= 'wiki.en.text.vector'
+	outp = 'wiki.en.text.model_%d_dim' % dim
+	outp2= 'wiki.en.text.vector_%d_dim' % dim
 	if os.path.exists(PATH_WIKI + outp2):
 		print 'train_word2vec_model : already done. remove %s if you want to train it again.' % outp2
-		model = gensim.models.Word2Vec.load_word2vec_format(PATH_WIKI + outp2, binary=False) # takes long.
+		model = gensim.models.Word2Vec.load_word2vec_format(PATH_WIKI + outp2, binary=False) # takes few minutes.
 		return model
 
-	model = Word2Vec(LineSentence(PATH_WIKI + inp), size=200, window=5, min_count=10, workers=multiprocessing.cpu_count())
+	model = Word2Vec(LineSentence(PATH_WIKI + inp), size=dim, window=5, min_count=10, workers=multiprocessing.cpu_count())
 
 	# model.init_sims(replace=True) 
 	model.save(PATH_WIKI + outp)
@@ -110,7 +111,7 @@ if __name__ == "__main__":
 	embeddings = {}
 	for moodname in moodnames:
 		try:
-			embeddings[moodname]=model['moodname']
+			embeddings[moodname]=model[moodname]
 		except:
 			pass
 	cP.dump(embeddings, open(PATH_DATA + FILE_DICT["mood_embeddings"], 'w'))
