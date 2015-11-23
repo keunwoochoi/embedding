@@ -1,7 +1,7 @@
 """ To predict tags! using ilm10k data, stft or cqt representation, 
 """
-import matplotlib
-matplotlib.use('Agg')
+#import matplotlib
+#matplotlib.use('Agg')
 from constants import *
 from environments import *
 import numpy as np
@@ -13,7 +13,7 @@ import my_keras_models
 import my_keras_utils
 import cPickle as cP
 import time
-import my_plots
+#import my_plots
 
 class File_Manager():
 	def __init__(self):
@@ -137,7 +137,7 @@ def print_usage_and_die():
 if __name__ == "__main__":
 	if len(sys.argv) != 2:
 		print_usage_and_die
-		
+
 	nb_epoch = int(sys.argv[1])
 	# label matrix
 	dim_latent_feature = 10
@@ -173,8 +173,8 @@ if __name__ == "__main__":
 	print history.accs
 	print history.val_losses
 	print history.val_accs
-	figure_filepath = PATH_FIGURE + model_name + '_history.png'
-	export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
+	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
+	# my_plots.export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
 
 	
 
