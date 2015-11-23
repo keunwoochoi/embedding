@@ -259,7 +259,7 @@ def get_tfidf():
 
 	mood_tags_tfidf_matrix = np.multiply(mood_tags_matrix, idf_matrix)
 	max_val = np.max(mood_tags_tfidf_matrix)
-	if max_cal != 0:
+	if max_val != 0:
 		mood_tags_tfidf_matrix = mood_tags_tfidf_matrix / max_val
 	np.save(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
 	return mood_tags_tfidf_matrix
