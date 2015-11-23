@@ -238,13 +238,43 @@ def get_LDA(X, num_components=10, show_topics=True):
 		print '='*60
 	return W / np.max(W) # return normalised matrix, [0, 1]
 
+def get_tfidf():
+	"""Compute tf-idf weighted matrix for song-moodtag matrix """
+	if os.path.exists(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix):
+		print 'get_tfidf() returns pre-computed tf-idf matrix'
+		return np.load(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
+
+	mood_tags_matrix = FILE_DICT["mood_tags_matrix"] # linear tf value.. # 9380-by-100
+	
+	mood_tags_matrix = np.log(1 + mood_tags_matrix) # log-weigted tf
+
+	N_songs, N_tags = mood_tags_matrix.shape
+	N_documents_contains_tags = np.zeros((1, N_tags))
+
+	for tag_ind in xrange(N_tags):
+		N_documents_contains_tags[0, tag_ind] = np.count_nonzero(mood_tags_matrix[:, tag_ind])
+
+	idf = np.log(1 + N_songs / N_documents_contains_tags) # 1-by-N_tags idf for each.
+	idf_matrix = np.tile(idf, (N_songs,1)) # idf matrix
+
+	mood_tags_tfidf_matrix = np.multiply(mood_tags_matrix, idf_matrix)
+	np.save(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
+	return mood_tags_tfidf_matrix
+
 def print_usage():
 	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
 	print "number of index is based on 0"
 
 if __name__=="__main__":
+	
 	# preprocess() # read text file and generate dictionaries.
+	
 	# prepare_transforms(sys.argv)
+
+	# tf-idf
+	mood_tags_tfidf_matrix = get_tfidf()
+
+	# analysis.
 	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
 	for k in [2, 3, 5, 10, 20]:
 		get_LSI(X=mood_tags_matrix, num_components=k)
@@ -253,6 +283,10 @@ if __name__=="__main__":
 		W = get_LDA(X=mood_tags_matrix, num_components=k, show_topics=True)
 		filename_out = FILE_DICT["mood_latent_matrix"] % k
 		np.save(PATH_DATA + filename_out, W)
-		
+
+	for k in [2,3,5,10,20]:
+		W = get_LDA(X=mood_tags_tfidf_matrix, num_components=k, show_topics=True)
+		filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k
+		np.save(PATH_DATA + filename_out, W)
 
 
