@@ -1,5 +1,4 @@
-import keras
-
+import keras.callbacks
 
 class History(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""

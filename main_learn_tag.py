@@ -10,7 +10,7 @@ import keras
 import os
 import pdb
 import my_keras_models
-import my_keras_utils
+# import my_keras_utils
 import cPickle as cP
 import time
 #import my_plots
@@ -164,7 +164,7 @@ if __name__ == "__main__":
 	#prepare callbacks
 	history = my_keras_utils.History_Val()
 	#train!
-	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[loss_history])
+	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[history])
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 	model.evaluate(test_x, test_y, show_accuracy=True)
 	model.save_weights(PATH_MODEL + model_name + '_after_60.keras')
