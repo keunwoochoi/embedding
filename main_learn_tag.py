@@ -158,9 +158,16 @@ if __name__ == "__main__":
 	# load dataset
 	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix)
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
-	
+
 	#prepare model
 	model_name = 'test_model_latent_10_tfidf'
+	
+	start = time.clock()
+	print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
+ 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1])
+ 	until = time.clock()
+ 	print "--- keras model was built, took %d seconds ---" % (until-start)
+
 	#prepare callbacks
 	history = my_keras_utils.History_Val()
 	#train!
