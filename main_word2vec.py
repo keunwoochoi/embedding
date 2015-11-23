@@ -78,6 +78,52 @@ def train_word2vec_model():
 	print "Fin.; training word2vec model."
 	return model
 
+def get_embeddings(model):
+	"""input: word2vec model from gensim."""
+	if os.path.exists(PATH_DATA + FILE_DICT["mood_embeddings"]):
+		return = cP.load(open(PATH_DATA + FILE_DICT["mood_embeddings"]))
+
+	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
+	embeddings = {}
+	for moodname in moodnames:
+		try:
+			embeddings[moodname]=model[moodname]
+		except:
+			pass
+	cP.dump(embeddings, open(PATH_DATA + FILE_DICT["mood_embeddings"], 'w'))
+	return embeddings
+
+def reduce_dims(embeddings):
+	"""input: embeddings dictionary for mood.
+				key: moodname
+				value: 
+	return: dictionary in same size as input with reduced dims of vectors.
+	"""
+	width = embeddings[embeddings.keys()[0]].shape[0]
+	height = len(embeddings) # number of moods w/ vector representation
+	# load data
+	big_mtx = np.zeros((height, width))
+	row_ind = 0
+	keys = []
+	for key in embeddings:
+		keys.append(key)
+		big_mtx[row_ind,:] = embeddings[key]
+		row_ind += 1
+	# dim reduction
+	from sklearn.decomposition import PCA
+	pca = PCA(n_components=20)
+	# return
+	return pca.fit_transform(big_mtx)
+
+def cluster_embeddings(data_mtx, num_clusters):
+	"""
+
+	"""
+	from sklearn.cluster import KMeans
+	kmeans = KMeans(num_clusters)
+	return kmeans.fit_predict(data_mtx)
+
+
 if __name__ == "__main__":
 
 	'''
@@ -107,20 +153,13 @@ if __name__ == "__main__":
 	model = train_word2vec_model()
 
 	# [3] use the model to get each tag's embedding vector
-	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
-	embeddings = {}
-	for moodname in moodnames:
-		try:
-			embeddings[moodname]=model[moodname]
-		except:
-			pass
-	cP.dump(embeddings, open(PATH_DATA + FILE_DICT["mood_embeddings"], 'w'))
-
+	embeddings = get_embeddings(model) # 96-by-200. 96:#tags, 200: dimension of vector
 	
+	# [4] dim reduction of embeddings using PCA
+	reduced_embeddings = reduce_dims(embeddings) # 96-by-20
 
-
-
-
-
-
+	# [5] clustering with K-means
+	clusters_reduced_embeddings = cluster_embeddings(data_mtx=reduced_embeddings, num_clusters=10):
+	count_dict = dict((i, list(clusters_reduced_embeddings).count(i)) for i in clusters_reduced_embeddings)
+	
 

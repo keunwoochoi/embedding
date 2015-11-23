@@ -26,7 +26,7 @@ def build_convnet_model(height, width, num_labels):
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
 	num_stacks = [48]*num_layers
-	dropouts = [0] + [0]*(num_layers-1)
+	dropouts = [0] + [0.25]*(num_layers-1)
 
 	for i in xrange(num_layers):
 		if i == 0:
@@ -44,7 +44,7 @@ def build_convnet_model(height, width, num_labels):
 
 	model.add(Flatten())
 	model.add(Dense(128, init='normal', activation='relu'))
-	# model.add(Dropout(0.5))
+	model.add(Dropout(0.25))
 	model.add(Dense(128, init='normal', activation='relu'))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear'))
