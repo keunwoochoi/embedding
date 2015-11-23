@@ -1,5 +1,7 @@
 """ To predict tags! using ilm10k data, stft or cqt representation, 
 """
+import matplotlib
+matplotlib.use('Agg')
 from constants import *
 from environments import *
 import numpy as np
@@ -11,6 +13,7 @@ import my_keras_models
 import my_keras_utils
 import cPickle as cP
 import time
+import my_plots
 
 class File_Manager():
 	def __init__(self):
@@ -128,8 +131,14 @@ def load_all_sets(label_matrix):
 	print "--- keras model was built, took %d seconds ---" % (until-start)
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
+def print_usage_and_die():
+	print 'python filename num_of_epoch(integer)'
+	print 'ex) $ python main_learn_tag.py 40'
 if __name__ == "__main__":
-
+	if len(sys.argv) != 2:
+		print_usage_and_die
+		
+	nb_epoch = int(sys.argv[1])
 	# label matrix
 	dim_latent_feature = 10
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -155,15 +164,18 @@ if __name__ == "__main__":
 	#prepare callbacks
 	history = my_keras_utils.History_Val()
 	#train!
-	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=60, show_accuracy=True, verbose=1, callbacks=[loss_history])
+	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[loss_history])
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 	model.evaluate(test_x, test_y, show_accuracy=True)
-	
+	model.save_weights(PATH_MODEL + model_name + '_after_60.keras')
+
 	print history.losses
 	print history.accs
 	print history.val_losses
 	print history.val_accs
+	figure_filepath = PATH_FIGURE + model_name + '_history.png'
+	export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
 
-	model.save_weights(PATH_MODEL + model_name + '_after_60.keras')
+	
 
 
