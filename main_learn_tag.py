@@ -13,6 +13,7 @@ import my_keras_models
 import my_keras_utils
 import cPickle as cP
 import time
+import sys
 #import my_plots
 
 class File_Manager():
@@ -135,8 +136,10 @@ def load_all_sets(label_matrix):
 def print_usage_and_die():
 	print 'python filename num_of_epoch(integer)'
 	print 'ex) $ python main_learn_tag.py 40'
+	sys.exit()
+
 if __name__ == "__main__":
-	if len(sys.argv) != 2:
+	if len(sys.argv) < 2:
 		print_usage_and_die
 
 	nb_epoch = int(sys.argv[1])
