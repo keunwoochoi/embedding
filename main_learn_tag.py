@@ -109,7 +109,7 @@ def load_all_sets(label_matrix):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	train_inds = train_inds[0:240]
+	train_inds = train_inds[0:30]
 	valid_inds = valid_inds[0:30]
 	test_inds  = test_inds [0:30]
 	
