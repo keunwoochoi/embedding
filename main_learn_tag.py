@@ -109,11 +109,11 @@ def load_all_sets(label_matrix):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	num_songs_train = max(1000, len(train_inds))
+	num_songs_train = min(1000, len(train_inds))
 	train_inds = train_inds[0:num_songs_train]
 	valid_inds = valid_inds[0:60]
 	test_inds  = test_inds [0:60]
-	
+	print "--- Lets go! ---"
 	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
 	until = time.clock()
