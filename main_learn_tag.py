@@ -52,12 +52,13 @@ class File_Manager():
 
 		return rand_inds[0:num_train], rand_inds[num_train:num_train+num_valid], rand_inds[num_train+num_valid:]
 
-def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, width_image=256):
+def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, width_image=256, clips_per_song=0):
 	"""indices: list consists of integers between [0, 9320], 
 	usually it is one of train_inds, valid_inds, test_inds.
 	it returns data_x and data_y.
 	file_manager: an instance of File_Manager class.
 	type = 'stft' or 'cqt', determines which function file_manager should use
+	clips_per_song= integer, 0,1,2,...N: decide how many clips it will take from a song
 
 	"""
 	if type=='stft':
@@ -74,9 +75,12 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 	width = width_image
 	print '   -- check number of all data --'
 	num_data = 0
-	for i in indices:
-		tf_representation = file_manager.load_stft(i)
-		num_data += tf_representation.shape[1] / width
+	if clips_per_song==0:
+		for i in indices:
+			tf_representation = file_manager.load_stft(i)
+			num_data += tf_representation.shape[1] / width
+	else:
+		num_data = len(indices) * clips_per_song
 	print '   -- check:done, num_data is %d --' % num_data
 
 	ret_x = np.zeros((num_data, num_ch, len_freq, width)) # x : 4-dim matrix, num_data - num_channel - height - width
@@ -98,39 +102,42 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 		num_fr = tf_representation.shape[1]
 		tf_representation = tf_representation.transpose((3, 2, 0, 1)) # nothing, num_ch, len_freq, num_fr
 		#print 'transpose done'
-		for j_ind in xrange(num_fr/len_freq):
-			ret_x[data_ind, :, :, :] = tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]
-			ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
-			# print '    a loop done'
-			data_ind += 1
-		# print 'this loop done'
+		if clips_per_song == 0:
+			for j_ind in xrange(num_fr/len_freq):
+				ret_x[data_ind, :, :, :] = tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]
+				ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
+				data_ind += 1
+		else:
+			for j_in in xrange(clips_per_song):
+				frame_from = 43 + j_in*((num_fr-43*2)/clips_per_song) # remove 1-sec from both ends
+				frame_to = frame_from + width_image
+				ret_x[data_ind, :, :, :] = tf_representation[:,:, :, frame_from:frame_to]
+				ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
+				data_ind += 1
 	return ret_x, ret_y
 
-def load_all_sets(label_matrix):
+def load_all_sets(label_matrix, clips_per_song):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
 	num_songs_train = min(1000, len(train_inds))
 	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[0:60]
-	test_inds  = test_inds [0:60]
+	valid_inds = valid_inds[0:40]
+	test_inds  = test_inds [0:40]
 	print "--- Lets go! ---"
 	start = time.clock()
-	train_x, train_y = get_input_output_set(file_manager, train_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
+	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix, type='stft', max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.clock()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" % (len(train_x), len(train_inds), (until-start) )
 	start = time.clock()
-	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
+	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, truths=label_matrix, type='stft', max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.clock()
 	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" % (len(valid_x), len(valid_inds), (until-start) )
 	start = time.clock()
-	test_x,  test_y  = get_input_output_set(file_manager, test_inds, label_matrix, 'stft', max_len_freq=256, width_image=256)
+	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, type='stft', max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
-	start = time.clock()
-	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1])
-	until = time.clock()
-	print "--- keras model was built, took %d seconds ---" % (until-start)
+
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 def print_usage_and_die():
@@ -145,7 +152,7 @@ if __name__ == "__main__":
 	# nb_epoch = int(sys.argv[1])
 
 	nb_epoch = 200
-	
+	clips_per_song = 5
 	# label matrix
 	dim_latent_feature = 10
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -163,11 +170,12 @@ if __name__ == "__main__":
 	print label_matrix.shape
 
 	# load dataset
-	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix)
+	print "I'll take %d clips for each song." % clips_per_song
+	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song)
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
 	#prepare model
-	model_name = 'test_model_latent_10_tfidf'
+	model_name = 'test_model_latent_10_tfidf_4lyers'
 
 	start = time.clock()
 	print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
@@ -190,7 +198,4 @@ if __name__ == "__main__":
 	print history.val_accs
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	# my_plots.export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
-
-	
-
 

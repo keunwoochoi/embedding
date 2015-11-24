@@ -17,14 +17,11 @@ def build_convnet_model(height, width, num_labels):
 	from keras.optimizers import RMSprop, SGD
 	from keras.layers.normalization import LRN2D
 
-	final_height = height
-	final_width  = width
-
 	model = Sequential()
 
-	num_layers = 6
+	num_layers = 4
 	image_patch_sizes = [[3,3]]*num_layers
-	pool_sizes = [(2,2)]*num_layers
+	pool_sizes = [(3,3)]*(num_layers-2) + [(2,2)*2]
 	num_stacks = [48]*num_layers
 	dropouts = [0] + [0.25]*(num_layers-1)
 
@@ -35,8 +32,8 @@ def build_convnet_model(height, width, num_labels):
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
 		model.add(Activation('relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
-		final_height = final_height / pool_sizes[i][0]
-		final_width  = final_width  / pool_sizes[i][1]
+		# final_height = final_height / pool_sizes[i][0]
+		# final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
 			model.add(Dropout(dropouts[i]))
 		if i != 0:
@@ -46,9 +43,10 @@ def build_convnet_model(height, width, num_labels):
 	model.add(Dense(128, init='normal', activation='relu'))
 	model.add(Dropout(0.25))
 	model.add(Dense(128, init='normal', activation='relu'))
+	model.add(Dropout(0.25))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear'))
-	rmsprop = RMSprop(lr=5e-5, rho=0.9, epsilon=1e-6)
+	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_squared_error', optimizer=rmsprop)
 	print '--- complie fin. ---'
