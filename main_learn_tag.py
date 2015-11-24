@@ -120,7 +120,7 @@ def load_all_sets(label_matrix, clips_per_song):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	num_songs_train = min(1000, len(train_inds))
+	num_songs_train = min(3000, len(train_inds))
 	train_inds = train_inds[0:num_songs_train]
 	valid_inds = valid_inds[0:40]
 	test_inds  = test_inds [0:40]
