@@ -90,7 +90,7 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 		print "wront type in get_input_output_set, so failed to prepare data."
 
 	data_ind = 0
-	for i in indices:
+	for i in indices: # for every song
 		# print i
 		if type == 'stft':
 			tf_representation = np.abs(file_manager.load_stft(i))
@@ -104,14 +104,15 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 		#print 'transpose done'
 		if clips_per_song == 0:
 			for j_ind in xrange(num_fr/len_freq):
-				ret_x[data_ind, :, :, :] = tf_representation[:,:, :, j_ind*width: (j_ind+1)*width]
+				ret_x[data_ind, :, :, :] = tf_representation[:, :, :, j_ind*width: (j_ind+1)*width]
 				ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
 				data_ind += 1
 		else:
 			for j_in in xrange(clips_per_song):
-				frame_from = 43 + j_in*((num_fr-43*2)/clips_per_song) # remove 1-sec from both ends
+				frame_from = 43 + j_in*((num_fr-width_image-43*2)/clips_per_song) # remove 1-sec from both ends
 				frame_to = frame_from + width_image
-				ret_x[data_ind, :, :, :] = tf_representation[:,:, :, frame_from:frame_to]
+
+				ret_x[data_ind, :, :, :] = tf_representation[:, :, :, frame_from:frame_to]
 				ret_y[data_ind, :] = np.expand_dims(truths[i,:], axis=1).transpose()
 				data_ind += 1
 	return ret_x, ret_y
