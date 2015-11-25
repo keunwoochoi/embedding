@@ -119,7 +119,7 @@ def do_load_stft_cqt(track_id):
 		do_cqt(src, track_id)
 		do_stft(src, track_id)
 
-def prepare_stft(num_process, ind_process, task, isTest):
+def prepare_transforms_detail(num_process, ind_process, task, isTest):
 
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	num_tracks = len(track_ids)
@@ -160,9 +160,11 @@ def prepare_transforms(arguments):
 	"""Multiprocessing-based stft or cqt conversion for all audio files. 
 	"""
 	def print_usage():
-		print "filename number_core, [number_index], [STFT or CQT] [test or real]."
+		print "filename number_core, [number_index](0-7), [STFT or CQT] [test or real]."
 		print "number of index is based on 0"
 		print "This enables to run this code over many school servers."
+		print "ex) $ python main_prepare 12 0 cqt real     in server 1," 
+		print "ex) $ python main_prepare 12 1 cqt real     in server 2 "
 
 	if len(arguments) < 5:
 		print_usage()
@@ -176,9 +178,9 @@ def prepare_transforms(arguments):
 		print 'wrong argument, choose stft or cqt'
 		sys.exit()
 	if arguments[4] == 'test':
-		prepare_stft(num_process, ind_process, task, isTest=True)
+		prepare_transforms_detail(num_process, ind_process, task, isTest=True)
 	else:
-		prepare_stft(num_process, ind_process, task, isTest=False)
+		prepare_transforms_detail(num_process, ind_process, task, isTest=False)
 
 	print "#"*60
 	print "FIN - using %d processes, %d-ind batch." % (num_process, ind_process)
@@ -275,7 +277,7 @@ if __name__=="__main__":
 	
 	# preprocess() # read text file and generate dictionaries.
 	
-	# prepare_transforms(sys.argv)
+	prepare_transforms(sys.argv)
 
 	# tf-idf
 	# mood_tags_tfidf_matrix = get_tfidf()
@@ -306,20 +308,21 @@ if __name__=="__main__":
 				np.save(PATH_DATA + filename_out, W)
 
 	# structural segmentation
-	import msaf
-	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
-	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
+	if False and 'after understand input arguments of msaf':
+		import msaf
+		track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+		dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 
-	start = time.clock()
-	for track_id in track_ids[0:10]:
-		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save=False)
-	until = time.clock()
-	time_cnmf = until - start
-	start = time.clock()
-	for track_id in track_ids[0:10]:
-		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf", save=False)
-	until = time.clock()
-	time_scluster = until - start
-	print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
+		start = time.clock()
+		for track_id in track_ids[0:10]:
+			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save=False)
+		until = time.clock()
+		time_cnmf = until - start
+		start = time.clock()
+		for track_id in track_ids[0:10]:
+			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf", save=False)
+		until = time.clock()
+		time_scluster = until - start
+		print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
 
 
