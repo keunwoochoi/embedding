@@ -29,7 +29,7 @@ if isServer:
 	PATH_MODEL= PATH_WORK + 'keras_models/'
 
 	PATH_FIGURE = PATH_WORK + 'figures/'
-	
+	PATH_RESULTS= PATH_WORK + 'results/'
 
 	PATH_WIKI = "/import/c4dm-datasets/Wikipedia_dump/"
 

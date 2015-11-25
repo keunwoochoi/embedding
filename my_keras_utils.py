@@ -22,4 +22,5 @@ class History_Val(keras.callbacks.Callback):
 		self.losses.append(logs.get('loss'))
 		self.accs.append(logs.get('acc'))
 		self.val_losses.append(logs.get('val_loss'))
-		self.val_accs.append(logs.get('val_acc'))
+		self.val_accs.append(logs.get('val_accuracy'))
+

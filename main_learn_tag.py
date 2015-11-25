@@ -109,7 +109,7 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 				data_ind += 1
 		else:
 			for j_in in xrange(clips_per_song):
-				frame_from = 43 + j_in*((num_fr-width_image-43*2)/clips_per_song) # remove 1-sec from both ends
+				frame_from = 43*10 + j_in*((num_fr-width_image-43*10*2)/clips_per_song) # remove 1-sec from both ends
 				frame_to = frame_from + width_image
 
 				ret_x[data_ind, :, :, :] = tf_representation[:, :, :, frame_from:frame_to]
@@ -121,10 +121,10 @@ def load_all_sets(label_matrix, clips_per_song):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	num_songs_train = min(1000, len(train_inds))
+	num_songs_train = min(30, len(train_inds))
 	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[0:40]
-	test_inds  = test_inds [0:40]
+	valid_inds = valid_inds[0:30]
+	test_inds  = test_inds [0:30]
 	print "--- Lets go! ---"
 	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix, type='stft', max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
@@ -152,8 +152,8 @@ if __name__ == "__main__":
 
 	# nb_epoch = int(sys.argv[1])
 
-	nb_epoch = 200
-	clips_per_song = 5
+	nb_epoch = 1
+	clips_per_song = 3
 	# label matrix
 	dim_latent_feature = 10
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -186,17 +186,14 @@ if __name__ == "__main__":
 
 	#prepare callbacks
 	history = my_keras_utils.History_Val()
+	early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
 	#train!
-	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[history])
+	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping])
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 	model.evaluate(test_x, test_y, show_accuracy=True)
 	# model.save_weights(PATH_MODEL + model_name + '_after_60.keras') # fix h5py simbolic link error.
 	#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
-
-	print history.losses
-	print history.accs
-	print history.val_losses
-	print history.val_accs
+	cP.dump(history, open(PATH_RESULTS + model_name + results + '_' + str(np.random.randint(999999)) '_' + str(np.random.randint(999999))+ '_history.cP', 'w'))
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	# my_plots.export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
 
