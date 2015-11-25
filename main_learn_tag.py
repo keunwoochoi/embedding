@@ -196,7 +196,7 @@ if __name__ == "__main__":
 	#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
 	fileout = model_name + '_results_' + str(np.random.randint(999999)) + '_' + str(np.random.randint(999999))
 	
-	np.save(PATH_RESULTS + fileout + '_history.npy', history)
+	np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.accs, history.val_losses, history.val_accs])
 	np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
 	
