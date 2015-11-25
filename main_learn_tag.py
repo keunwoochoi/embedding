@@ -196,10 +196,12 @@ if __name__ == "__main__":
 	predicted = model.predict(train_x, batch_size=40)
 	# model.save_weights(PATH_MODEL + model_name + '_after_60.keras') # fix h5py simbolic link error.
 	#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
-	fileout = model_name + '_results_' + str(np.random.randint(999999)) + '_' + str(np.random.randint(999999))
+	fileout = model_name + '_results_' + str(np.random.randint(999999))
 	
 	np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.accs, history.val_losses, history.val_accs])
+	np.savetxt(PATH_RESULTS+fileout+ '_history.txt', (history.losses, history.accs, history.val_losses, history.val_accs))
 	np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
+	np.savetxt(PATH_RESULTS + fileout + '_loss_testset.txt', loss_testset)
 	np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
 	
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
