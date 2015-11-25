@@ -199,7 +199,9 @@ if __name__ == "__main__":
 	fileout = model_name + '_results_' + str(np.random.randint(999999))
 	
 	np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.accs, history.val_losses, history.val_accs])
-	np.savetxt(PATH_RESULTS+fileout+ '_history.txt', (history.losses, history.accs, history.val_losses, history.val_accs))
+	np.savetxt(PATH_RESULTS+fileout+ '_history_losses.txt', history.losses)
+	np.savetxt(PATH_RESULTS+fileout+ '_history_val_losses.txt', history.val_losses)
+	
 	np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 	np.savetxt(PATH_RESULTS + fileout + '_loss_testset.txt', loss_testset)
 	np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
