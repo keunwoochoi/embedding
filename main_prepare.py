@@ -312,12 +312,12 @@ if __name__=="__main__":
 
 	start = time.clock()
 	for track_id in track_ids[0:10]:
-		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf")
+		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save=False)
 	until = time.clock()
 	time_cnmf = until - start
 	start = time.clock()
 	for track_id in track_ids[0:10]:
-		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf")
+		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf", save=False)
 	until = time.clock()
 	time_scluster = until - start
 	print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
