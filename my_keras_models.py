@@ -6,7 +6,7 @@ import keras
 import os
 import pdb
 
-def build_convnet_model(height, width, num_labels):
+def build_convnet_model(height, width, num_labels, num_layers=4):
 	""" It builds a convnet model using keras and returns it.
 	input: height: height of input image (=len_frequency)
 	       width:  width of input image (=len_frame)
@@ -19,9 +19,8 @@ def build_convnet_model(height, width, num_labels):
 
 	model = Sequential()
 
-	num_layers = 4
 	image_patch_sizes = [[3,3]]*num_layers
-	pool_sizes = [(3,3)]*(num_layers-2) + [(2,2)]*2
+	pool_sizes = [(3,3)]*(2) + [(2,2)]*(num_layers-2)
 	num_stacks = [48]*num_layers
 	dropouts = [0] + [0.25]*(num_layers-1)
 
@@ -40,9 +39,7 @@ def build_convnet_model(height, width, num_labels):
 			model.add(LRN2D())
 
 	model.add(Flatten())
-	model.add(Dense(128, init='normal', activation='relu'))
-	model.add(Dropout(0.25))
-	model.add(Dense(128, init='normal', activation='relu'))
+	model.add(Dense(1024, init='normal', activation='relu'))
 	model.add(Dropout(0.25))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear'))

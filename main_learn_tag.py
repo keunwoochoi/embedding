@@ -117,11 +117,11 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 				data_ind += 1
 	return ret_x, ret_y
 
-def load_all_sets(label_matrix, clips_per_song):
+def load_all_sets(label_matrix, clips_per_song, num_train_songs=100):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	num_songs_train = min(30, len(train_inds))
+	num_songs_train = min(num_train_songs, len(train_inds))
 	train_inds = train_inds[0:num_songs_train]
 	valid_inds = valid_inds[0:30]
 	test_inds  = test_inds [0:30]
@@ -142,17 +142,19 @@ def load_all_sets(label_matrix, clips_per_song):
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 def print_usage_and_die():
-	print 'python filename num_of_epoch(integer)'
-	print 'ex) $ python main_learn_tag.py 40'
+	print 'python filename num_of_epoch(int) num_of_train_song(int) num_of_layers'
+	print 'ex) $ python main_learn_tag.py 40 100 4'
 	sys.exit()
 
 if __name__ == "__main__":
-	# if len(sys.argv) < 2:
-	# 	print_usage_and_die
+	
+	if len(sys.argv) < 3:
+		print_usage_and_die
 
-	# nb_epoch = int(sys.argv[1])
-
-	nb_epoch = 1
+	nb_epoch = int(sys.argv[1])
+	num_train_songs = int(sys.argv[2])
+	num_layers = int(sys.argv[3])
+	# nb_epoch = 1
 	clips_per_song = 3
 	# label matrix
 	dim_latent_feature = 10
@@ -172,15 +174,15 @@ if __name__ == "__main__":
 
 	# load dataset
 	print "I'll take %d clips for each song." % clips_per_song
-	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song)
+	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song, num_train_songs=num_train_songs)
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
 	#prepare model
-	model_name = 'test_model_latent_10_tfidf_4lyers'
+	model_name = 'test_model_latent_10_tfidf_'+sys.argv[1] +'_' + sys.argv[2] + '_' + sys.argv[3]
 
 	start = time.clock()
 	print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
- 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1])
+ 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
  	until = time.clock()
  	print "--- keras model was built, took %d seconds ---" % (until-start)
 
