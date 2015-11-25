@@ -190,10 +190,11 @@ if __name__ == "__main__":
 	#train!
 	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping])
 	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
-	model.evaluate(test_x, test_y, show_accuracy=True)
+	loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
+	predicted = model.predict(train_x, batch_size=40)
 	# model.save_weights(PATH_MODEL + model_name + '_after_60.keras') # fix h5py simbolic link error.
 	#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
-	cP.dump(history, open(PATH_RESULTS + model_name + results + '_' + str(np.random.randint(999999)) '_' + str(np.random.randint(999999))+ '_history.cP', 'w'))
+	cP.dump([history, loss_testset, predicted, train_y], open(PATH_RESULTS + model_name + results + '_' + str(np.random.randint(999999)) '_' + str(np.random.randint(999999))+ '_history.cP', 'w'))
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	# my_plots.export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
 
