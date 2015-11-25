@@ -153,9 +153,9 @@ if __name__ == "__main__":
 
 	nb_epoch = int(sys.argv[1])
 	num_train_songs = int(sys.argv[2])
-	num_layers = [int(sys.argv[i]) for i in xrange(3, len(sys.argv))]
+	num_layers_list = [int(sys.argv[i]) for i in xrange(3, len(sys.argv))]
 	print '--- num_layers are ---'
-	print num_layers
+	print num_layers_list
 	# nb_epoch = 1
 	clips_per_song = 3
 	# label matrix
@@ -179,30 +179,31 @@ if __name__ == "__main__":
 	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song, num_train_songs=num_train_songs)
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
-	#prepare model
-	model_name = 'test_model_latent_10_tfidf_'+sys.argv[1] +'_' + sys.argv[2] + '_' + sys.argv[3]
+	for num_layers in num_layers_list:
+		#prepare model
+		model_name = 'test_model_latent_10_tfidf_'+sys.argv[1] +'_' + sys.argv[2] + '_' + str(num_layers)
 
-	start = time.clock()
-	print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
- 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
- 	until = time.clock()
- 	print "--- keras model was built, took %d seconds ---" % (until-start)
+		start = time.clock()
+		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
+	 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 	until = time.clock()
+	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
-	#prepare callbacks
-	history = my_keras_utils.History_Val()
-	early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
-	#train!
-	model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping])
-	# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
-	loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
-	predicted = model.predict(train_x, batch_size=40)
-	# model.save_weights(PATH_MODEL + model_name + '_after_60.keras') # fix h5py simbolic link error.
-	#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
-	fileout = model_name + '_results_' + str(np.random.randint(999999))
-	
-	np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.accs, history.val_losses, history.val_accs])
-	np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
-	np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
+		#prepare callbacks
+		history = my_keras_utils.History_Val()
+		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
+		#train!
+		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping])
+		# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
+		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
+		predicted = model.predict(train_x, batch_size=40)
+		# model.save_weights(PATH_MODEL + model_name + '_after_60.keras') # fix h5py simbolic link error.
+		#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
+		fileout = model_name + '_results_' + str(np.random.randint(999999))
+		
+		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.accs, history.val_losses, history.val_accs])
+		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
+		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
 	
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	# my_plots.export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
