@@ -159,6 +159,10 @@ def prepare_stft(num_process, ind_process, task, isTest):
 def prepare_transforms(arguments):
 	"""Multiprocessing-based stft or cqt conversion for all audio files. 
 	"""
+	def print_usage():
+	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
+	print "number of index is based on 0"
+
 	if len(arguments) < 5:
 		print_usage()
 		sys.exit()
@@ -217,6 +221,7 @@ def get_LDA(X, num_components=10, show_topics=True):
 	It is also good to have non-negative elements, straight-forward for both W and H.
 
 	"""
+
 	from sklearn.decomposition import NMF
 	if X == None:
 		print 'X is omitted, so just assume it is the mood tag mtx w audio.'
@@ -264,9 +269,6 @@ def get_tfidf():
 	np.save(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
 	return mood_tags_tfidf_matrix
 
-def print_usage():
-	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
-	print "number of index is based on 0"
 
 if __name__=="__main__":
 	
@@ -275,21 +277,45 @@ if __name__=="__main__":
 	# prepare_transforms(sys.argv)
 
 	# tf-idf
-	mood_tags_tfidf_matrix = get_tfidf()
+	# mood_tags_tfidf_matrix = get_tfidf()
 
-	# analysis.
-	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
-	for k in [2, 3, 5, 10, 20]:
-		get_LSI(X=mood_tags_matrix, num_components=k)
+	# [0] analysis.
+	# mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	if False and "it is already done.":
+		for k in [2, 3, 5, 10, 20]:
+	 		get_LSI(X=mood_tags_matrix, num_components=k)
 
-	for k in [2,3,5,10,20]:
-		W = get_LDA(X=mood_tags_matrix, num_components=k, show_topics=True)
-		filename_out = FILE_DICT["mood_latent_matrix"] % k
-		np.save(PATH_DATA + filename_out, W)
+	# [1] analysis - LSI
+	if False and "it is already done.":
+		for k in [2,3,5,10,20]:
+			filename_out = FILE_DICT["mood_latent_matrix"] % k
+			if os.path.exists(PATH_DATA + filename_out):
+				W = np.load(PATH_DATA + filename_out)
+			else:
+				W = get_LDA(X=mood_tags_matrix, num_components=k, show_topics=True)
+				np.save(PATH_DATA + filename_out, W)
+	# analysis - LDA 
+	if False and "it is already done.":
+		for k in [2,3,5,10,20]:
+			filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k
+			if os.path.exists(PATH_DATA + filename_out):
+				W = np.load(PATH_DATA + filename_out)
+			else:
+				W = get_LDA(X=mood_tags_tfidf_matrix, num_components=k, show_topics=True)
+				np.save(PATH_DATA + filename_out, W)
 
-	for k in [2,3,5,10,20]:
-		W = get_LDA(X=mood_tags_tfidf_matrix, num_components=k, show_topics=True)
-		filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k
-		np.save(PATH_DATA + filename_out, W)
+	# structural segmentation
+	import msaf
+	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
+	start = time.clock()
+	boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf")
+	until = time.clock()
+	time_cnmf = until - start
+	start = time.clock()
+	boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf")
+	until = time.clock()
+	time_scluster = until - start
+	print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
 
 
