@@ -20,7 +20,11 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	model = Sequential()
 
 	image_patch_sizes = [[3,3]]*num_layers
-	pool_sizes = [(3,3)]*(2) + [(2,2)]*(num_layers-2)
+	if num_layers <= 5
+		pool_sizes = [(3,3)]*(2) + [(2,2)]*(num_layers-2)
+	else:
+		pool_sizes = [(2,2)]*num_layers
+
 	num_stacks = [48]*num_layers
 	dropouts = [0] + [0.25]*(num_layers-1)
 
