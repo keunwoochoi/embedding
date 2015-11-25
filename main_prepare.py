@@ -160,8 +160,9 @@ def prepare_transforms(arguments):
 	"""Multiprocessing-based stft or cqt conversion for all audio files. 
 	"""
 	def print_usage():
-	print "filename number_core, [number_index], [STFT or CQT] [test or real]."
-	print "number of index is based on 0"
+		print "filename number_core, [number_index], [STFT or CQT] [test or real]."
+		print "number of index is based on 0"
+		print "This enables to run this code over many school servers."
 
 	if len(arguments) < 5:
 		print_usage()
