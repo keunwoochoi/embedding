@@ -148,8 +148,8 @@ def print_usage_and_die():
 
 if __name__ == "__main__":
 	
-	if len(sys.argv) < 3:
-		print_usage_and_die
+	if len(sys.argv) < 4:
+		print_usage_and_die()
 
 	nb_epoch = int(sys.argv[1])
 	num_train_songs = int(sys.argv[2])
