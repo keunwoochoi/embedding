@@ -162,4 +162,8 @@ if __name__ == "__main__":
 	clusters_reduced_embeddings = cluster_embeddings(data_mtx=reduced_embeddings, num_clusters=10):
 	count_dict = dict((i, list(clusters_reduced_embeddings).count(i)) for i in clusters_reduced_embeddings)
 	
+	
 
+
+
+	

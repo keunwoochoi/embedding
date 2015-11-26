@@ -52,7 +52,7 @@ class File_Manager():
 
 		return rand_inds[0:num_train], rand_inds[num_train:num_train+num_valid], rand_inds[num_train+num_valid:]
 
-def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, width_image=256, clips_per_song=0):
+def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=256, width_image=256, clips_per_song=0):
 	"""indices: list consists of integers between [0, 9320], 
 	usually it is one of train_inds, valid_inds, test_inds.
 	it returns data_x and data_y.
@@ -61,15 +61,18 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 	clips_per_song= integer, 0,1,2,...N: decide how many clips it will take from a song
 
 	"""
-	if type=='stft':
+	# first, set the numbers
+	if tf_type=='stft':
 		tf_representation = file_manager.load_stft(0)
 		len_freq, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 
-	elif type=='cqt':
+	elif tf_type=='cqt':
 		tf_representation = file_manager.load_cqt(0)
 		len_freq, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 	if len_freq > max_len_freq:
 		len_freq = max_len_freq
+	else:
+		print 'You set max_len_freq as %d, but it doesnt have that many frequency bins, so it will use all it has, which is %d.' % (max_len_freq, len_freq)
 
 	num_labels = truths.shape[1]
 	width = width_image
@@ -77,7 +80,10 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 	num_data = 0
 	if clips_per_song==0:
 		for i in indices:
-			tf_representation = file_manager.load_stft(i)
+			if tf_type=='stft':
+				tf_representation = file_manager.load_stft(i)
+			elif tf_type=='cqt':
+				tf_representation = file_manager.load_cqt(i)
 			num_data += tf_representation.shape[1] / width
 	else:
 		num_data = len(indices) * clips_per_song
@@ -86,15 +92,15 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 	ret_x = np.zeros((num_data, num_ch, len_freq, width)) # x : 4-dim matrix, num_data - num_channel - height - width
 	ret_y = np.zeros((num_data, num_labels)) # y : 2-dum matrix, num_data - labels (or whatever)
 
-	if type not in ['stft', 'cqt']:
+	if tf_type not in ['stft', 'cqt']:
 		print "wront type in get_input_output_set, so failed to prepare data."
 
 	data_ind = 0
 	for i in indices: # for every song
 		# print i
-		if type == 'stft':
+		if tf_type == 'stft':
 			tf_representation = np.abs(file_manager.load_stft(i))
-		elif type=='cqt':
+		elif tf_type=='cqt':
 			tf_representation = file_manager.load_cqt(i)
 
 		tf_representation = np.expand_dims(tf_representation[:len_freq, :, :], axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
@@ -117,7 +123,14 @@ def get_input_output_set(file_manager, indices, truths, type, max_len_freq=256, 
 				data_ind += 1
 	return ret_x, ret_y
 
-def load_all_sets(label_matrix, clips_per_song, num_train_songs=100):
+def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=None):
+	if not tf_type:
+		print '--- tf_type not specified, so stft is assumed. ---'
+		tf_type = 'stft'
+	if tf_type not in ['stft', 'cqt']:
+		print '--- wrong tf_type:%s, it should be either stft or cqt---' % tf_type
+		return
+
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
@@ -128,33 +141,34 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100):
 	test_inds  = test_inds [0:30]
 	print "--- Lets go! ---"
 	start = time.clock()
-	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix, type='stft', max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
+	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.clock()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" % (len(train_x), len(train_inds), (until-start) )
 	start = time.clock()
-	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, truths=label_matrix, type='stft', max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
+	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.clock()
 	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" % (len(valid_x), len(valid_inds), (until-start) )
 	start = time.clock()
-	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, type='stft', max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
+	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.clock()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 def print_usage_and_die():
-	print 'python filename num_of_epoch(int) num_of_train_song(int) num_of_layers'
-	print 'ex) $ python main_learn_tag.py 40 100 4'
+	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type num_of_layers'
+	print 'ex) $ python main_learn_tag.py 40 100 cqt 4 5 6'
 	sys.exit()
 
 if __name__ == "__main__":
 	
-	if len(sys.argv) < 4:
+	if len(sys.argv) < 5:
 		print_usage_and_die()
 
 	nb_epoch = int(sys.argv[1])
 	num_train_songs = int(sys.argv[2])
-	num_layers_list = [int(sys.argv[i]) for i in xrange(3, len(sys.argv))]
+	tf_type = sys.argv[3]
+	num_layers_list = [int(sys.argv[i]) for i in xrange(4, len(sys.argv))]
 	print '--- num_layers are ---'
 	print num_layers_list
 	# nb_epoch = 1
@@ -177,16 +191,19 @@ if __name__ == "__main__":
 
 	# load dataset
 	print "I'll take %d clips for each song." % clips_per_song
-	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song, num_train_songs=num_train_songs)
+	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song, num_train_songs=num_train_songs, tf_type=tf_type)
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
 	for num_layers in num_layers_list:
 		#prepare model
-		model_name = 'test_model_latent_10_tfidf_'+sys.argv[1] +'_' + sys.argv[2] + '_' + str(num_layers)
+		model_name = 'test_model_latent_10_tfidf_'+sys.argv[1] +'_' + sys.argv[2] + '_' + sys.argv[3] + '_' + str(num_layers)
 
 		start = time.clock()
 		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
-	 	model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 	if tf_type == 'stft':
+	 		model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 	else:
+	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	until = time.clock()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
