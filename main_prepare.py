@@ -125,7 +125,7 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 	num_tracks = len(track_ids)
 	num_of_server_used = 6
 	num_subsets = num_tracks/num_of_server_used
-	print "prepare stft; dictionaries loaded"
+	print "prepare_transforms_detail(); dictionaries loaded"
 	
 	if ind_process == -1:
 		print "ind_process == -1, so will do all!"
@@ -278,7 +278,8 @@ if __name__=="__main__":
 	
 	# preprocess() # read text file and generate dictionaries.
 	
-	prepare_transforms(sys.argv)
+	if False and "if in a case I'd like to convert more songs or other transformations":
+		prepare_transforms(sys.argv)
 
 	# tf-idf
 	# mood_tags_tfidf_matrix = get_tfidf()
@@ -309,19 +310,19 @@ if __name__=="__main__":
 				np.save(PATH_DATA + filename_out, W)
 
 	# structural segmentation
-	if False and 'after understand input arguments of msaf':
+	if False or 'after understand input arguments of msaf':
 		import msaf
 		track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 		dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 
 		start = time.clock()
 		for track_id in track_ids[0:10]:
-			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save=False)
+			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save_json=False)
 		until = time.clock()
 		time_cnmf = until - start
 		start = time.clock()
 		for track_id in track_ids[0:10]:
-			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf", save=False)
+			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf", save_json=False)
 		until = time.clock()
 		time_scluster = until - start
 		print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
