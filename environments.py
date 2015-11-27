@@ -27,6 +27,7 @@ if isServer:
 	PATH_WORK = PATH_HOME + "embedding/"
 	PATH_DATA = PATH_WORK + "data/"
 	PATH_MODEL= PATH_WORK + 'keras_models/'
+	PATH_SENTI= PATH_WORK + "sentiment/" 
 
 	PATH_FIGURE = PATH_WORK + 'figures/'
 	PATH_RESULTS= PATH_WORK + 'results/'
