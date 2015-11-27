@@ -93,7 +93,7 @@ if __name__=='__main__':
 		for ind, topic_word in enumerate(topic_words): # topic_word is a 'pivot' word
 			topic_word_index = mood_sentiment.moodnames.index(topic_word)
 			if topic_word in mood_sentiment.moodnames:
-				words_in_order = mood_sentiment.get_nearest_by_moodname(topic_word)
+				words_in_order = mood_sentiment.get_nearest_by_moodname(topic_word, num_word=-1)
 				the_other_topics = [ele for ele in topic_words if ele != topic_word and ele in mood_sentiment.moodnames]
 				for another in the_other_topics:
 					ranking.append(words_in_order.index(another))
