@@ -237,14 +237,16 @@ def get_LDA(X, num_components=10, show_topics=True):
 	print '='*60
 	print "NMF done with k=%d, average error:%2.4f" % (num_components, nmf.reconstruction_err_/(X.shape[0]*X.shape[1]))
 
-	if show_topics:
-
-		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
-		for topic_index in range( H.shape[0] ):
-			top_indices = np.argsort( H[topic_index,:] )[::-1][0:10]
-			term_ranking = [moodnames[i] for i in top_indices]
+	term_rankings = []
+	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
+	for topic_index in range( H.shape[0] ):
+		top_indices = np.argsort( H[topic_index,:] )[::-1][0:10]
+		term_ranking = [moodnames[i] for i in top_indices]
+		term_rankings.append(term_ranking)
+		if show_topics:	
 			print "Topic %d: %s" % ( topic_index, ", ".join( term_ranking ) )
-		print '='*60
+	print '='*60
+	cP.dump(term_rankings, open(PATH_DATA + (FILE_DICT["mood_topics_strings"] % num_components), 'w'))
 	return W / np.max(W) # return normalised matrix, [0, 1]
 
 def get_tfidf():
@@ -291,7 +293,7 @@ if __name__=="__main__":
 	 		get_LSI(X=mood_tags_matrix, num_components=k)
 
 	# [1] analysis - LSI
-	if False and "it is already done.":
+	if False or "it is already done.":
 		for k in [2,3,5,10,20]:
 			filename_out = FILE_DICT["mood_latent_matrix"] % k
 			if os.path.exists(PATH_DATA + filename_out):
