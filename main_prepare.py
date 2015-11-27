@@ -231,7 +231,7 @@ def get_LDA(X, num_components=10, show_topics=True):
 		print 'X is omitted, so just assume it is the mood tag mtx w audio.'
 		X = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
 
-	nmf = NMF(init='nndsvd', n_components=num_components, max_iter=200)
+	nmf = NMF(init='nndsvd', n_components=num_components, max_iter=400) # 400 is too large, but it doesn't hurt.
 	W = nmf.fit_transform(X)
 	H = nmf.components_
 	print '='*60
@@ -273,6 +273,7 @@ def get_tfidf():
 	if max_val != 0:
 		mood_tags_tfidf_matrix = mood_tags_tfidf_matrix / max_val
 	np.save(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
+
 	return mood_tags_tfidf_matrix
 
 
@@ -302,13 +303,16 @@ if __name__=="__main__":
 				W = get_LSI(X=mood_tags_matrix, num_components=k, show_topics=True)
 				np.save(PATH_DATA + filename_out, W)
 	# analysis - LDA 
-	if False and "it is already done.":
+	if False or "it is already done.":
 		for k in xrange(2,21):
 			filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k
 			if os.path.exists(PATH_DATA + filename_out):
 				W = np.load(PATH_DATA + filename_out)
 			else:
 				W = get_LDA(X=mood_tags_tfidf_matrix, num_components=k, show_topics=True)
+				for ind, row in enumerate(W):
+					W[ind,:] = W[ind,:]/np.linalg.norm(W[ind,:])
+
 				np.save(PATH_DATA + filename_out, W)
 
 	# structural segmentation

@@ -17,3 +17,4 @@ model.add(Activation('softmax'))
 
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd)
+model.save_weights('temp_keras.model', overwrite=True)

@@ -15,6 +15,7 @@ FILE_DICT["mood_latent_matrix"] = "mood_latent_matrix_w_audio_%d.npy"
 
 FILE_DICT["mood_tags_tfidf_matrix"]   = "mood_tags_matrix_tfidf_w_audio.npy" # matrix, 9320-by-100
 FILE_DICT["mood_latent_tfidf_matrix"] = "mood_latent_tfidf_matrix_w_audio_%d.npy"
+FILE_DICT["mood_latent_tfidf_matrix_nor"] = "mood_latent_tfidf_matrix_w_audio_%d_normalised.npy" # same as above but normalised to be a unit length.
 FILE_DICT["mood_topics_strings"] = "mood_%d_topics.cP" # list of list of topic words.
 
 FILE_DICT["mood_embeddings"] = "moodname_embeddings.cP" # dictionary
