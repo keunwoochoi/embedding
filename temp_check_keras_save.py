@@ -16,4 +16,4 @@ model.add(Dense(2, init='uniform'))
 model.add(Activation('softmax'))
 
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='mean_squared_error', optimizer=sgd)
+model.compile(loss='categorical_crossentropy', optimizer=sgd)
