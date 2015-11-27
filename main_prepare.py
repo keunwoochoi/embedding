@@ -287,7 +287,7 @@ if __name__=="__main__":
 	# mood_tags_tfidf_matrix = get_tfidf()
 
 	# [0] analysis.
-	# mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
 	if False and "it is already done.":
 		for k in [2, 3, 5, 10, 20]:
 	 		get_LSI(X=mood_tags_matrix, num_components=k)
