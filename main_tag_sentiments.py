@@ -102,7 +102,7 @@ if __name__=='__main__':
 			average_rankings_overall.append(0)
 		else:
 			average_rankings_overall.append(sum(ranking) / float(len(ranking)))
-			print "%d word pairs (%d words), average is %f" % (len(ranking), len(topic_words) sum(ranking) / float(len(ranking)))
+			print "%d word pairs (%d words), average is %f" % (len(ranking), len(topic_words), sum(ranking) / float(len(ranking)))
 
 	print average_rankings_overall
 					
