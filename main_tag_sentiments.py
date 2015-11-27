@@ -9,7 +9,7 @@ import os
 import cPickle as cP
 
 class Mood_Sentiment():
-	def __init__():
+	def __init__(self):
 		self.moodnames = [] # generic python list
 		self.vads_list = None # will be a numpy array. 
 		self.vads_dict = {} # python dictionary 
