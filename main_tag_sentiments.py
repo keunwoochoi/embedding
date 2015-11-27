@@ -6,6 +6,7 @@ from constants import *
 from environments import *
 import numpy as np
 import os
+import cPickle as cP
 
 class Mood_Sentiment():
 	def __init__():
@@ -74,7 +75,7 @@ if __name__=='__main__':
 	
 	for moodname in mood_sentiment.moodnames:
 		print mood_sentiment.get_nearest_by_moodname(mooename, num_word=10)
-	
+
 
 
 
