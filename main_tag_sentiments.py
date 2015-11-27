@@ -47,7 +47,6 @@ class Mood_Sentiment():
 		return words_to_return
 
 
-
 if __name__=='__main__':
 
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
@@ -57,7 +56,7 @@ if __name__=='__main__':
 	# Build a dictionary using csv file.
 	print '--- load a big dictionary ---'
 	if os.path.exists(PATH_DATA + FILE_DICT["sentiment_big_dict"]):
-		vad_dict = np.load(PATH_DATA + FILE_DICT["sentiment_big_dict"])
+		vad_dict = cP.load(open(PATH_DATA + FILE_DICT["sentiment_big_dict"], 'r'))
 	else:
 		ugent_csv_file = "Ratings_Warriner_et_al.csv"
 		vad_dict = {}
@@ -67,7 +66,7 @@ if __name__=='__main__':
 				line_split = line.split(',') # 0:index, 1:word, 2:valence mean, 5:arousal mean, 8:dominance mean
 				vad_dict[line_split[1]] = np.array([line_split[2], line_split[5], line_split[8]])
 
-		np.save(PATH_DATA + FILE_DICT["sentiment_big_dict"], vad_dict)
+		cP.dump(vad_dict, open(PATH_DATA + FILE_DICT["sentiment_big_dict"], 'w'))
 
 	print '--- small dictionary+etc for mood tags only'
 	mood_sentiment = Mood_Sentiment()
