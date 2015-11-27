@@ -17,5 +17,5 @@ FILE_DICT["mood_tags_tfidf_matrix"]   = "mood_tags_matrix_tfidf_w_audio.npy" # m
 FILE_DICT["mood_latent_tfidf_matrix"] = "mood_latent_tfidf_matrix_w_audio_%d.npy"
 
 FILE_DICT["mood_embeddings"] = "moodname_embeddings.cP" # dictionary
-FILE_DICT["sentiment_big_dict"] = "sentiment_dictionary.npy" # big one
+FILE_DICT["sentiment_big_dict"] = "sentiment_dictionary.cP" # big one
 FILE_DICT["mood_sentiment"] = "sentiment_mood_dictionary.cP" # Mood_Sentiment class, only has my mood lists <100
