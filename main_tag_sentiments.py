@@ -54,8 +54,8 @@ if __name__=='__main__':
 	#1,aardvark,6.26,2.21,19,2.41,1.4,22,4.27,1.75,15,6.18,1.66,11,6,2.94,7,3,1.41,8,2.07,1.33,14,4,1.58,5,4.4,1.9,10,6.12,2.03,8,6.36,2.42,11,2.56,1.74,9$
 	
 	# Build a dictionary using csv file.
-	if os.path.exists(PATH_DATA + FILE_DICT["sentiment_dict"]):
-		vad_dict = np.load(PATH_DATA + FILE_DICT["sentiment_dict"])
+	if os.path.exists(PATH_DATA + FILE_DICT["sentiment_big_dict"]):
+		vad_dict = np.load(PATH_DATA + FILE_DICT["sentiment_big_dict"])
 	else:
 		ugent_csv_file = "Ratings_Warriner_et_al.csv"
 		vad_dict = {}
@@ -65,14 +65,15 @@ if __name__=='__main__':
 				line_split = line.split(',') # 0:index, 1:word, 2:valence mean, 5:arousal mean, 8:dominance mean
 				vad_dict[line_split[1]] = np.array([line_split[2], line_split[5], line_split[8]])
 
-		np.save(PATH_DATA + FILE_DICT["sentiment_dict"])
+		np.save(PATH_DATA + FILE_DICT["sentiment_big_dict"], vad_dict)
 
 	mood_sentiment = Mood_Sentiment()
 	for moodname in moodnames:
 		if moodname in vad_dict:
 			mood_sentiment.add_item(moodname, vad_dict[moodname])
 	mood_sentiment.compute_dist() # distances for all pairs
-	
+	cP.dump(mood_sentiment, open(FILE_DICT["mood_sentiment"], 'w'))
+
 	for moodname in mood_sentiment.moodnames:
 		print mood_sentiment.get_nearest_by_moodname(mooename, num_word=10)
 
