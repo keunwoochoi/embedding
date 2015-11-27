@@ -108,7 +108,7 @@ if __name__=='__main__':
 			average_rankings_overall.append(sum(ranking) / float(len(ranking)))
 			print "%d word pairs (%d words), average is %f" % (len(ranking), len(topic_words), sum(ranking) / float(len(ranking)))
 
-		print "For pairs with first word, average is %f" % sum(ranking_first_word) / float(len(ranking_first_word)) 
+		print "For pairs with first word, average is %f" % (sum(ranking_first_word) / float(len(ranking_first_word)) )
 
 	print average_rankings_overall
 					
