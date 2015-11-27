@@ -87,10 +87,12 @@ if __name__=='__main__':
 	LDA_topics = cP.load(open(PATH_DATA + (FILE_DICT["mood_topics_strings"] % num_components), 'r'))
 
 	average_rankings_overall = []
-
+	average_rankings_of_first_words = []
 	for topic_words in LDA_topics:
 		topic_words = [ele for ele in topic_words if ele in mood_sentiment.moodnames]
+		#of all.
 		ranking = []
+		ranking_first_word = []
 		for ind, topic_word in enumerate(topic_words): # topic_word is a 'pivot' word
 			topic_word_index = mood_sentiment.moodnames.index(topic_word)
 			
@@ -98,11 +100,15 @@ if __name__=='__main__':
 			the_other_topics = topic_words[:ind] + topic_words[ind+1:]
 			for another in the_other_topics:
 				ranking.append(words_in_order.index(another))
+				if ind == 0:
+					ranking_first_word.append(words_in_order.index(another))
 		if len(ranking) == 0:
 			average_rankings_overall.append(0)
 		else:
 			average_rankings_overall.append(sum(ranking) / float(len(ranking)))
 			print "%d word pairs (%d words), average is %f" % (len(ranking), len(topic_words), sum(ranking) / float(len(ranking)))
+
+		print "For pairs with first word, average is %f" % sum(ranking_first_word) / float(len(ranking_first_word)) 
 
 	print average_rankings_overall
 					
