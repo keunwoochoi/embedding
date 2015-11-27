@@ -7,6 +7,7 @@ from environments import *
 import numpy as np
 import os
 import cPickle as cP
+import pdb
 
 class Mood_Sentiment():
 	def __init__(self):
@@ -54,6 +55,7 @@ if __name__=='__main__':
 	#1,aardvark,6.26,2.21,19,2.41,1.4,22,4.27,1.75,15,6.18,1.66,11,6,2.94,7,3,1.41,8,2.07,1.33,14,4,1.58,5,4.4,1.9,10,6.12,2.03,8,6.36,2.42,11,2.56,1.74,9$
 	
 	# Build a dictionary using csv file.
+	print '--- load a big dictionary ---'
 	if os.path.exists(PATH_DATA + FILE_DICT["sentiment_big_dict"]):
 		vad_dict = np.load(PATH_DATA + FILE_DICT["sentiment_big_dict"])
 	else:
@@ -67,17 +69,18 @@ if __name__=='__main__':
 
 		np.save(PATH_DATA + FILE_DICT["sentiment_big_dict"], vad_dict)
 
+	print '--- small dictionary+etc for mood tags only'
 	mood_sentiment = Mood_Sentiment()
 	for moodname in moodnames:
 		if moodname in vad_dict:
 			mood_sentiment.add_item(moodname, vad_dict[moodname])
 	mood_sentiment.compute_dist() # distances for all pairs
-	cP.dump(mood_sentiment, open(FILE_DICT["mood_sentiment"], 'w'))
+	cP.dump(mood_sentiment, open(PATH_DATA + FILE_DICT["mood_sentiment"], 'w'))
 
 	for moodname in mood_sentiment.moodnames:
-		print mood_sentiment.get_nearest_by_moodname(mooename, num_word=10)
+		print mood_sentiment.get_nearest_by_moodname(moodname, num_word=10)
 
-
+	pdb.set_trace()
 
 
 
