@@ -11,7 +11,7 @@ import cPickle as cP
 class Mood_Sentiment():
 	def __init__(self):
 		self.moodnames = [] # generic python list
-		self.vads_list = None # will be a numpy array. 
+		self.vads_list = [] # 
 		self.vads_dict = {} # python dictionary 
 		self.dist_mtx = None # will ba a 2-d numpy array
 
