@@ -253,7 +253,7 @@ def get_tfidf():
 	"""Compute tf-idf weighted matrix for song-moodtag matrix """
 	if os.path.exists(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"]):
 		print 'get_tfidf() returns pre-computed tf-idf matrix'
-		return np.load(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"], mood_tags_tfidf_matrix)
+		return np.load(PATH_DATA + FILE_DICT["mood_tags_tfidf_matrix"])
 
 	mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) # linear tf value.. # 9380-by-100
 	
