@@ -42,6 +42,8 @@ class Mood_Sentiment():
 		
 		sorted_index = np.argsort(self.dist_mtx[ind, :])
 		num_word = min(num_word, len(self.moodnames))
+		if num_word == -1:
+			num_word = len(self.moodnames)
 		words_to_return = []
 		for i in xrange(num_word):
 			words_to_return.append(self.moodnames[sorted_index[i]])
@@ -79,6 +81,35 @@ if __name__=='__main__':
 
 	for moodname in mood_sentiment.moodnames:
 		print mood_sentiment.get_nearest_by_moodname(moodname, num_word=10)
+
+	# load LDA result
+	num_components = 10
+	LDA_topics = cP.load(open(PATH_DATA + (FILE_DICT["mood_topics_strings"] % num_components), 'r'))
+
+	average_rankings_overall = []
+
+	for topic_words in LDA_topics:
+		ranking = []
+		for ind, topic_word in enumerate(topic_words): # topic_word is a 'pivot' word
+			topic_word_index = mood_sentiment.moodnames.index(topic_word)
+			if topic_word in mood_sentiment.moodnames:
+				words_in_order = mood_sentiment.get_nearest_by_moodname(topic_word)
+				the_other_topics = [ele for ele in topic_words if ele != topic_word and ele in mood_sentiment.moodnames]
+				for another in the_other_topics:
+					ranking.append(words_in_order.index(another))
+		if len(ranking) == 0:
+			average_rankings_overall.append(0)
+		else:
+			average_rankings_overall.append(sum(ranking) / float(len(ranking)))
+			print "%d words, average is %f" % (len(ranking), sum(ranking) / float(len(ranking)))
+
+	print average_rankings_overall
+					
+
+
+
+			
+
 
 	pdb.set_trace()
 
