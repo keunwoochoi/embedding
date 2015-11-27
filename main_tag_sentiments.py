@@ -27,7 +27,7 @@ class Mood_Sentiment():
 		for ind_i, vads_value_i in enumerate(self.vads_list):
 			for ind_j, vads_value_j in enumerate(self.vads_list):
 				pdb.set_trace()
-				self.dist_mtx[ind_i, ind_j] = np.linalg.norm(np.array(vads_value_i)-np.array(vads_value_j)) 
+				self.dist_mtx[ind_i, ind_j] = np.linalg.norm(vads_value_i-vads_value_j) 
 
 	def get_nearest_by_moodname(self, moodname, num_word=10):
 		if moodname not in self.moodnames:
@@ -65,7 +65,7 @@ if __name__=='__main__':
 			temp = f_read.readline() # ignore the first line
 			for line in f_read:
 				line_split = line.split(',') # 0:index, 1:word, 2:valence mean, 5:arousal mean, 8:dominance mean
-				vad_dict[line_split[1]] = np.array([line_split[2], line_split[5], line_split[8]])
+				vad_dict[line_split[1]] = np.array([line_split[2], line_split[5], line_split[8]], dtype='float')
 
 		cP.dump(vad_dict, open(PATH_DATA + FILE_DICT["sentiment_big_dict"], 'w'))
 
