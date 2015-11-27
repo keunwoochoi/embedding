@@ -293,19 +293,19 @@ if __name__=="__main__":
 	 		get_LSI(X=mood_tags_matrix, num_components=k)
 
 	# [1] analysis - LSI
-	if False or "it is already done.":
+	if False and "it is already done.":
 		for k in [2,3,5,10,20]:
 			filename_out = FILE_DICT["mood_latent_matrix"] % k
 			if os.path.exists(PATH_DATA + filename_out):
 				W = np.load(PATH_DATA + filename_out)
 			else:
-				W = get_LDA(X=mood_tags_matrix, num_components=k, show_topics=True)
+				W = get_LSI(X=mood_tags_matrix, num_components=k, show_topics=True)
 				np.save(PATH_DATA + filename_out, W)
 	# analysis - LDA 
-	if False and "it is already done.":
+	if True and "it is already done.":
 		for k in [2,3,5,10,20]:
 			filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k
-			if os.path.exists(PATH_DATA + filename_out):
+			if os.path.exists(PATH_DATA + filename_out) and False:
 				W = np.load(PATH_DATA + filename_out)
 			else:
 				W = get_LDA(X=mood_tags_tfidf_matrix, num_components=k, show_topics=True)
