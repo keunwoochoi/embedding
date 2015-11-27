@@ -26,7 +26,7 @@ class Mood_Sentiment():
 		self.dist_mtx = np.zeros((len(self.moodnames), len(self.moodnames)))
 		for ind_i, vads_value_i in enumerate(self.vads_list):
 			for ind_j, vads_value_j in enumerate(self.vads_list):
-				pdb.set_trace()
+				
 				self.dist_mtx[ind_i, ind_j] = np.linalg.norm(vads_value_i-vads_value_j) 
 
 	def get_nearest_by_moodname(self, moodname, num_word=10):
