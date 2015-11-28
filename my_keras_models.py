@@ -81,7 +81,7 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 		pool_sizes = [(1,3)]*(2) + [(2,2)]*2 + [(3,1)]*2
 
 	num_stacks = [48]*num_layers
-	dropouts = [0.25]*(num_layers)
+	dropouts = [0.5]*2 + [0.25]*(num_layers-2)
 
 	for i in xrange(num_layers):
 		if i == 0:
