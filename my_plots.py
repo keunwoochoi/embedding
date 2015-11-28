@@ -20,7 +20,7 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 	plt.savefig(out_filename)
 	plt.close()
 
-def make_mosaic(imgs, border=1):
+def make_mosaic(imgs, normalize, border=1):
     """
     Given a set of images with all the same shape, makes a
     mosaic with nrows and ncols
@@ -112,25 +112,28 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 		'''
 		save_weight_as_image(W, save_path, filename_prefix, normalize, mono)
 
-def save_weight_as_image(weights, save_path, filename_prefix, normalize, mono):
+def save_weight_as_image(W, save_path, filename_prefix, normalize, mono):
+	'''W:weights
+	save_path: path to save the images
+	normlize: weather or not they would be normalised '''
 	if mono:
 		ind = 0
 		W = W[:,ind,:,:]
 		filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-		mosaic = make_mosaic(imgs=W, border=2)
+		mosaic = make_mosaic(imgs=W, normalize=normalize border=2)
 		imsave(save_path + filename, mosaic)
 
 	else:
 		ind = 0
 		W_left = W[:,ind,:,:]
 		filename = 'weights_left_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-		mosaic = make_mosaic(imgs=W_left, border=2)
+		mosaic = make_mosaic(imgs=W_left, normalize=normalize, border=2)
 		imsave(save_path + filename, mosaic)
 
 		ind = 1
 		W_right = W[:,ind,:,:]
 		filename = 'weights_righ_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-		mosaic = make_mosaic(imgs=W_right, border=2)
+		mosaic = make_mosaic(imgs=W_right, normalize=normalize, border=2)
 		imsave(save_path + filename, mosaic)
 
 
