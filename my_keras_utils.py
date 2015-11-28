@@ -1,6 +1,7 @@
 import keras.callbacks
 import my_plots
-
+from constants import *
+from environments import *
 
 class History_Classification(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""

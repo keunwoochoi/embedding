@@ -195,7 +195,7 @@ if __name__ == "__main__":
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
 	# learning_id =  str(np.random.randint(999999))
-	pdb.set_trace()
+	
 	for num_layers in num_layers_list:
 		#prepare model
 
