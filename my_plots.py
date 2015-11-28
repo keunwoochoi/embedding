@@ -84,7 +84,7 @@ def make_mosaic(imgs, border=1):
                col * paddedw:col * paddedw + imshape[1]] = imgs[i]
     #mosaic = 255 * mosaic # imsave want it to be 8-bit integer 
     return mosaic
-    
+
 def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='local', mono=True):
 	'''input: keras model variable and strings.
 	save_path: path to save output image
@@ -110,7 +110,7 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 		for ind in xrange(W.shape[1]):
 			W = W[:,ind,:,:]
 		'''
-		save_weight_as_image(weights=W, save_path, filename_prefix, normalize, mono)
+		save_weight_as_image(W, save_path, filename_prefix, normalize, mono)
 
 def save_weight_as_image(weights, save_path, filename_prefix, normalize, mono):
 	if mono:
