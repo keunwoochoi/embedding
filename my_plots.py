@@ -14,7 +14,6 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 		f = plt.plot(loss)
 		plt.plot(val_loss)
 		
-		ax2.set_title('Loss')
 		# legend = plt.legend(loc='lower left', shadow=False)
 
 	plt.savefig(out_filename)

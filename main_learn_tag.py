@@ -216,7 +216,7 @@ if __name__ == "__main__":
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(train_x, batch_size=40)
 		
-		model.save_weights(PATH_MODEL + model_name + ('_after_%d.keras' % nb_epoch)) # fix h5py simbolic link error.
+		model.save_weights(PATH_MODEL + model_name + ('_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
 		
 		fileout = model_name + '_results_' + str(np.random.randint(999999))
 		
