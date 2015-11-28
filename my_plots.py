@@ -109,8 +109,6 @@ def save_weight_as_image(model, save_path = '', filename_prefix = '', normalize=
 		for ind in xrange(W.shape[1]):
 			W = W[:,ind,:,:]
 		'''
-		W.shape
-		pdb.set_trace()
 		if mono:
 			ind = 0
 			W = W[:,ind,:,:]
@@ -120,15 +118,15 @@ def save_weight_as_image(model, save_path = '', filename_prefix = '', normalize=
 
 		else:
 			ind = 0
-			W = W[:,ind,:,:]
+			W_left = W[:,ind,:,:]
 			filename = 'weights_left_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-			mosaic = make_mosaic(imgs=W, border=2)
+			mosaic = make_mosaic(imgs=W_left, border=2)
 			imsave(save_path + filename, mosaic)
 
 			ind = 1
-			W = W[:,ind,:,:]
+			W_right = W[:,ind,:,:]
 			filename = 'weights_righ_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-			mosaic = make_mosaic(imgs=W, border=2)
+			mosaic = make_mosaic(imgs=W_right, border=2)
 			imsave(save_path + filename, mosaic)
 
 
