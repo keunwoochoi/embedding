@@ -1,4 +1,0 @@
-WARNING (theano.configdefaults): g++ not detected ! Theano will be unable to execute optimized C-implementations (for both CPU and GPU) and will default to Python implementations. Performance will be severely degraded. To remove this warning, set Theano flags cxx to an empty string.
-ERROR (theano.sandbox.cuda): nvcc compiler not found on $PATH. Check your nvcc installation and try again.
-/homes/kc306/modules/Theano/theano/tensor/nnet/conv.py:789: ComplexWarning: Casting complex values to real discards the imaginary part
-  1, val, bval, 0)
