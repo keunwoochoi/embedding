@@ -2,6 +2,7 @@ import matplotlib
 matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
+import pdb
 
 def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history.png'):
 	'''
