@@ -14,7 +14,7 @@ import my_keras_utils
 import cPickle as cP
 import time
 import sys
-#import my_plots
+import my_plots
 
 class File_Manager():
 	def __init__(self):

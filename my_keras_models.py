@@ -14,7 +14,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	from keras.models import Sequential
 	from keras.layers.core import Dense, Dropout, Activation, Flatten
 	from keras.layers.convolutional import Convolution2D, MaxPooling2D
-	from keras.optimizers import RMSprop, SGD
+	from keras.optimizers import RMSprop
 	from keras.layers.normalization import LRN2D
 
 	model = Sequential()
