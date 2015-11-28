@@ -54,7 +54,7 @@ def make_mosaic(imgs, normalize, border=1):
     elif nimgs==96:
     	ncols = 8
     	nrows = 12
-    elif nimgs=40:
+    elif nimgs==40:
         ncols = 8
         nrows = 5
     else:
