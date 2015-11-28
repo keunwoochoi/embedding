@@ -3,6 +3,8 @@ matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
+from scipy.misc import imsave
+import numpy.ma as ma
 
 def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history.png'):
 	'''
@@ -28,7 +30,7 @@ def make_mosaic(imgs, normalize, border=1):
     imgs: 3D tensor shaped as [num_image, height, width]
     normalize: 'local', 'global', 'none'
     """
-    import numpy.ma as ma
+    
 
     nimgs = imgs.shape[0]
     imshape = imgs.shape[1:]
@@ -91,11 +93,8 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 	filename_prefix: prefix of the image file name.
 	* It save png image of each layer's weights (image patches) visualisation
 	 '''
-	import numpy as np
-
-	
 			
-	from scipy.misc import imsave
+
 	layerind = -1
 	#print model.layers[0].W.get_value(borrow=True)[0,0,:,:]
 	for layer in model.layers:
