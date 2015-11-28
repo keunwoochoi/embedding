@@ -137,8 +137,8 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	num_songs_train = min(num_train_songs, len(train_inds))
 	
 	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[0:100]
-	test_inds  = test_inds [0:100]
+	valid_inds = valid_inds[0:200]
+	test_inds  = test_inds [0:200]
 	print "--- Lets go! ---"
 	start = time.clock()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
@@ -196,7 +196,7 @@ if __name__ == "__main__":
 
 	for num_layers in num_layers_list:
 		#prepare model
-		model_name = 'test_model_latent_10_tfidf_'+sys.argv[1] +'_' + sys.argv[2] + '_' + sys.argv[3] + '_' + str(num_layers)
+		model_name = 'dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
 
 		start = time.clock()
 		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
@@ -208,7 +208,7 @@ if __name__ == "__main__":
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
 		#prepare callbacks
-		history = my_keras_utils.History_Val()
+		history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
 		#train!
 		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping])
@@ -219,10 +219,10 @@ if __name__ == "__main__":
 		#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
 		fileout = model_name + '_results_' + str(np.random.randint(999999))
 		
-		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.accs, history.val_losses, history.val_accs])
+		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
-	
+	pdb.set_trace()
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	# my_plots.export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
 
