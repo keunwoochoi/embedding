@@ -47,9 +47,9 @@ class History_Regression_Val(keras.callbacks.Callback):
 		self.val_losses.append(logs.get('val_loss'))
 
 class Weight_Image_Saver(keras.callbacks.Callback):
-	def __init__(self, model_name):
-		self.model_name = model_name
+	def __init__(self, model_name_dir):
+		self.model_name_dir = model_name_dir
 	def on_epoch_end(self, batch, logs={}):
 		pdb.set_trace()
-		my_plots.save_model_as_image(self.model, save_path = PATH_IMAGES, filename_prefix = self.model_name + '_', normalize='local', mono=False)
+		my_plots.save_model_as_image(self.model, save_path = PATH_IMAGES+model_name_dir, filename_prefix = '', normalize='local', mono=False)
 

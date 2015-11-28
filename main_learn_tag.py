@@ -200,7 +200,9 @@ if __name__ == "__main__":
 		#prepare model
 
 		model_name = 'dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
-
+		model_name_dir = model_name + '/'
+		os.mkdir(PATH_MODEL + model_name_dir)
+		os.mkdir(PATH_IMAGES + model_name_dir)
 		start = time.clock()
 		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
 	 	if tf_type == 'stft':
@@ -211,8 +213,8 @@ if __name__ == "__main__":
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
 		#prepare callbacks
-		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name+"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=True)
-		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name)
+		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=True)
+		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
 		history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
 		#train!
@@ -221,7 +223,7 @@ if __name__ == "__main__":
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(train_x, batch_size=40)
 		
-		model.save_weights(PATH_MODEL + model_name + ('_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
+		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
 		
 		fileout = model_name + '_results'
 		
@@ -230,7 +232,7 @@ if __name__ == "__main__":
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
 		
 		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
-		my_plots.save_model_as_image(model, save_path = PATH_IMAGES, filename_prefix = model_name + '_', normalize='local', mono=False)
+		my_plots.save_model_as_image(model, save_path = PATH_IMAGES+model_name_dir, filename_prefix = '', normalize='local', mono=False)
 	pdb.set_trace()
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	
