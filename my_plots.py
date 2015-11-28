@@ -110,9 +110,9 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 		for ind in xrange(W.shape[1]):
 			W = W[:,ind,:,:]
 		'''
-		save_weight_as_image(W, save_path, filename_prefix, normalize, mono)
+		save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind)
 
-def save_weight_as_image(W, save_path, filename_prefix, normalize, mono):
+def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind):
 	'''W:weights
 	save_path: path to save the images
 	normlize: weather or not they would be normalised '''

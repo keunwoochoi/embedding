@@ -2,6 +2,7 @@ import keras.callbacks
 import my_plots
 from constants import *
 from environments import *
+import pdb
 
 class History_Classification(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""
@@ -49,5 +50,6 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 	def __init__(self, model_name):
 		self.model_name = model_name
 	def on_epoch_end(self, batch, logs={}):
+		pdb.set_trace()
 		my_plots.save_model_as_image(self.model, save_path = PATH_IMAGES, filename_prefix = self.model_name + '_', normalize='local', mono=False)
 
