@@ -43,13 +43,14 @@ class History_Regression_Val(keras.callbacks.Callback):
 		self.losses = []
 		self.val_losses = []
 
-	def on_epoch_end(self, batch, logs={}):
+	def on_batch_end(self, batch, logs={}):
 		self.losses.append(logs.get('loss'))
 		self.val_losses.append(logs.get('val_loss'))
 
 class Weight_Image_Saver(keras.callbacks.Callback):
 	def __init__(self, model_name_dir):
 		self.model_name_dir = model_name_dir
+
 	def on_epoch_end(self, batch, logs={}):
 		seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=PATH_IMAGES+self.model_name_dir, filename_prefix=seconds+'_', normalize='local', mono=False)

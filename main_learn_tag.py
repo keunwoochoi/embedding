@@ -157,7 +157,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 
 def print_usage_and_die():
 	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type num_of_layers'
-	print 'ex) $ python main_learn_tag.py 200 100 cqt 4 5 6'
+	print 'ex) $ python main_learn_tag.py 200 5000 cqt 4 5 6'
 	sys.exit()
 
 if __name__ == "__main__":

@@ -72,7 +72,7 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 	model = Sequential()
 	if num_layers == 5:
 		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
-		pool_sizes = [(1,3)]*(2) + [(3,2)]*(num_layers-2)# 168/(1,1,3,3,3)=6, 256/(3,3,2,2,2)=3
+		pool_sizes = [(1,3)] + [(2,3)] + [(3,2)]*(num_layers-2)# 168/(1,1,3,3,3)=6, 256/(3,3,2,2,2)=3
 	elif num_layers == 4:
 		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
 		pool_sizes = [(1,4)]*(2) + [(4,2)]*(num_layers-2)
@@ -80,8 +80,8 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
 		pool_sizes = [(1,3)]*(2) + [(2,2)]*2 + [(3,1)]*2
 
-	num_stacks = [48]*num_layers
-	dropouts = [0.5]*2 + [0.25]*(num_layers-2)
+	num_stacks = [40]*num_layers
+	dropouts = [0.5]*2 + [0.5]*(num_layers-2)
 
 	for i in xrange(num_layers):
 		if i == 0:
@@ -99,7 +99,7 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 
 	model.add(Flatten())
 	model.add(Dense(1024, init='normal', activation='relu'))
-	model.add(Dropout(0.25))
+	model.add(Dropout(0.5))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear'))
 	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
