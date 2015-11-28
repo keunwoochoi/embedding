@@ -194,8 +194,11 @@ if __name__ == "__main__":
 	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song, num_train_songs=num_train_songs, tf_type=tf_type)
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
+	# learning_id =  str(np.random.randint(999999))
+	pdb.set_trace()
 	for num_layers in num_layers_list:
 		#prepare model
+
 		model_name = 'dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
 
 		start = time.clock()
@@ -208,24 +211,26 @@ if __name__ == "__main__":
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
 		#prepare callbacks
+		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name+"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=True)
+		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name)
 		history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
 		#train!
-		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping])
+		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
 		# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(train_x, batch_size=40)
 		
 		model.save_weights(PATH_MODEL + model_name + ('_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
 		
-		fileout = model_name + '_results_' + str(np.random.randint(999999))
+		fileout = model_name + '_results'
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
 		
 		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
-		my_plots.save_weight_as_image(model, save_path = PATH_IMAGES, filename_prefix = '', normalize='local', mono=False)
+		my_plots.save_model_as_image(model, save_path = PATH_IMAGES, filename_prefix = model_name + '_', normalize='local', mono=False)
 	pdb.set_trace()
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	

@@ -1,4 +1,6 @@
 import keras.callbacks
+import my_plots
+
 
 class History_Classification(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""
@@ -41,4 +43,10 @@ class History_Regression_Val(keras.callbacks.Callback):
 	def on_epoch_end(self, batch, logs={}):
 		self.losses.append(logs.get('loss'))
 		self.val_losses.append(logs.get('val_loss'))
+
+class Weight_Image_Saver(keras.callbacks.Callback):
+	def __init__(self, model_name):
+		self.model_name = model_name
+	def on_epoch_end(self, batch, logs={}):
+		my_plots.save_model_as_image(self.model, save_path = PATH_IMAGES, filename_prefix = self.model_name + '_', normalize='local', mono=False)
 
