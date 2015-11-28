@@ -216,7 +216,7 @@ if __name__ == "__main__":
 		history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
 		#train!
-		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
+		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
 		# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(train_x, batch_size=40)
