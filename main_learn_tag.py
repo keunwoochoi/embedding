@@ -140,17 +140,17 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	valid_inds = valid_inds[0:200]
 	test_inds  = test_inds [0:200]
 	print "--- Lets go! ---"
-	start = time.clock()
+	start = time.time()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
-	until = time.clock()
+	until = time.time()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" % (len(train_x), len(train_inds), (until-start) )
-	start = time.clock()
+	start = time.time()
 	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
-	until = time.clock()
+	until = time.time()
 	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" % (len(valid_x), len(valid_inds), (until-start) )
-	start = time.clock()
+	start = time.time()
 	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
-	until = time.clock()
+	until = time.time()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
 
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
@@ -205,13 +205,13 @@ if __name__ == "__main__":
 			os.mkdir(PATH_MODEL + model_name_dir)
 		if not os.path.exists(PATH_IMAGES + model_name_dir):
 			os.mkdir(PATH_IMAGES + model_name_dir)
-		start = time.clock()
+		start = time.time()
 		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
 	 	if tf_type == 'stft':
 	 		model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	else:
 	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
-	 	until = time.clock()
+	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
 		#prepare callbacks
@@ -234,8 +234,8 @@ if __name__ == "__main__":
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
 		
 		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
-		my_plots.save_model_as_image(model, save_path = PATH_IMAGES+model_name_dir, filename_prefix = '', normalize='local', mono=False)
-	
+		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='', normalize='local', mono=False)
+		pdb.set_trace()
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	
 

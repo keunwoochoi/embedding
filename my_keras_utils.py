@@ -3,6 +3,7 @@ import my_plots
 from constants import *
 from environments import *
 import pdb
+import time
 
 class History_Classification(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""
@@ -50,5 +51,8 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 	def __init__(self, model_name_dir):
 		self.model_name_dir = model_name_dir
 	def on_epoch_end(self, batch, logs={}):
-		my_plots.save_model_as_image(self.model, save_path = PATH_IMAGES+self.model_name_dir, filename_prefix = '', normalize='local', mono=False)
+		seconds = str(int(time.time()))
+		my_plots.save_model_as_image(self.model, save_path=PATH_IMAGES+self.model_name_dir, filename_prefix=seconds+'_', normalize='local', mono=False)
+
+
 
