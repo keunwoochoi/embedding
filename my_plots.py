@@ -3,7 +3,7 @@ matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
-def export_history(loss, val_loss, acc=None, val_acc=None,  out_filename):
+def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history.png'):
 	'''
 	subplots; acc-valacc on top, loss-val_loss on bottom
 	'''
