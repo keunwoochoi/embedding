@@ -215,14 +215,17 @@ if __name__ == "__main__":
 		# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(train_x, batch_size=40)
-		# model.save_weights(PATH_MODEL + model_name + '_after_60.keras') # fix h5py simbolic link error.
-		#   which is, ImportError: libhdf5.so.8: cannot open shared object file: No such file or directory
+		
+		model.save_weights(PATH_MODEL + model_name + ('_after_%d.keras' % nb_epoch)) # fix h5py simbolic link error.
+		
 		fileout = model_name + '_results_' + str(np.random.randint(999999))
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
+		
 		my_plots.export_history(history.losses, history.val_losses, PATH_RESULTS + fileout + '.png')
+		my_plots.save_weight_as_image(model, save_path = PATH_RESULTS, filename_prefix = '', normalize='local', mono=False)
 	pdb.set_trace()
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	
