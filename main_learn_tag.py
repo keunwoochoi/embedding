@@ -157,7 +157,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 
 def print_usage_and_die():
 	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type num_of_layers'
-	print 'ex) $ python main_learn_tag.py 40 100 cqt 4 5 6'
+	print 'ex) $ python main_learn_tag.py 200 100 cqt 4 5 6'
 	sys.exit()
 
 if __name__ == "__main__":
@@ -222,7 +222,8 @@ if __name__ == "__main__":
 		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
+		my_plots.export_history(history.losses, history.val_losses, PATH_RESULTS + fileout + '.png')
 	pdb.set_trace()
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
-	# my_plots.export_history(history.accs, history.val_accs, history.losses, history.val_losses, figure_filepath, net_name=None)
+	
 
