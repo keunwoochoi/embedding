@@ -108,6 +108,8 @@ def save_weight_as_image(model, save_path = '', filename_prefix = '', normalize=
 		for ind in xrange(W.shape[1]):
 			W = W[:,ind,:,:]
 		'''
+		W.shape
+		pdb.set_trace()
 		if mono:
 			ind = 0
 			W = W[:,ind,:,:]
