@@ -201,8 +201,10 @@ if __name__ == "__main__":
 
 		model_name = 'dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
 		model_name_dir = model_name + '/'
-		os.mkdir(PATH_MODEL + model_name_dir)
-		os.mkdir(PATH_IMAGES + model_name_dir)
+		if not os.path.exists(PATH_MODEL + model_name_dir):
+			os.mkdir(PATH_MODEL + model_name_dir)
+		if not os.path.exists(PATH_IMAGES + model_name_dir):
+			os.mkdir(PATH_IMAGES + model_name_dir)
 		start = time.clock()
 		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
 	 	if tf_type == 'stft':
