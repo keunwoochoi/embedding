@@ -29,6 +29,8 @@ if isServer:
 	PATH_MODEL= PATH_WORK + 'keras_models/'
 	PATH_SENTI= PATH_WORK + "sentiment/" 
 
+	PATH_IMAGES=PATH_WORK + 'images/'
+
 	PATH_FIGURE = PATH_WORK + 'figures/'
 	PATH_RESULTS= PATH_WORK + 'results/'
 
@@ -36,6 +38,10 @@ if isServer:
 
 	PATH_STFT = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
 	PATH_CQT  = '/import/c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
+
+	for path in [PATH_DATA, PATH_MODEL, PATH_SENTI, PATH_IMAGES, PATH_FIGURE, PATH_RESULTS]:
+		if not os.path.exists(path):
+			os.mkdir(path)
 
 	sys.path.append(PATH_HOME + 'modules/' + 'librosa/')
 else:

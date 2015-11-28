@@ -225,7 +225,7 @@ if __name__ == "__main__":
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths.npy', [predicted, train_y])
 		
 		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
-		my_plots.save_weight_as_image(model, save_path = PATH_RESULTS, filename_prefix = '', normalize='local', mono=False)
+		my_plots.save_weight_as_image(model, save_path = PATH_IMAGES, filename_prefix = '', normalize='local', mono=False)
 	pdb.set_trace()
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
 	
