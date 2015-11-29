@@ -157,7 +157,7 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 	model.add(Dense(128, init='normal', activation='relu'))
 
 	model.add(Dense(num_labels, init='normal', activation='linear'))
-	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
+	rmsprop = RMSprop(lr=5e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_absolute_error', optimizer=rmsprop) # mean_absolute_error, mean_squared_error, ...
 	print '--- complie fin. ---'
