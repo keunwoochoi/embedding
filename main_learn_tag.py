@@ -137,7 +137,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	num_songs_train = min(num_train_songs, len(train_inds))
 	
 	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[0:200]
+	valid_inds = valid_inds[100:150]
 	test_inds  = test_inds [0:200]
 	print "--- Lets go! ---"
 	start = time.time()
@@ -221,14 +221,14 @@ if __name__ == "__main__":
 		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=False)
 		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
 		history = my_keras_utils.History_Regression_Val()
-		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=100000, verbose=0)
+		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=500, verbose=0)
 		#train!
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', normalize='local', mono=False)
 		predicted = model.predict(train_x, batch_size=40)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
 
-		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
-		
+		# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
 		#test
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(train_x, batch_size=40)
