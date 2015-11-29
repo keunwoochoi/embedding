@@ -104,7 +104,60 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 	model.add(Dense(num_labels, init='normal', activation='linear'))
 	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
-	model.compile(loss='mean_squared_error', optimizer=rmsprop)
+	model.compile(loss='mean_absolute_error', optimizer=rmsprop) # mean_absolute_error, mean_squared_error, ...
 	print '--- complie fin. ---'
 	return model
 
+def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
+	""" It builds a convnet model using keras and returns it.
+	input: height: height of input image (=len_frequency)
+	       width:  width of input image (=len_frame)
+
+	***
+	*** This 'strict' model assumes the model should be sensitive to different frequency gaps.
+	*** i.e. at the first (and second) layer, no pooling can be done on frequency axis.
+	***
+	"""
+	from keras.models import Sequential
+	from keras.layers.core import Dense, Dropout, Activation, Flatten
+	from keras.layers.convolutional import Convolution2D, MaxPooling2D
+	from keras.optimizers import RMSprop, SGD
+	from keras.layers.normalization import LRN2D
+
+	model = Sequential()
+	if num_layers == 5:
+		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
+		pool_sizes = [(1,3)] + [(2,3)] + [(3,2)]*(num_layers-2)# 168/(1,1,3,3,3)=6, 256/(3,3,2,2,2)=3
+	elif num_layers == 4:
+		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
+		pool_sizes = [(1,4)]*(2) + [(4,2)]*(num_layers-2)
+	elif num_layers == 6:
+		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
+		pool_sizes = [(1,3)]*(2) + [(2,2)]*2 + [(3,1)]*2
+
+	num_stacks = [40]*num_layers
+	dropouts = [0]*num_layers
+
+	for i in xrange(num_layers):
+		if i == 0:
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width) ))
+		else:
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
+		model.add(Activation('relu'))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
+		# final_height = final_height / pool_sizes[i][0]
+		# final_width  = final_width  / pool_sizes[i][1]
+		if dropouts[i] != 0:
+			model.add(Dropout(dropouts[i]))
+		if i != 0:
+			model.add(LRN2D())
+
+	model.add(Flatten())
+	model.add(Dense(1024, init='normal', activation='relu'))
+	
+	model.add(Dense(num_labels, init='normal', activation='linear'))
+	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
+	print '--- ready to compile keras model ---'
+	model.compile(loss='mean_absolute_error', optimizer=rmsprop) # mean_absolute_error, mean_squared_error, ...
+	print '--- complie fin. ---'
+	return model

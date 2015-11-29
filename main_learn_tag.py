@@ -203,7 +203,6 @@ if __name__ == "__main__":
 		model_name_dir = model_name + '/'
 		fileout = model_name + '_results'
 
-		
 		if not os.path.exists(PATH_MODEL + model_name_dir):
 			os.mkdir(PATH_MODEL + model_name_dir)
 		if not os.path.exists(PATH_IMAGES + model_name_dir):
@@ -213,7 +212,8 @@ if __name__ == "__main__":
 	 	if tf_type == 'stft':
 	 		model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	else:
-	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 		# model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 		model = my_keras_models.build_overfitting_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
@@ -228,13 +228,12 @@ if __name__ == "__main__":
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
 
 		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
-		# score = model.evaluate(test_x, test_y, batch_size=batch_size, show_accuracy=True, verbose=1)
+		
+		#test
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(train_x, batch_size=40)
-		
+		#save results
 		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
-		
-		
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
@@ -244,5 +243,3 @@ if __name__ == "__main__":
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='', normalize='local', mono=False)
 		
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
-	
-
