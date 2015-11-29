@@ -138,7 +138,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	
 	train_inds = train_inds[0:num_songs_train]
 	valid_inds = valid_inds[100:150]
-	test_inds  = test_inds [0:200]
+	test_inds  = test_inds [:200]
 	print "--- Lets go! ---"
 	start = time.time()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
@@ -231,13 +231,13 @@ if __name__ == "__main__":
 		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
 		#test
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
-		predicted = model.predict(train_x, batch_size=40)
+		predicted = model.predict(test_x, batch_size=40)
 		#save results
 		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
-		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, train_y])
+		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
 		
 		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='', normalize='local', mono=False)

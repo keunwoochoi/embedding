@@ -123,7 +123,7 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 	from keras.layers.convolutional import Convolution2D, MaxPooling2D
 	from keras.optimizers import RMSprop, SGD
 	from keras.layers.normalization import LRN2D
-
+	print "==== INTERNTIONALLY OVERFITTING MODEL! ===="
 	model = Sequential()
 	if num_layers == 5:
 		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
@@ -153,8 +153,9 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 			model.add(LRN2D())
 
 	model.add(Flatten())
-	model.add(Dense(1024, init='normal', activation='relu'))
-	
+	model.add(Dense(128, init='normal', activation='relu'))
+	model.add(Dense(128, init='normal', activation='relu'))
+
 	model.add(Dense(num_labels, init='normal', activation='linear'))
 	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
