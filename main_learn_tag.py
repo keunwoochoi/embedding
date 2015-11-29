@@ -201,6 +201,9 @@ if __name__ == "__main__":
 
 		model_name = 'dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
 		model_name_dir = model_name + '/'
+		fileout = model_name + '_results'
+
+		
 		if not os.path.exists(PATH_MODEL + model_name_dir):
 			os.mkdir(PATH_MODEL + model_name_dir)
 		if not os.path.exists(PATH_IMAGES + model_name_dir):
@@ -231,7 +234,7 @@ if __name__ == "__main__":
 		
 		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
 		
-		fileout = model_name + '_results'
+		
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
