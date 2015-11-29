@@ -153,8 +153,8 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 			model.add(LRN2D())
 
 	model.add(Flatten())
-	model.add(Dense(1024, init='normal', activation='relu'))
-	model.add(Dense(1024, init='normal', activation='relu'))
+	model.add(Dense(512, init='normal', activation='relu'))
+	model.add(Dense(512, init='normal', activation='relu'))
 
 	model.add(Dense(num_labels, init='normal', activation='linear'))
 	rmsprop = RMSprop(lr=5e-5, rho=0.9, epsilon=1e-6)
