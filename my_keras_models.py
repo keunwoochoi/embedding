@@ -135,7 +135,7 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
 		pool_sizes = [(1,3)]*(2) + [(2,2)]*2 + [(3,1)]*2
 
-	num_stacks = [40]*num_layers
+	num_stacks = [64]*num_layers
 	dropouts = [0]*num_layers
 
 	for i in xrange(num_layers):

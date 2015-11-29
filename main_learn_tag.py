@@ -221,7 +221,7 @@ if __name__ == "__main__":
 		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=False)
 		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
 		history = my_keras_utils.History_Regression_Val()
-		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=500, verbose=0)
+		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=1000, verbose=0)
 		#train!
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', normalize='local', mono=False)
 		predicted = model.predict(train_x, batch_size=40)
@@ -233,7 +233,7 @@ if __name__ == "__main__":
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(test_x, batch_size=40)
 		#save results
-		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) # fix h5py simbolic link error.
+		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) 
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
