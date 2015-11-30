@@ -5,6 +5,37 @@ from environments import *
 import pdb
 import time
 
+class Keras_Results():
+	"""It is a class to contain every information about a learning result.
+	Goal: to make it easier to see the result, compare results, resume from previous model, ...
+
+	"""
+	def __init__(self):
+		self.model_name = None
+		self.adjspecies = None
+		self.result_path = None # a 'mother' path that contains all - images, results, model, ...
+		self.losses
+		self.accs
+		self.val_losses
+		self.val_accs
+		self.test_losses
+		self.test_accs
+		self.test_predicted
+		self.test_truths
+		self.settings = {}
+	
+	def compare(self, another_result):
+
+	def show_plots(self):
+		'''show plots - loss, etc.'''
+	
+	def load_model(self):
+		'''return the corresponding keras model'''
+
+
+
+
+
 class History_Classification(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""
 	def on_train_begin(self, logs={}):
