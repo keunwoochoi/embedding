@@ -82,6 +82,7 @@ class History_Regression_Val(keras.callbacks.Callback):
 class Weight_Image_Saver(keras.callbacks.Callback):
 	def __init__(self, model_name_dir):
 		self.model_name_dir = model_name_dir
+		
 	def on_train_begin(self, logs={}):
 		seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=PATH_IMAGES+self.model_name_dir, filename_prefix=seconds+'_INIT_', normalize='local', mono=False)

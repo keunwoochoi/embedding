@@ -80,7 +80,7 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
 		pool_sizes = [(1,3)]*(2) + [(2,2)]*2 + [(3,1)]*2
 
-	num_stacks = [40]*num_layers
+	num_stacks = [48]*1 + [64]*(num_layers-1)
 	dropouts = [0.5]*2 + [0.5]*(num_layers-2)
 
 	for i in xrange(num_layers):
@@ -98,11 +98,14 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 			model.add(LRN2D())
 
 	model.add(Flatten())
-	model.add(Dense(1024, init='normal', activation='relu'))
+	model.add(Dense(512, init='normal', activation='relu'))
+	model.add(Dropout(0.5))
+	
+	model.add(Dense(512, init='normal', activation='relu'))
 	model.add(Dropout(0.5))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear'))
-	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
+	rmsprop = RMSprop(lr=5e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_absolute_error', optimizer=rmsprop) # mean_absolute_error, mean_squared_error, ...
 	print '--- complie fin. ---'
