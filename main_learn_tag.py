@@ -137,7 +137,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	num_songs_train = min(num_train_songs, len(train_inds))
 	
 	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[100:150]
+	valid_inds = valid_inds[:150]
 	test_inds  = test_inds [:200]
 	print "--- Lets go! ---"
 	start = time.time()
@@ -221,7 +221,7 @@ if __name__ == "__main__":
 		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=False)
 		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
 		history = my_keras_utils.History_Regression_Val()
-		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0)
+		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=20, verbose=0)
 		#train!
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', normalize='local', mono=False)
 		predicted = model.predict(train_x, batch_size=40)
