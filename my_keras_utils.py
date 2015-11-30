@@ -5,6 +5,7 @@ from environments import *
 import pdb
 import time
 
+'''
 class Keras_Results():
 	"""It is a class to contain every information about a learning result.
 	Goal: to make it easier to see the result, compare results, resume from previous model, ...
@@ -27,11 +28,11 @@ class Keras_Results():
 	def compare(self, another_result):
 
 	def show_plots(self):
-		'''show plots - loss, etc.'''
+		"""show plots - loss, etc."""
 	
 	def load_model(self):
-		'''return the corresponding keras model'''
-
+		"""return the corresponding keras model"""
+'''
 
 
 
