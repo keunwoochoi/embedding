@@ -53,7 +53,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	print '--- complie fin. ---'
 	return model
 
-def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_name='vgg'):
+def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg'):
 	""" It builds a convnet model using keras and returns it.
 	input: height: height of input image (=len_frequency)
 	       width:  width of input image (=len_frame)
@@ -70,10 +70,10 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_na
 	from keras.layers.normalization import LRN2D
 
 	model = Sequential()
-	if model_name == 'vgg':
+	if model_type == 'vgg':
 		image_patch_sizes = [[3,3]]*num_layers
 		pool_sizes = [(2,2)]*num_layer
-	elif model_name == 'gnu':
+	elif model_type == 'gnu':
 		if num_layers == 5:
 			image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
 			pool_sizes = [(1,3)] + [(2,3)] + [(3,2)]*(num_layers-2)# 168/(1,1,3,3,3)=6, 256/(3,3,2,2,2)=3
