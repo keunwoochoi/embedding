@@ -230,7 +230,7 @@ if __name__ == "__main__":
 	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
 	 		# model = my_keras_models.build_overfitting_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	'''
-	 	model = my_keras_model.build_regression_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
+	 	model = my_keras_models.build_regression_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
 	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
