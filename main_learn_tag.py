@@ -152,7 +152,13 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.time()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
+	global_mean = -61.25
+	global_std  = 14.36
 
+	train_x = (train_x - global_mean)/global_std
+	valid_x = (valid_x - global_mean)/global_std
+	test_x  = (test_x - global_mean) /global_std
+	
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 def print_usage_and_die():
