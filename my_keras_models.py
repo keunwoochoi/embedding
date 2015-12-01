@@ -72,7 +72,7 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_ty
 	model = Sequential()
 	if model_type == 'vgg':
 		image_patch_sizes = [[3,3]]*num_layers
-		pool_sizes = [(2,2)]*num_layer
+		pool_sizes = [(2,2)]*num_layers
 	elif model_type == 'gnu':
 		if num_layers == 5:
 			image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
