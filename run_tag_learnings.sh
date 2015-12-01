@@ -1,3 +1,2 @@
 #!/bin/bash
-nohup python -u main_learn_tag.py 60 5000 cqt 5 > nohup_cqt_normalised.out &
-
+nohup python main_learn_tag.py 60 8000 cqt gnu 5 6 > nohup_gnu_cqt_5layers_allsongs.out &
