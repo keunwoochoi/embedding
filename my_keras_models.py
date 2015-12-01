@@ -53,7 +53,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	print '--- complie fin. ---'
 	return model
 
-def build_strict_convnet_model(height, width, num_labels, num_layers=5):
+def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_name='vgg'):
 	""" It builds a convnet model using keras and returns it.
 	input: height: height of input image (=len_frequency)
 	       width:  width of input image (=len_frame)
@@ -70,25 +70,28 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 	from keras.layers.normalization import LRN2D
 
 	model = Sequential()
-	if num_layers == 5:
-		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
-		pool_sizes = [(1,3)] + [(2,3)] + [(3,2)]*(num_layers-2)# 168/(1,1,3,3,3)=6, 256/(3,3,2,2,2)=3
-	elif num_layers == 4:
-		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
-		pool_sizes = [(1,4)]*(2) + [(4,2)]*(num_layers-2)
-	elif num_layers == 6:
-		image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
-		pool_sizes = [(1,3)]*(2) + [(2,2)]*2 + [(3,1)]*2
+	if model_name == 'vgg':
+		image_patch_sizes = [[3,3]]*num_layers
+		pool_sizes = [(2,2)]*num_layer
+	elif model_name == 'gnu':
+		if num_layers == 5:
+			image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
+			pool_sizes = [(1,3)] + [(2,3)] + [(3,2)]*(num_layers-2)# 168/(1,1,3,3,3)=6, 256/(3,3,2,2,2)=3
+		elif num_layers == 4:
+			image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
+			pool_sizes = [(1,4)]*(2) + [(4,2)]*(num_layers-2)
+		elif num_layers == 6:
+			image_patch_sizes = [[10,3]] + [[10,3]] + [[3,3]]*(num_layers-2) 
+			pool_sizes = [(1,3)]*(2) + [(2,2)]*2 + [(3,1)]*2
 
 	num_stacks = [64]*1 + [64]*(num_layers-1)
-	dropouts = [0.5]*2 + [0.5]*(num_layers-2)
+	dropouts = [0.25]*2 + [0.25]*(num_layers-2)
 
 	for i in xrange(num_layers):
 		if i == 0:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width) ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='relu' ))
 		else:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
-		model.add(Activation('relu'))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
 		# final_height = final_height / pool_sizes[i][0]
 		# final_width  = final_width  / pool_sizes[i][1]
@@ -99,13 +102,13 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5):
 
 	model.add(Flatten())
 	model.add(Dense(1024, init='normal', activation='relu'))
-	model.add(Dropout(0.5))
+	model.add(Dropout(0.25))
 	
 	model.add(Dense(1024, init='normal', activation='relu'))
-	model.add(Dropout(0.5))
+	model.add(Dropout(0.25))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear'))
-	rmsprop = RMSprop(lr=5e-5, rho=0.9, epsilon=1e-6)
+	rmsprop = RMSprop(lr=1e-7, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_absolute_error', optimizer=rmsprop) # mean_absolute_error, mean_squared_error, ...
 	print '--- complie fin. ---'

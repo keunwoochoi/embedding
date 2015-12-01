@@ -156,19 +156,20 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 def print_usage_and_die():
-	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type num_of_layers'
-	print 'ex) $ python main_learn_tag.py 200 5000 cqt 4 5 6'
+	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type model_type num_of_layers'
+	print 'ex) $ python main_learn_tag.py 200 5000 cqt vgg 4 5 6'
 	sys.exit()
 
 if __name__ == "__main__":
 	
-	if len(sys.argv) < 5:
+	if len(sys.argv) < 6:
 		print_usage_and_die()
 
 	nb_epoch = int(sys.argv[1])
 	num_train_songs = int(sys.argv[2])
 	tf_type = sys.argv[3]
-	num_layers_list = [int(sys.argv[i]) for i in xrange(4, len(sys.argv))]
+	model_type = sys.argv[4]
+	num_layers_list = [int(sys.argv[i]) for i in xrange(5, len(sys.argv))]
 	print '--- num_layers are ---'
 	print num_layers_list
 	# nb_epoch = 1
@@ -195,11 +196,10 @@ if __name__ == "__main__":
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 
 	# learning_id =  str(np.random.randint(999999))
-	
 	for num_layers in num_layers_list:
 		#prepare model
 
-		model_name = 'dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
+		model_name = model_type + '_dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
 		model_name_dir = model_name + '/'
 		fileout = model_name + '_results'
 
@@ -212,7 +212,7 @@ if __name__ == "__main__":
 	 	if tf_type == 'stft':
 	 		model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	else:
-	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
 	 		# model = my_keras_models.build_overfitting_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
