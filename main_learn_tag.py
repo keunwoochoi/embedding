@@ -152,13 +152,17 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, tf_type=tf_type, max_len_freq=256, width_image=256, clips_per_song=clips_per_song)
 	until = time.time()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" % (len(test_x), len(test_inds), (until-start) )
-	global_mean = -61.25
-	global_std  = 14.36
+	if tf_type == 'cqt':
+		global_mean = -61.25 # computed from the whole data for cqt
+		global_std  = 14.36
+	elif tf_type == 'stft':
+		global_mean = -61.25 # should be mended with cqt values
+		global_std  = 14.36
 
-	train_x = (train_x - global_mean)/global_std
+	train_x = (train_x - global_mean)/global_std	
 	valid_x = (valid_x - global_mean)/global_std
 	test_x  = (test_x - global_mean) /global_std
-	
+
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 def print_usage_and_die():
@@ -219,11 +223,14 @@ if __name__ == "__main__":
 			os.mkdir(PATH_IMAGES + model_name_dir)
 		start = time.time()
 		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
+	 	'''
 	 	if tf_type == 'stft':
 	 		model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
 	 	else:
 	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
 	 		# model = my_keras_models.build_overfitting_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 	'''
+	 	model = my_keras_model.build_regression_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
 	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
