@@ -198,53 +198,52 @@ if __name__ == "__main__":
 	# learning_id =  str(np.random.randint(999999))
 
 	for num_layers in num_layers_list:
-		for model_type in ['gnu', 'vgg']:
 		#prepare model
 
-			model_name = model_type + '_dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
-			model_name_dir = model_name + '/'
-			fileout = model_name + '_results'
-			print "="*60
-			print model_name
-			print "="*60
+		model_name = model_type + '_dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
+		model_name_dir = model_name + '/'
+		fileout = model_name + '_results'
+		print "="*60
+		print model_name
+		print "="*60
 
-			if not os.path.exists(PATH_MODEL + model_name_dir):
-				os.mkdir(PATH_MODEL + model_name_dir)
-			if not os.path.exists(PATH_IMAGES + model_name_dir):
-				os.mkdir(PATH_IMAGES + model_name_dir)
-			start = time.time()
-			print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
-		 	if tf_type == 'stft':
-		 		model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
-		 	else:
-		 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
-		 		# model = my_keras_models.build_overfitting_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
-		 	until = time.time()
-		 	print "--- keras model was built, took %d seconds ---" % (until-start)
+		if not os.path.exists(PATH_MODEL + model_name_dir):
+			os.mkdir(PATH_MODEL + model_name_dir)
+		if not os.path.exists(PATH_IMAGES + model_name_dir):
+			os.mkdir(PATH_IMAGES + model_name_dir)
+		start = time.time()
+		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
+	 	if tf_type == 'stft':
+	 		model = my_keras_models.build_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 	else:
+	 		model = my_keras_models.build_strict_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
+	 		# model = my_keras_models.build_overfitting_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers)
+	 	until = time.time()
+	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
-			#prepare callbacks
-			checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=False)
-			weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
-			history = my_keras_utils.History_Regression_Val()
-			early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0)
-			#train!
-			my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', normalize='local', mono=False)
-			predicted = model.predict(train_x, batch_size=40)
-			np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
+		#prepare callbacks
+		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=False)
+		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
+		history = my_keras_utils.History_Regression_Val()
+		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0)
+		#train!
+		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', normalize='local', mono=False)
+		predicted = model.predict(train_x, batch_size=40)
+		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
 
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
-			# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
-			#test
-			loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
-			predicted = model.predict(test_x, batch_size=40)
-			#save results
-			model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) 
-			
-			np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
-			np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
-			np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
-			
-			my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
-			my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='', normalize='local', mono=False)
+		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+		# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
+		#test
+		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
+		predicted = model.predict(test_x, batch_size=40)
+		#save results
+		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) 
+		
+		np.save(PATH_RESULTS + fileout + '_history.npy', [history.losses, history.val_losses])
+		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
+		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
+		
+		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
+		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='', normalize='local', mono=False)
 		
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
