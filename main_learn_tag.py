@@ -185,7 +185,7 @@ if __name__ == "__main__":
 	# nb_epoch = 1
 	clips_per_song = 3
 	# label matrix
-	dim_latent_feature = 10
+	dim_latent_feature = 3
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
 	label_matrix_filename = (FILE_DICT["mood_latent_tfidf_matrix"] % dim_latent_feature) # tfidf is better!
 	
@@ -204,7 +204,7 @@ if __name__ == "__main__":
 	print "I'll take %d clips for each song." % clips_per_song
 	train_x, train_y, valid_x, valid_y, test_x, test_y = load_all_sets(label_matrix=label_matrix, clips_per_song=clips_per_song, num_train_songs=num_train_songs, tf_type=tf_type)
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
-
+	pdb.set_trace()
 	# learning_id =  str(np.random.randint(999999))
 
 	for num_layers in num_layers_list:

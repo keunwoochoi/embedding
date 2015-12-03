@@ -79,7 +79,7 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear', W_regularizer=keras.regularizers.l1(0.01)))
-	rmsprop = RMSprop(lr=1e-7, rho=0.9, epsilon=1e-6)
+	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_squared_error', optimizer=rmsprop) # mean_absolute_error, mean_squared_error, ...
 	print '--- complie fin. ---'
