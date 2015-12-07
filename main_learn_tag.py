@@ -5,7 +5,7 @@
 from constants import *
 from environments import *
 import numpy as np
-import librosa
+
 import keras
 import os
 import pdb
@@ -22,13 +22,14 @@ class File_Manager():
 		self.id_path = cP.load(open(PATH_DATA + FILE_DICT["id_path"], 'r')) #dict, 9320
 		self.filenum = len(self.track_ids)
 		print "file manager init with %d track ids and %d element dictionary " % (self.filenum, len(self.id_path))
-
+	'''
 	def load_src(self, ind):
+		import librosa
 		if ind > len(self.track_ids):
 			print 'wrong ind -- too large: %d' % ind
 		path = self.id_path[self.track_ids[ind]]
 		return librosa.load(path, sr=SR, mono=False)
-
+	'''
 	def load_stft(self, ind):
 		return np.load( PATH_STFT + str(self.track_ids[ind]) + '.npy')
 

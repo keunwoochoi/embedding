@@ -1,7 +1,6 @@
 from constants import *
 from environments import *
 import numpy as np
-import librosa
 import keras
 import os
 import pdb
@@ -69,7 +68,7 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 	for i in xrange(num_layers):
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='tanh' ))
-		else:
+		else:ㅂ 
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='tanh'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
 
