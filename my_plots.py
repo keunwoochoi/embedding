@@ -3,7 +3,8 @@ matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
-from scipy.misc import imsave
+# from scipy.misc import imsave
+from numpngw import write_png
 import numpy.ma as ma
 
 def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history.png'):
@@ -123,20 +124,20 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 		W = W[:,ind,:,:]
 		filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
 		mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
-		imsave(save_path + filename, mosaic)
+		write_png(save_path + filename, mosaic)
 
 	else:
 		ind = 0
 		W_left = W[:,ind,:,:]
 		filename = 'weights_left_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
 		mosaic = make_mosaic(imgs=W_left, normalize=normalize, border=2)
-		imsave(save_path + filename, mosaic)
+		write_png(save_path + filename, mosaic)
 
 		ind = 1
 		W_right = W[:,ind,:,:]
 		filename = 'weights_righ_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
 		mosaic = make_mosaic(imgs=W_right, normalize=normalize, border=2)
-		imsave(save_path + filename, mosaic)
+		write_png(save_path + filename, mosaic)
 
 
 
