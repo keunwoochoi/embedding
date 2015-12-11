@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 """
 It prepares stft and cqt representation.
 It is recommended to rather use this file independetly than import -- because it's clearer!
