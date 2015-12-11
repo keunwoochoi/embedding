@@ -278,7 +278,7 @@ def get_tfidf():
 
 
 if __name__=="__main__":
-	
+
 	# preprocess() # read text file and generate dictionaries.
 	
 	if False and "if in a case I'd like to convert more songs or other transformations":
@@ -317,6 +317,9 @@ if __name__=="__main__":
 
 	# structural segmentation
 	if False or 'after understand input arguments of msaf':
+		# temporary, to test my msaf modification.
+		sys.path.append('/homes/kc306/modules/msaf')
+
 		import msaf
 		track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 		dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
