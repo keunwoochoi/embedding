@@ -306,7 +306,7 @@ if __name__=="__main__":
 				W = get_LSI(X=mood_tags_matrix, num_components=k, show_topics=True)
 				np.save(PATH_DATA + filename_out, W)
 	# analysis - LDA 
-	if False or "it is already done.":
+	if False and "it is already done.":
 		for k in xrange(2,21):
 			filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k
 			if os.path.exists(PATH_DATA + filename_out):
@@ -321,6 +321,7 @@ if __name__=="__main__":
 	# structural segmentation
 	if False or 'after understand input arguments of msaf':
 		# temporary, to test my msaf modification.
+		sys.path.append('/homes/kc306/modules/msaf')
 		sys.path.append('/homes/kc306/modules/msaf')
 
 		import msaf
