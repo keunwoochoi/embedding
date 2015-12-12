@@ -332,9 +332,9 @@ if __name__=="__main__":
 		dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 
 		start = time.clock()
-		for track_id in track_ids[0:]:
+		for track_id in track_ids[0:1]:
 			print '...for ' + PATH_ILM_AUDIO + dict_id_path[track_id]
-			# boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save_json=False)
+			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save_json=False)
 			print 'msaf: cnmf done'
 		until = time.clock()
 		time_cnmf = until - start
