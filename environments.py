@@ -16,7 +16,7 @@ else:
 		isDT = False
 	elif device_name == "keunwoo-dt-ubuntu":
 		isMac = False
-		isDt = True
+		isDT = True
 
 if isServer:
 	print "THIS IS A SERVER NAMED %s" % device_name
