@@ -333,6 +333,7 @@ if __name__=="__main__":
 
 		start = time.clock()
 		for track_id in track_ids[0:10]:
+			print '...for ' + PATH_ILM_AUDIO + dict_id_path[track_id]
 			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save_json=False)
 			print 'msaf: cnmf done'
 		until = time.clock()
