@@ -292,10 +292,12 @@ if __name__=="__main__":
 
 	# [0] analysis.
 	# mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+	print '## LSI?'
 	if False and "it is already done.":
 		for k in [2, 3, 5, 10, 20]:
 	 		get_LSI(X=mood_tags_matrix, num_components=k)
 
+	print '## LSI???'
 	# [1] analysis - LSI
 	if False and "it is already done.":
 		for k in [2,3,5,10,20]:
@@ -305,6 +307,8 @@ if __name__=="__main__":
 			else:
 				W = get_LSI(X=mood_tags_matrix, num_components=k, show_topics=True)
 				np.save(PATH_DATA + filename_out, W)
+	
+	print '## LDA?'
 	# analysis - LDA 
 	if False and "it is already done.":
 		for k in xrange(2,21):
@@ -317,12 +321,9 @@ if __name__=="__main__":
 					W[ind,:] = W[ind,:]/np.linalg.norm(W[ind,:])
 
 				np.save(PATH_DATA + filename_out, W)
-
+	print '## structure segmentation?'
 	# structural segmentation
 	if False or 'after understand input arguments of msaf':
-		# temporary, to test my msaf modification.
-		sys.path.append('/homes/kc306/modules/msaf')
-		sys.path.append('/homes/kc306/modules/msaf')
 		print 'start using msaf'
 		import msaf
 		track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
