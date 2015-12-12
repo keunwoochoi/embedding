@@ -323,7 +323,7 @@ if __name__=="__main__":
 		# temporary, to test my msaf modification.
 		sys.path.append('/homes/kc306/modules/msaf')
 		sys.path.append('/homes/kc306/modules/msaf')
-
+		print 'start using msaf'
 		import msaf
 		track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 		dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
@@ -331,11 +331,13 @@ if __name__=="__main__":
 		start = time.clock()
 		for track_id in track_ids[0:10]:
 			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save_json=False)
+			print 'msaf: cnmf done'
 		until = time.clock()
 		time_cnmf = until - start
 		start = time.clock()
 		for track_id in track_ids[0:10]:
 			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="cnmf", save_json=False)
+			print 'msaf: scluster done'
 		until = time.clock()
 		time_scluster = until - start
 		print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
