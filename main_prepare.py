@@ -288,6 +288,8 @@ if __name__=="__main__":
 		prepare_transforms(sys.argv)
 
 	# tf-idf
+	print '## tf-idf?'
+	if False and "it is done."
 	mood_tags_tfidf_matrix = get_tfidf()
 
 	# [0] analysis.
