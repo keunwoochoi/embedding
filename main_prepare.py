@@ -289,8 +289,8 @@ if __name__=="__main__":
 
 	# tf-idf
 	print '## tf-idf?'
-	if False and "it is done."
-	mood_tags_tfidf_matrix = get_tfidf()
+	if False and "it is done.":
+		mood_tags_tfidf_matrix = get_tfidf()
 
 	# [0] analysis.
 	# mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
