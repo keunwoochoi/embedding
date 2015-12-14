@@ -284,7 +284,7 @@ if __name__=="__main__":
 
 	# preprocess() # read text file and generate dictionaries.
 	
-	if False and "if in a case I'd like to convert more songs or other transformations":
+	if False and "if in a case I'd like to convert more songs or other transformations ":
 		prepare_transforms(sys.argv)
 
 	# tf-idf
@@ -296,7 +296,7 @@ if __name__=="__main__":
 	# mood_tags_matrix = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
 	print '## LSI?'
 	if False and "it is already done.":
-		for k in [2, 3, 5, 10, 20]:
+		for k in [2,3,5,10,20]:
 	 		get_LSI(X=mood_tags_matrix, num_components=k)
 
 	print '## LSI???'
@@ -332,18 +332,20 @@ if __name__=="__main__":
 		dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 
 		start = time.clock()
-		for track_id in track_ids[0:1]:
+		for track_id in track_ids[0:10]:
 			print '...for ' + PATH_ILM_AUDIO + dict_id_path[track_id]
-			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf", save_json=False)
+			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf")
 			print 'msaf: cnmf done'
 		until = time.clock()
 		time_cnmf = until - start
 		start = time.clock()
 		for track_id in track_ids[0:10]:
-			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="scluster", save_json=False)
+			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="scluster")
 			print 'msaf: scluster done'
 		until = time.clock()
 		time_scluster = until - start
 		print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
+
+
 
 
