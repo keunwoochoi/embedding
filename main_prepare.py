@@ -335,7 +335,7 @@ if __name__=="__main__":
 
 	# preprocess() # read text file and generate dictionaries.
 	
-	if False and "if in a case I'd like to convert more songs or other transformations ":
+	if False or "if in a case I'd like to convert more songs or other transformations ":
 		prepare_transforms(sys.argv)
 
 	# tf-idf
