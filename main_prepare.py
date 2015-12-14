@@ -375,6 +375,7 @@ if __name__=="__main__":
 
 				np.save(PATH_DATA + filename_out, W)
 	print '## structure segmentation?'
+	sys.exit(0)
 	# structural segmentation
 	if False or 'after understand input arguments of msaf':
 		print 'start using msaf'
