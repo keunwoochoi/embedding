@@ -114,7 +114,7 @@ def do_chroma_cqt(CQT, track_id):
 		                                     hop_length=HOP_LEN, bins_per_octave=24)
 	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[0,:,:]+CQT[1,:,:], 
 		                                     hop_length=HOP_LEN, bins_per_octave=24)
-	np.save(PATH_CHROMA, str(track_id)+'.npy', np.dstack((chroma_left, chroma_right, chroma_mono)))
+	np.save(PATH_CHROMA+str(track_id)+'.npy', np.dstack((chroma_left, chroma_right, chroma_mono)))
 	print "Done: %s, chroma" % str(track_id)
 
 
