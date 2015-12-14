@@ -82,6 +82,9 @@ def do_mfcc(src, track_id):
 	mfcc_left = librosa.feature.mfcc(src[0,:], sr=SR, n_mfcc=20)
 	mfcc_right= librosa.feature.mfcc(src[1,:], sr=SR, n_mfcc=20)
 	mfcc_mono = librosa.feature.mfcc(0.5*(src[0,:]+src[1,:]), sr=SR, n_mfcc=20)
+	mfcc_left = mfcc_left[1:, :]
+	mfcc_right= mfcc_right[1:, :]
+	mfcc_mono = mfcc_mono[1:, :]
 	np.save(PATH_MFCC + str(track_id) + '.npy', np.dstack((mfcc_left, mfcc_right, mfcc_mono)))
 	print "Done: %s, mfcc" % str(track_id)
 
@@ -108,11 +111,11 @@ def do_chroma_cqt(CQT, track_id):
 	input CQT: log-amplitude.
 	'''
 	CQT = 10**(0.1*np.sqrt(CQT)) # log_am --> linear (with ref_power=1.0)
-	chroma_left = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[0,:,:], 
+	chroma_left = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[:,:,0], 
 		                                     hop_length=HOP_LEN, bins_per_octave=24)
-	chroma_right= librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[1,:,:], 
+	chroma_right= librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[:,:,1], 
 		                                     hop_length=HOP_LEN, bins_per_octave=24)
-	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[0,:,:]+CQT[1,:,:], 
+	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[:,:,0]+CQT[:,:,0], 
 		                                     hop_length=HOP_LEN, bins_per_octave=24)
 	np.save(PATH_CHROMA+str(track_id)+'.npy', np.dstack((chroma_left, chroma_right, chroma_mono)))
 	print "Done: %s, chroma" % str(track_id)
@@ -218,8 +221,9 @@ def prepare_transforms(arguments):
 		print "filename number_core, [number_index](0-5), [STFT or CQT] [test or real]."
 		print "number of index is based on 0"
 		print "This enables to run this code over many school servers."
-		print "ex) $ python main_prepare 12 0 cqt real     in server 1," 
-		print "ex) $ python main_prepare 12 1 cqt real     in server 2 "
+		print "ex) $ python main_prepare.py 12 0 cqt real     in server 1," 
+		print "ex) $ python main_prepare.py 12 1 cqt real     in server 2 "
+		print "ex) $ python main_prepare.py 12 -1 cqt real    --> with -1, it will do the whole set."
 
 	if len(arguments) < 5:
 		print_usage()
