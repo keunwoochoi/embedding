@@ -147,7 +147,7 @@ def do_load_mfcc(track_id):
 def do_load_chroma(track_id):
 	''''''
 	def load_cqt(track_id):
-	return np.load(PATH_CQT + str(track_id) + '.npy')
+		return np.load(PATH_CQT + str(track_id) + '.npy')
 	''''''
 	if os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
 		print "mfcc:skip this id: %d, it's already there!" % track_id
