@@ -77,17 +77,46 @@ def preprocess():
 	'''int, int, string(stft or cqt)'''
 	print '---preprocess: done---'
 
+def do_mfcc(src, track_id):
+	'''src would be stereo for ilm10k.'''
+	mfcc_left = librosa.feature.mfcc(src[0,:], sr=SR, n_mfcc=20)
+	mfcc_right= librosa.feature.mfcc(src[1,:], sr=SR, n_mfcc=20)
+	mfcc_mono = librosa.feature.mfcc(0.5*(src[0,:]+src[1,:]), sr=SR, n_mfcc=20)
+	np.save(PATH_MFCC + str(track_id) + '.npy', np.dstack((mfcc_left, mfcc_right, mfcc_mono)))
+	print "Done: %s, mfcc" % str(track_id)
+
 def do_stft(src, track_id):
 	SRC_L = librosa.stft(src[0,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
 	SRC_R = librosa.stft(src[1,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
-	np.save( PATH_STFT + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
+	np.save(PATH_STFT + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
 	print "Done: %s" % str(track_id)
 
 def do_cqt(src, track_id):
-	SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
-	SRC_cqt_R = librosa.logamplitude(librosa.cqt(src[1,:], sr=SR, hop_length=HOP_LEN, bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
-	np.save( PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)) )
+	SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=SR, hop_length=HOP_LEN, 
+		                             bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
+	SRC_cqt_R = librosa.logamplitude(librosa.cqt(src[1,:], sr=SR, hop_length=HOP_LEN, 
+		                             bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
+	np.save(PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)))
 	print "Done: %s" % str(track_id)
+
+def do_chroma_cqt(CQT, track_id):
+	'''compute chroma feature from CQT representation (stereo)
+	unlike other 'do' methods, this load uses CQT.
+	There are two output files. one os usual chroma, the other is a
+	double-unwrapped chroma (DU-Chroma)
+
+	input CQT: log-amplitude.
+	'''
+	CQT = 10**(0.1*np.sqrt(CQT)) # log_am --> linear (with ref_power=1.0)
+	chroma_left = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[0,:,:], 
+		                                     hop_length=HOP_LEN, bins_per_octave=24)
+	chroma_right= librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[1,:,:], 
+		                                     hop_length=HOP_LEN, bins_per_octave=24)
+	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[0,:,:]+CQT[1,:,:], 
+		                                     hop_length=HOP_LEN, bins_per_octave=24)
+	np.save(PATH_CHROMA, str(track_id)+'.npy', np.dstack((chroma_left, chroma_right, chroma_mono)))
+	print "Done: %s, chroma" % str(track_id)
+
 
 def do_load(track_id):
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
@@ -107,6 +136,24 @@ def do_load_cqt(track_id):
 	else:
 		src, sr = do_load(track_id)
 		do_cqt(src, track_id)
+
+def do_load_mfcc(track_id):
+	if os.path.exists(PATH_MFCC + str(track_id) + '.npy'):
+		print "mfcc:skip this id: %d, it's already there!" % track_id
+	else:
+		src, sr = do_load(track_id)
+		do_mfcc(src, track_id)	
+
+def do_load_chroma(track_id):
+	''''''
+	def load_cqt(track_id):
+	return np.load(PATH_CQT + str(track_id) + '.npy')
+	''''''
+	if os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
+		print "mfcc:skip this id: %d, it's already there!" % track_id
+	else:
+		CQT = load_cqt(track_id)
+		do_chroma_cqt(CQT, track_id)	
 
 def do_load_stft_cqt(track_id):
 	if os.path.exists(PATH_CQT + str(track_id) + '.npy') and os.path.exists(PATH_STFT + str(track_id) + '.npy'):
@@ -152,6 +199,10 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 		p.map(do_load_cqt, track_ids_here)
 	elif task == 'stft_cqt':
 		p.map(do_load_stft_cqt, track_ids_here)
+	elif task == 'mfcc':
+		p.map(do_load_mfcc, track_ids_here)
+	elif task == 'chroma':
+		p.map(do_load_chroma, track_ids_here)	
 	else:
 		pass
 	
@@ -178,8 +229,8 @@ def prepare_transforms(arguments):
 	task = arguments[3].lower()
 	print num_process, " processes"
 	
-	if task not in ['stft', 'cqt']:
-		print 'wrong argument, choose stft or cqt'
+	if task not in ['stft', 'cqt', 'mfcc', 'chroma']:
+		print 'wrong argument, choose stft, cqt, mfcc, chroma'
 		sys.exit()
 	if arguments[4] == 'test':
 		prepare_transforms_detail(num_process, ind_process, task, isTest=True)
