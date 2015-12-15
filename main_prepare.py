@@ -86,7 +86,7 @@ def do_mfcc(src, track_id):
 			'''return a same-sized, derivative of mfcc.'''
 			len_freq, num_fr = mfcc.shape()
 			mfcc = np.hstack((np.zeros((len_freq, 1)), mfcc))
-			return mfcc[:, 1:] - mfcc(:, :-1)
+			return mfcc[:, 1:] - mfcc[:, :-1]
 		d_mfcc = get_derivative_mfcc(mfcc)
 		return np.vstack((mfcc, d_mfcc, get_derivative_mfcc(d_mfcc)))
 
