@@ -79,12 +79,27 @@ def preprocess():
 
 def do_mfcc(src, track_id):
 	'''src would be stereo for ilm10k.'''
+	def augment_mfcc(mfcc):
+		'''concatenate d-mfcc and dd-mfcc.
+		mfcc: numpy 2d array.'''
+		def get_derivative_mfcc(mfcc):
+			'''return a same-sized, derivative of mfcc.'''
+			len_freq, num_fr = mfcc.shape()
+			mfcc = np.hstack((np.zeros((len_freq, 1)), mfcc))
+			return mfcc[:, 1:] - mfcc(:, :-1)
+		d_mfcc = get_derivative_mfcc(mfcc)
+		return np.vstack((mfcc, d_mfcc, get_derivative_mfcc(d_mfcc)))
+
 	mfcc_left = librosa.feature.mfcc(src[0,:], sr=SR, n_mfcc=20)
 	mfcc_right= librosa.feature.mfcc(src[1,:], sr=SR, n_mfcc=20)
 	mfcc_mono = librosa.feature.mfcc(0.5*(src[0,:]+src[1,:]), sr=SR, n_mfcc=20)
-	mfcc_left = mfcc_left[1:, :]
+	mfcc_left = mfcc_left[1:, :] # remove the first coeff.
 	mfcc_right= mfcc_right[1:, :]
 	mfcc_mono = mfcc_mono[1:, :]
+	mfcc_left = augment_mfcc(mfcc_left)
+	mfcc_right= augment_mfcc(mfcc_right)
+	mfcc_mono = augment_mfcc(mfcc_mono)
+
 	np.save(PATH_MFCC + str(track_id) + '.npy', np.dstack((mfcc_left, mfcc_right, mfcc_mono)))
 	print "Done: %s, mfcc" % str(track_id)
 
