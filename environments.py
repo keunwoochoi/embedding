@@ -27,7 +27,7 @@ elif device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave', 'big-b
 else:
 	isMacPro = False
 	isServer = False
-	elif device_name == "keunwoo-dt-ubuntu":
+	if device_name == "keunwoo-dt-ubuntu":
 		isMacbook = False
 		isDT1 = True
 		isDT2 = False
