@@ -147,7 +147,7 @@ def do_pitchgram(CQT, track_id):
 	log-harmonigram or something.
 	returns a CQT that is re-ordered in frequency band.
 	'''
-	ret = np.zeros((CQT.shape))
+	ret = np.zeros(CQT.shape)
 	for depth_cqt in xrange(CQT.shape[2]):
 		for octave in xrange(CQT_CONST["num_octave"]):
 			for bin in xrange(CQT_CONST["bins_per_octave"]):
@@ -162,7 +162,8 @@ def do_HPS_on_CQT(CQT, track_id):
 		input CQT: log-amplitude.
 	'''
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
-	ret_H, ret_P = np.zeros(CQT.shape), np.zeros(CQT.shape)
+	ret_H = np.zeros(CQT.shape)
+	ret_P = np.zeros(CQT.shape)
 	for depth_cqt in xrange(CQT.shape[2]):
 		ret_H[:,:,depth_cqt], ret_P[:,:,depth_cqt] = librosa.decompose.hpss(CQT)
 	np.save(PATH_CQT_H+str(track_id)+'.npy', librosa.logamplitude(ret_H))
