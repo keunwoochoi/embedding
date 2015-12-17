@@ -74,7 +74,7 @@ PATH_RESULTS= PATH_WORK + 'results/'
 
 for path in [PATH_DATA, PATH_MODEL, PATH_SENTI, PATH_IMAGES, 
              PATH_FIGURE, PATH_RESULTS, PATH_MFCC, PATH_CHROMA,
-             PATH_HGRAM, PATH_PGRAM]:
+             PATH_HGRAM, PATH_PGRAM, PATH_CQT, PATH_STFT]:
 	if not os.path.exists(path):
 		os.mkdir(path)
 
