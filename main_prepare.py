@@ -338,8 +338,8 @@ def prepare_transforms(arguments):
 	task = arguments[3].lower()
 	print num_process, " processes"
 	
-	if task not in ['stft', 'cqt', 'mfcc', 'chroma']:
-		print 'wrong argument, choose stft, cqt, mfcc, chroma'
+	if task not in ['stft', 'cqt', 'mfcc', 'chroma', 'hgram', 'pgram', 'hps_on_cqt']:
+		print 'wrong argument, choose stft, cqt, mfcc, chroma, hgram, pgram, hps_on_cqt'
 		sys.exit()
 	if arguments[4] == 'test':
 		prepare_transforms_detail(num_process, ind_process, task, isTest=True)
