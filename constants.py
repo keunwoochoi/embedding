@@ -21,3 +21,11 @@ FILE_DICT["mood_topics_strings"] = "mood_%d_topics.cP" # list of list of topic w
 FILE_DICT["mood_embeddings"] = "moodname_embeddings.cP" # dictionary
 FILE_DICT["sentiment_big_dict"] = "sentiment_dictionary.cP" # big one
 FILE_DICT["mood_sentiment"] = "sentiment_mood_dictionary.cP" # Mood_Sentiment class, only has my mood lists <100
+
+CQT_CONST = {}
+CQT_CONST["hop_len"] = 512
+CQT_CONST["num_octaves"] = 7
+CQT_CONST["bins_per_note"] = 2
+CQT_CONST["bins_per_octave"] = CQT_CONST["bins_per_note"]*12
+CQT_CONST["sr"] = SR
+CQT_CONST["n_bins"] = CQT_CONST["bins_per_octave"]*CQT_CONST["num_octaves"]

@@ -202,3 +202,33 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 	model.compile(loss='mean_absolute_error', optimizer=rmsprop) # mean_absolute_error, mean_squared_error, ...
 	print '--- complie fin. ---'
 	return model
+
+def build_whole_graph():
+	'''A graph model that takes advantages of
+	 - CQT 
+	 - chromagram
+	 - harmonigram
+	 - pitchgram
+	 - MFCC & friends
+	 - '''
+ 	from keras.models import Graph
+	from keras.layers.core import Dense, Dropout, Activation, Flatten
+	from keras.layers.convolutional import Convolution2D, MaxPooling2D
+	from keras.optimizers import RMSprop, SGD
+	from keras.layers.normalization import LRN2D
+
+	graph = Graph()
+	graph.add_input(name='cqt_all_mono', input_shape=(blah))
+	graph.add_input(name='cqt_har_mono', input_shape=(blah))
+	graph.add_input(name='cqt_per_mono', input_shape=(blah))
+	graph.add_input(name='mfcc_mono', input_shape=(19*3, ))
+	graph_add_input(name='pitchgram_mono', input_shape=())
+	graph_add_input(name='harmonigram_mono', input_shape=())
+
+	
+
+
+
+
+
+	

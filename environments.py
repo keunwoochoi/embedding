@@ -4,21 +4,35 @@ import sys
 
 device_name = platform.node()
 
-if device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave', 'big-bird']:
+if device_name.startswith('ewert-server'):
+	isMacPro = True
+	isServer = False
+	isMacbook= False
+	isDT     = False
+
+elif device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave', 'big-bird']:
+	isMacPro = False
 	isServer = True
-	isMac = False
-	isDT = False
+	isMacbook= False
+	isDT 	 = False
 
 else:
+	isMacPro = False
 	isServer = False
+
 	if device_name in["KChoiMBPR2013.local", "lt91-51"]:
-		isMac = True
+		isMacbook = True
 		isDT = False
 	elif device_name == "keunwoo-dt-ubuntu":
-		isMac = False
+		isMacbook = False
 		isDT = True
 
-if isServer:
+if isMacPro:
+	print "This is MacPro in CS.319"
+	PATH_IMPORT = '/Users/keunwoo/mnt/c4dm'
+	PATH_HOME   = '/Users/keunwoo/mnt/kc306home'
+
+elif isServer:
 	print "THIS IS A SERVER NAMED %s" % device_name
 
 	PATH_IMPORT = '/import/'	
@@ -29,8 +43,8 @@ elif isDT:
 	PATH_IMPORT = '/mnt/c4dm/'
 	PATH_HOME   = '/mnt/kc306home/'
 
-elif isMac:
-	print "Do not use Mac for computation!"
+elif isMacbook:
+	print "Do not use MacbookPro for computation!"
 
 PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
 PATH_CQT  = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
@@ -43,6 +57,8 @@ PATH_ILM_AUDIO = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_copy/'
 
 PATH_MFCC = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/mfcc20/'
 PATH_CHROMA = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/chroma/'
+PATH_HGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/harmonigram/'
+PATH_PGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/pitchgram/'
 
 PATH_ILM_META = PATH_ILM + 'metadata/'
 
@@ -57,7 +73,8 @@ PATH_FIGURE = PATH_WORK + 'figures/'
 PATH_RESULTS= PATH_WORK + 'results/'
 
 for path in [PATH_DATA, PATH_MODEL, PATH_SENTI, PATH_IMAGES, 
-             PATH_FIGURE, PATH_RESULTS, PATH_MFCC, PATH_CHROMA]:
+             PATH_FIGURE, PATH_RESULTS, PATH_MFCC, PATH_CHROMA,
+             PATH_HGRAM, PATH_PGRAM]:
 	if not os.path.exists(path):
 		os.mkdir(path)
 

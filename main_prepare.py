@@ -110,62 +110,110 @@ def do_stft(src, track_id):
 	print "Done: %s" % str(track_id)
 
 def do_cqt(src, track_id):
-	SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=SR, hop_length=HOP_LEN, 
-		                             bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
-	SRC_cqt_R = librosa.logamplitude(librosa.cqt(src[1,:], sr=SR, hop_length=HOP_LEN, 
-		                             bins_per_octave=24, n_bins=24*7)**2, ref_power=1.0)
+	SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=CQT_CONST["sr"], 
+									 hop_length=CQT_CONST["hop_len"], 
+		                             bins_per_octave=CQT_CONST["bins_per_octave"], 
+		                             n_bins=CQT_CONST["n_bins"])**2, ref_power=1.0)
+	SRC_cqt_R = librosa.logamplitude(librosa.cqt(src[1,:], sr=CQT_CONST["sr"], 
+									 hop_length=CQT_CONST["hop_len"], 
+		                             bins_per_octave=CQT_CONST["bins_per_octave"], 
+		                             n_bins=CQT_CONST["n_bins"])**2, ref_power=1.0)
 	np.save(PATH_CQT + str(track_id) + '.npy', np.dstack((SRC_cqt_L, SRC_cqt_R)))
 	print "Done: %s" % str(track_id)
 
 def do_chroma_cqt(CQT, track_id):
 	'''compute chroma feature from CQT representation (stereo)
 	unlike other 'do' methods, this load uses CQT.
-	There are two output files. one os usual chroma, the other is a
-	double-unwrapped chroma (DU-Chroma)
 
 	input CQT: log-amplitude.
 	'''
 	CQT = 10**(0.1*np.sqrt(CQT)) # log_am --> linear (with ref_power=1.0)
-	chroma_left = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[:,:,0], 
-		                                     hop_length=HOP_LEN, bins_per_octave=24)
-	chroma_right= librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[:,:,1], 
-		                                     hop_length=HOP_LEN, bins_per_octave=24)
-	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=SR, C=CQT[:,:,0]+CQT[:,:,0], 
-		                                     hop_length=HOP_LEN, bins_per_octave=24)
-	np.save(PATH_CHROMA+str(track_id)+'.npy', np.dstack((chroma_left, chroma_right, chroma_mono)))
+	chroma_left = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0], 
+		                                     hop_length=CQT_CONST["hop_len"], 
+		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
+	chroma_right= librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,1], 
+		                                     hop_length=CQT_CONST["hop_len"], 
+		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
+	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0]+CQT[:,:,0], 
+		                                     hop_length=CQT_CONST["hop_len"], 
+		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
+
+	np.save(PATH_CHROMA+str(track_id)+'.npy', 
+			librosa.logamplitude(np.dstack((chroma_left, chroma_right, chroma_mono))))
 	print "Done: %s, chroma" % str(track_id)
 
+def do_pitchgram(CQT, track_id):
+	'''new way of representation, should be called as 
+	log-harmonigram or something.
+	returns a CQT that is re-ordered in frequency band.
+	'''
+	ret = np.zeros((CQT.shape))
+	for depth_cqt in CQT.shape[2]:
+		for octave in xrange(CQT_CONST["num_octave"]):
+			for bin in xrange(CQT_CONST["bins_per_octave"]):
+				cqt_bin_idx = octave*CQT_CONST["bins_per_octave"]+bin
+				ret_bin_idx = bin*CQT_CONST["num_octave"] + octave
+				ret[ret_bin_idx, :] = CQT[cqt_bin_idx, :, depth_cqt]
+	np.save(PATH_PGRAM+str(track_id)+'.npy', ret)
+	print "Done: %s, Pitchgram - pitch class collection on cqt" % str(track_id)
 
-def do_load(track_id):
+def do_harmonigram(STFT, track_id, sr, n_fft):
+	'''
+	harmonigram 
+	STFT.shape = (n_fft/2+1, num_frame, 3) # for left, right, and mono.
+	'''
+	f_min = 110
+	f_max = 880
+	f_gap = float(sr) / n_fft
+	idx_min = np.ceil(f_min/f_gap) + 1
+	idx_max = np.ceil(f_max/f_gap)
+	num_ret_bin = idx_max - idx_min + 1
+	ret_shape = STFT.shape
+	ret_shape[0] = num_ret_bin 
+	ret = np.zeros(ret_shape)
+	
+	for ret_idx in range(num_ret_bin):
+		stft_idx = ret_idx + idx_min
+		gap_stft_idx = stft_idx - 1
+		while stft_idx < STFT.shape[0]:
+			ret[ret_idx, :, :] += STFT[stft_idx, :, :]
+			stft_idx += gap_stft_idx
+	np.save(PATH_HGRAM+str(track_id)+'.npy', ret)
+	print "Done: %s, Harmonigram - pitch class collection on cqt" % str(track_id)
+
+def load_src(track_id):
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
 	return src, sr
 
-def do_load_stft(track_id):
+def load_cqt(track_id):
+	return np.load(PATH_CQT + str(track_id) + '.npy')
+
+def load_stft(track_id):
+	return np.load(PATH_STFT + str(track_id) + '.npy')
+
+def process_stft(track_id):
 	if os.path.exists(PATH_STFT + str(track_id) + '.npy'):
 		print "stft: skip this id: %d, it's already there!" % track_id
 	else:
-		src, sr = do_load(track_id)
+		src, sr = load_src(track_id)
 		do_stft(src, track_id)
 
-def do_load_cqt(track_id):
+def process_cqt(track_id):
 	if os.path.exists(PATH_CQT + str(track_id) + '.npy'):
 		print "cqt :skip this id: %d, it's already there!" % track_id
 	else:
-		src, sr = do_load(track_id)
+		src, sr = load_src(track_id)
 		do_cqt(src, track_id)
 
-def do_load_mfcc(track_id):
+def process_mfcc(track_id):
 	if os.path.exists(PATH_MFCC + str(track_id) + '.npy'):
 		print "mfcc:skip this id: %d, it's already there!" % track_id
 	else:
-		src, sr = do_load(track_id)
+		src, sr = load_src(track_id)
 		do_mfcc(src, track_id)	
 
-def do_load_chroma(track_id):
-	''''''
-	def load_cqt(track_id):
-		return np.load(PATH_CQT + str(track_id) + '.npy')
+def process_chroma(track_id):
 	''''''
 	if os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
 		print "chroma:skip this id: %d, it's already there!" % track_id
@@ -173,17 +221,31 @@ def do_load_chroma(track_id):
 		CQT = load_cqt(track_id)
 		do_chroma_cqt(CQT, track_id)	
 
-def do_load_stft_cqt(track_id):
+def process_pitchgram(track_id):
+	if os.path.exists(PATH_PGRAM + str(track_id) + '.npy'):
+		print "pgram:skip this id: %d, it's already there!" % track_id
+	else:
+		CQT = load_cqt(track_id)
+		do_pitchgram(CQT, track_id)
+
+def process_harmonigram(track_id):
+	if os.path.exists(PATH_HGRAM + str(track_id) + '.npy'):
+		print "hgram:skip this id: %d, it's already there!" % track_id
+	else:
+		STFT = load_stft(track_id)
+		do_harmonigram(STFT, track_id, SR, N_FFT)
+
+def process_stft_cqt(track_id):
 	if os.path.exists(PATH_CQT + str(track_id) + '.npy') and os.path.exists(PATH_STFT + str(track_id) + '.npy'):
 		print "stft & cqt: skip this id: %d, it's already there!" % track_id
 	elif os.path.exists(PATH_CQT + str(track_id) + '.npy'):
-		src, sr = do_load(track_id)
+		src, sr = load_src(track_id)
 		do_stft(src, track_id)
 	elif os.path.exists(PATH_STFT + str(track_id) + '.npy'):
-		src, sr = do_load(track_id)
+		src, sr = load_src(track_id)
 		do_cqt(src, track_id)
 	else:
-		src, sr = do_load(track_id)
+		src, sr = load_src(track_id)
 		do_cqt(src, track_id)
 		do_stft(src, track_id)
 
@@ -212,15 +274,19 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 
 	p = Pool(num_process)
 	if task == 'stft':
-		p.map(do_load_stft, track_ids_here)
+		p.map(process_stft, track_ids_here)
 	elif task == 'cqt':
-		p.map(do_load_cqt, track_ids_here)
+		p.map(process_cqt, track_ids_here)
 	elif task == 'stft_cqt':
-		p.map(do_load_stft_cqt, track_ids_here)
+		p.map(process_stft_cqt, track_ids_here)
 	elif task == 'mfcc':
-		p.map(do_load_mfcc, track_ids_here)
+		p.map(process_mfcc, track_ids_here)
 	elif task == 'chroma':
-		p.map(do_load_chroma, track_ids_here)	
+		p.map(process_chroma, track_ids_here)	
+	elif task == 'hgram':
+		p.map(process_harmonigram, track_ids_here)	
+	elif task=='pgram':
+		p.map(process_pitchgram, track_ids_here)	
 	else:
 		pass
 	
