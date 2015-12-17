@@ -8,24 +8,33 @@ if device_name.startswith('ewert-server'):
 	isMacPro = True
 	isServer = False
 	isMacbook= False
-	isDT     = False
+	isDT1     = False
+	isDT2 	 = False
+elif device_name in["KChoiMBPR2013.local", "lt91-51", 'lt91-51.eecs.qmul.ac.uk']:
+	isMacPro = False
+	isServer = False
+	isMacbook = True
+	isDT1 = False
+	isDT2 = False
 
 elif device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave', 'big-bird']:
 	isMacPro = False
 	isServer = True
 	isMacbook= False
-	isDT 	 = False
+	isDT1 	 = False
+	isDT2 	 = False
 
 else:
 	isMacPro = False
 	isServer = False
-
-	if device_name in["KChoiMBPR2013.local", "lt91-51"]:
-		isMacbook = True
-		isDT = False
 	elif device_name == "keunwoo-dt-ubuntu":
 		isMacbook = False
-		isDT = True
+		isDT1 = True
+		isDT2 = False
+	elif device_name == "keunwoo-dt2":
+		isMacbook= False
+		isDT1 = False
+		isDT2 = True
 
 if isMacPro:
 	print "This is MacPro in CS.319"
@@ -38,13 +47,16 @@ elif isServer:
 	PATH_IMPORT = '/import/'	
 	PATH_HOME = "/homes/kc306/"
 
-elif isDT:
+elif isDT1:
 	print "You are using Ubuntu Desktop"
 	PATH_IMPORT = '/mnt/c4dm/'
 	PATH_HOME   = '/mnt/kc306home/'
 
 elif isMacbook:
-	print "Do not use MacbookPro for computation!"
+	print "Do not use MacbookPro for computation!...I hope."
+	PATH_IMPORT = '/Users/gnu/mnt/c4dm/'
+	PATH_HOME   = '/Users/gnu/mnt/kc306home/'
+
 
 PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
 PATH_CQT  = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
