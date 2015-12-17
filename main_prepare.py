@@ -157,16 +157,29 @@ def do_pitchgram(CQT, track_id):
 	np.save(PATH_PGRAM+str(track_id)+'.npy', ret)
 	print "Done: %s, Pitchgram - pitch class collection on cqt" % str(track_id)
 
+def do_HPS_on_CQT(CQT, track_id):
+	'''HPS on CQT
+		input CQT: log-amplitude.
+	'''
+	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
+	ret_H, ret_P = np.zeros(CQT.shape), np.zeros(CQT.shape)
+	for depth_cqt in CQT.shape[2]:
+		ret_H[:,:,depth_cqt], ret_P[:,:,depth_cqt] = librosa.decompose.hpss(CQT)
+	np.save(PATH_CQT_H+str(track_id)+'.npy', ret_H)
+	np.save(PATH_CQT_H+str(track_id)+'.npy', ret_P)
+	print "Done: %d, HPS for CQT " % track_id
+
 def do_harmonigram(STFT, track_id, sr, n_fft):
 	'''
 	harmonigram 
 	STFT.shape = (n_fft/2+1, num_frame, 3) # for left, right, and mono.
+	not sure if I really need to use it. 
 	'''
 	f_min = 110
 	f_max = 880
 	f_gap = float(sr) / n_fft
-	idx_min = np.ceil(f_min/f_gap) + 1
-	idx_max = np.ceil(f_max/f_gap)
+	idx_min = int(np.ceil(f_min/f_gap) + 1)
+	idx_max = int(np.ceil(f_max/f_gap))
 	num_ret_bin = idx_max - idx_min + 1
 	ret_shape = STFT.shape
 	ret_shape[0] = num_ret_bin 
@@ -175,7 +188,8 @@ def do_harmonigram(STFT, track_id, sr, n_fft):
 	for ret_idx in range(num_ret_bin):
 		stft_idx = ret_idx + idx_min
 		gap_stft_idx = stft_idx - 1
-		while stft_idx < STFT.shape[0]:
+		
+		for count in range(11): #compute to 10-th harmonic. 
 			ret[ret_idx, :, :] += STFT[stft_idx, :, :]
 			stft_idx += gap_stft_idx
 	np.save(PATH_HGRAM+str(track_id)+'.npy', ret)
@@ -205,6 +219,13 @@ def process_cqt(track_id):
 	else:
 		src, sr = load_src(track_id)
 		do_cqt(src, track_id)
+
+def process_hps_on_cqt(track_id):
+	if os.path.exists(PATH_CQT_H + str(track_id) + '.npy') and os.path.exists(PATH_CQT_P + str(track_id) + '.npy'):
+		print "hps on cqt :skip this id: %d, it's already there!" % track_id
+	else:
+		CQT = load_cqt(track_id)
+		do_HPS_on_CQT(CQT, track_id)
 
 def process_mfcc(track_id):
 	if os.path.exists(PATH_MFCC + str(track_id) + '.npy'):
@@ -286,8 +307,11 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 	elif task == 'hgram':
 		p.map(process_harmonigram, track_ids_here)	
 	elif task=='pgram':
-		p.map(process_pitchgram, track_ids_here)	
+		p.map(process_pitchgram, track_ids_here)
+	elif task='hps_on_cqt':
+		p.map(process_hps_on_cqt, track_ids_here)
 	else:
+		print 'task name undefined: %s' % task
 		pass
 	
 	p.close()

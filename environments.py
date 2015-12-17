@@ -72,6 +72,9 @@ PATH_CHROMA = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/chroma/'
 PATH_HGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/harmonigram/'
 PATH_PGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/pitchgram/'
 
+PATH_CQT_H = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/cqt_harmony/'
+PATH_CQT_P = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/cqt_percussive/'
+
 PATH_ILM_META = PATH_ILM + 'metadata/'
 
 PATH_WORK = PATH_HOME + "embedding/"
@@ -86,7 +89,8 @@ PATH_RESULTS= PATH_WORK + 'results/'
 
 for path in [PATH_DATA, PATH_MODEL, PATH_SENTI, PATH_IMAGES, 
              PATH_FIGURE, PATH_RESULTS, PATH_MFCC, PATH_CHROMA,
-             PATH_HGRAM, PATH_PGRAM, PATH_CQT, PATH_STFT]:
+             PATH_HGRAM, PATH_PGRAM, PATH_CQT, PATH_STFT,
+             PATH_CQT_H, PATH_CQT_P]:
 	if not os.path.exists(path):
 		os.mkdir(path)
 
