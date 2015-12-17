@@ -257,6 +257,24 @@ def process_harmonigram(track_id):
 		STFT = load_stft(track_id)
 		do_harmonigram(STFT, track_id, SR, N_FFT)
 
+def process_all_about_cqt(track_id):
+	'''do hps_on_cqt, chroma, pitchgram'''
+	if os.path.exists(PATH_CQT_H + str(track_id) + '.npy'):
+		if os.path.exists(PATH_CQT_P + str(track_id) + '.npy'):
+			if os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
+				if os.path.exists(PATH_PGRAM + str(track_id) + '.npy'):
+					print "skip: %d" % track_id
+					return
+
+	CQT = load_cqt(track_id)
+	if not (os.path.exists(PATH_CQT_H + str(track_id) + '.npy') and os.path.exists(PATH_CQT_P + str(track_id) + '.npy')):
+		do_HPS_on_CQT(CQT, track_id)
+	if not os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
+		do_chroma_cqt(CQT, track_id)	
+	if not os.path.exists(PATH_PGRAM + str(track_id) + '.npy'):
+		do_pitchgram(CQT, track_id)
+	print "Done: %d all about cqt" % track_id
+
 def process_stft_cqt(track_id):
 	if os.path.exists(PATH_CQT + str(track_id) + '.npy') and os.path.exists(PATH_STFT + str(track_id) + '.npy'):
 		print "stft & cqt: skip this id: %d, it's already there!" % track_id
@@ -311,6 +329,8 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 		p.map(process_pitchgram, track_ids_here)
 	elif task=='hps_on_cqt':
 		p.map(process_hps_on_cqt, track_ids_here)
+	elif task=='all_about_cqt':
+		p.map(process_all_about_cqt, track_ids_here)
 	else:
 		print 'task name undefined: %s' % task
 		pass
@@ -339,8 +359,8 @@ def prepare_transforms(arguments):
 	task = arguments[3].lower()
 	print num_process, " processes"
 	
-	if task not in ['stft', 'cqt', 'mfcc', 'chroma', 'hgram', 'pgram', 'hps_on_cqt']:
-		print 'wrong argument, choose stft, cqt, mfcc, chroma, hgram, pgram, hps_on_cqt'
+	if task not in ['stft', 'cqt', 'mfcc', 'chroma', 'hgram', 'pgram', 'hps_on_cqt', 'all_about_cqt']:
+		print 'wrong argument, choose stft, cqt, mfcc, chroma, hgram, pgram, hps_on_cqt, all_about_cqt'
 		sys.exit()
 	if arguments[4] == 'test':
 		prepare_transforms_detail(num_process, ind_process, task, isTest=True)
