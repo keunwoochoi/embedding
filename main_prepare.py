@@ -308,7 +308,7 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 		p.map(process_harmonigram, track_ids_here)	
 	elif task=='pgram':
 		p.map(process_pitchgram, track_ids_here)
-	elif task='hps_on_cqt':
+	elif task=='hps_on_cqt':
 		p.map(process_hps_on_cqt, track_ids_here)
 	else:
 		print 'task name undefined: %s' % task
