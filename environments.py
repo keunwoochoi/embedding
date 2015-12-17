@@ -29,8 +29,8 @@ else:
 
 if isMacPro:
 	print "This is MacPro in CS.319"
-	PATH_IMPORT = '/Users/keunwoo/mnt/c4dm'
-	PATH_HOME   = '/Users/keunwoo/mnt/kc306home'
+	PATH_IMPORT = '/Users/keunwoo/mnt/c4dm/'
+	PATH_HOME   = '/Users/keunwoo/mnt/kc306home/'
 
 elif isServer:
 	print "THIS IS A SERVER NAMED %s" % device_name
