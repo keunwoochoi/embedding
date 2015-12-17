@@ -127,7 +127,7 @@ def do_chroma_cqt(CQT, track_id):
 
 	input CQT: log-amplitude.
 	'''
-	CQT = 10**(0.1*np.sqrt(CQT)) # log_am --> linear (with ref_power=1.0)
+	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
 	chroma_left = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0], 
 		                                     hop_length=CQT_CONST["hop_len"], 
 		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
