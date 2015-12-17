@@ -134,7 +134,7 @@ def do_chroma_cqt(CQT, track_id):
 	chroma_right= librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,1], 
 		                                     hop_length=CQT_CONST["hop_len"], 
 		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
-	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0]+CQT[:,:,0], 
+	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0]+CQT[:,:,1], 
 		                                     hop_length=CQT_CONST["hop_len"], 
 		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
 
