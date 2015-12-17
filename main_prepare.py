@@ -149,10 +149,10 @@ def do_pitchgram(CQT, track_id):
 	'''
 	ret = np.zeros(CQT.shape)
 	for depth_cqt in xrange(CQT.shape[2]):
-		for octave in xrange(CQT_CONST["num_octave"]):
+		for octave in xrange(CQT_CONST["num_octaves"]):
 			for bin in xrange(CQT_CONST["bins_per_octave"]):
 				cqt_bin_idx = octave*CQT_CONST["bins_per_octave"]+bin
-				ret_bin_idx = bin*CQT_CONST["num_octave"] + octave
+				ret_bin_idx = bin*CQT_CONST["num_octaves"] + octave
 				ret[ret_bin_idx, :] = CQT[cqt_bin_idx, :, depth_cqt]
 	np.save(PATH_PGRAM+str(track_id)+'.npy', ret)
 	print "Done: %s, Pitchgram - pitch class collection on cqt" % str(track_id)
