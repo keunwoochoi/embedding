@@ -165,7 +165,7 @@ def do_HPS_on_CQT(CQT, track_id):
 	ret_H = np.zeros(CQT.shape)
 	ret_P = np.zeros(CQT.shape)
 	for depth_cqt in xrange(CQT.shape[2]):
-		ret_H[:,:,depth_cqt], ret_P[:,:,depth_cqt] = librosa.decompose.hpss(CQT)
+		ret_H[:,:,depth_cqt], ret_P[:,:,depth_cqt] = librosa.decompose.hpss(CQT[:,:,depth_cqt])
 	np.save(PATH_CQT_H+str(track_id)+'.npy', librosa.logamplitude(ret_H))
 	np.save(PATH_CQT_P+str(track_id)+'.npy', librosa.logamplitude(ret_P))
 	print "Done: %d, HPS for CQT " % track_id
