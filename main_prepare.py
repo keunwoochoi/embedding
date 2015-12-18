@@ -265,8 +265,7 @@ def process_harmonigram(track_id):
 		print "hgram:skip this id: %d, it's already there!" % track_id
 	else:
 		STFT = load_stft(track_id)
-		try:
-			do_harmonigram(STFT, track_id, SR, N_FFT)
+		do_harmonigram(STFT, track_id, SR, N_FFT)
 
 def process_all_about_cqt(track_id):
 	'''do hps_on_cqt, chroma, pitchgram'''
