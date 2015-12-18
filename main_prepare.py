@@ -127,6 +127,7 @@ def do_chroma_cqt(CQT, track_id):
 
 	input CQT: log-amplitude.
 	'''
+	print 'will do chroma'
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
 	chroma_left = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0], 
 		                                     hop_length=CQT_CONST["hop_len"], 
@@ -147,6 +148,7 @@ def do_pitchgram(CQT, track_id):
 	log-harmonigram or something.
 	returns a CQT that is re-ordered in frequency band.
 	'''
+	print 'will do pitchgram'
 	ret = np.zeros(CQT.shape)
 	for depth_cqt in xrange(CQT.shape[2]):
 		for octave in xrange(CQT_CONST["num_octaves"]):
@@ -161,6 +163,7 @@ def do_HPS_on_CQT(CQT, track_id):
 	'''HPS on CQT
 		input CQT: log-amplitude.
 	'''
+	print 'will do hps_on_cqt'
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
 	ret_H = np.zeros(CQT.shape)
 	ret_P = np.zeros(CQT.shape)
@@ -226,10 +229,7 @@ def process_hps_on_cqt(track_id):
 		print "hps on cqt :skip this id: %d, it's already there!" % track_id
 	else:
 		CQT = load_cqt(track_id)
-		try:
-			do_HPS_on_CQT(CQT, track_id)
-		except ValueError:
-			print 'value error on hps_on_cqt'
+		do_HPS_on_CQT(CQT, track_id)
 
 def process_mfcc(track_id):
 	if os.path.exists(PATH_MFCC + str(track_id) + '.npy'):
@@ -244,10 +244,7 @@ def process_chroma(track_id):
 		print "chroma:skip this id: %d, it's already there!" % track_id
 	else:
 		CQT = load_cqt(track_id)
-		try: 
-			do_chroma_cqt(CQT, track_id)	
-		except ValueError:
-			print 'value error on chroma'
+		do_chroma_cqt(CQT, track_id)	
 
 
 def process_pitchgram(track_id):
@@ -255,10 +252,8 @@ def process_pitchgram(track_id):
 		print "pgram:skip this id: %d, it's already there!" % track_id
 	else:
 		CQT = load_cqt(track_id)
-		try:
-			do_pitchgram(CQT, track_id)
-		except ValueError:
-			print 'value error on pitchgram'
+		do_pitchgram(CQT, track_id)
+		
 
 def process_harmonigram(track_id):
 	if os.path.exists(PATH_HGRAM + str(track_id) + '.npy'):
