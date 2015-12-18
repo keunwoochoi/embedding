@@ -223,9 +223,9 @@ def build_whole_graph():
 	graph.add_input(name='cqt_per_mono', input_shape=(blah))
 	graph.add_input(name='mfcc_mono', input_shape=(19*3, ))
 	graph_add_input(name='pitchgram_mono', input_shape=())
-	graph_add_input(name='harmonigram_mono', input_shape=())
+	graph_add_input(name='chroma_mono', input_shape=())
 
-	
+
 
 
 

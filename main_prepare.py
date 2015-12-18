@@ -226,7 +226,10 @@ def process_hps_on_cqt(track_id):
 		print "hps on cqt :skip this id: %d, it's already there!" % track_id
 	else:
 		CQT = load_cqt(track_id)
-		do_HPS_on_CQT(CQT, track_id)
+		try:
+			do_HPS_on_CQT(CQT, track_id)
+		except ValueError:
+			print 'value error on hps_on_cqt'
 
 def process_mfcc(track_id):
 	if os.path.exists(PATH_MFCC + str(track_id) + '.npy'):
@@ -241,21 +244,29 @@ def process_chroma(track_id):
 		print "chroma:skip this id: %d, it's already there!" % track_id
 	else:
 		CQT = load_cqt(track_id)
-		do_chroma_cqt(CQT, track_id)	
+		try: 
+			do_chroma_cqt(CQT, track_id)	
+		except ValueError:
+			print 'value error on chroma'
+
 
 def process_pitchgram(track_id):
 	if os.path.exists(PATH_PGRAM + str(track_id) + '.npy'):
 		print "pgram:skip this id: %d, it's already there!" % track_id
 	else:
 		CQT = load_cqt(track_id)
-		do_pitchgram(CQT, track_id)
+		try:
+			do_pitchgram(CQT, track_id)
+		except ValueError:
+			print 'value error on pitchgram'
 
 def process_harmonigram(track_id):
 	if os.path.exists(PATH_HGRAM + str(track_id) + '.npy'):
 		print "hgram:skip this id: %d, it's already there!" % track_id
 	else:
 		STFT = load_stft(track_id)
-		do_harmonigram(STFT, track_id, SR, N_FFT)
+		try:
+			do_harmonigram(STFT, track_id, SR, N_FFT)
 
 def process_all_about_cqt(track_id):
 	'''do hps_on_cqt, chroma, pitchgram'''
