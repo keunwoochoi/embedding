@@ -277,7 +277,7 @@ def process_all_about_cqt(track_id):
 	if not (os.path.exists(PATH_CQT_H + str(track_id) + '.npy') and os.path.exists(PATH_CQT_P + str(track_id) + '.npy')):
 		do_HPS_on_CQT(CQT, track_id)
 	if not os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
-		do_chroma_cqt(CQT, track_id)	
+		do_cqthroma_cqt(CQT, track_id)	
 	if not os.path.exists(PATH_PGRAM + str(track_id) + '.npy'):
 		do_pitchgram(CQT, track_id)
 	print "Done: %d all about cqt" % track_id
@@ -318,6 +318,10 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	start = time.time()
+
+	for track_id in track_ids_here:
+		process_all_about_cqt(track_id)
+	return
 
 	p = Pool(num_process)
 	if task == 'stft':
