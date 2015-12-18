@@ -164,6 +164,7 @@ def do_HPS_on_CQT(CQT, track_id):
 		input CQT: log-amplitude.
 	'''
 	print 'will do hps_on_cqt'
+	print CQT.shape
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
 	ret_H = np.zeros(CQT.shape)
 	ret_P = np.zeros(CQT.shape)
