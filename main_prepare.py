@@ -319,7 +319,9 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
 	start = time.time()
 
+	print "DEBUGGIMG MODE"
 	for track_id in track_ids_here:
+
 		process_all_about_cqt(track_id)
 	return
 
