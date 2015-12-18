@@ -164,20 +164,18 @@ def do_HPS_on_CQT(CQT, track_id):
 		input CQT: log-amplitude.
 	'''
 	print 'will do hps_on_cqt'
-	if CQT.shape[2] < 3:
-		print 'strange shape of CQT'
-		print CQT.shape
-		process_cqt(track_id)
-		print 'new CQT done.'
-		CQT = load_cqt(track_id)
-		print CQT.shape
-
+	print CQT.shape
+	
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
+	pdb.set_trace()
 	ret_H = np.zeros(CQT.shape)
 	ret_P = np.zeros(CQT.shape)
+	pdb.set_trace()
 	for depth_cqt in xrange(CQT.shape[2]):
 		ret_H[:,:,depth_cqt], ret_P[:,:,depth_cqt] = librosa.decompose.hpss(CQT[:,:,depth_cqt])
+		pdb.set_trace()
 	np.save(PATH_CQT_H+str(track_id)+'.npy', librosa.logamplitude(ret_H))
+	pdb.set_trace()
 	np.save(PATH_CQT_P+str(track_id)+'.npy', librosa.logamplitude(ret_P))
 	print "Done: %d, HPS for CQT " % track_id
 
