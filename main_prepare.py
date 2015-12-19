@@ -127,7 +127,7 @@ def do_chroma_cqt(CQT, track_id):
 
 	input CQT: log-amplitude.
 	'''
-	print 'will do chroma'
+	
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
 	chroma_left = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0], 
 		                                     hop_length=CQT_CONST["hop_len"], 
@@ -148,7 +148,7 @@ def do_pitchgram(CQT, track_id):
 	log-harmonigram or something.
 	returns a CQT that is re-ordered in frequency band.
 	'''
-	print 'will do pitchgram'
+	
 	ret = np.zeros(CQT.shape)
 	for depth_cqt in xrange(CQT.shape[2]):
 		for octave in xrange(CQT_CONST["num_octaves"]):
@@ -163,8 +163,6 @@ def do_HPS_on_CQT(CQT, track_id):
 	'''HPS on CQT
 		input CQT: log-amplitude.
 	'''
-	print 'will do hps_on_cqt'
-	print CQT.shape
 	
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
 	ret_H = np.zeros(CQT.shape)
