@@ -266,6 +266,10 @@ def process_harmonigram(track_id):
 
 def process_all_about_cqt(track_id):
 	'''do hps_on_cqt, chroma, pitchgram'''
+	if not os.path.exists(PATH_CQT + str(track_id) + 'npy'):
+		print 'cqt missing: will do: %d' % track_id
+		process_cqt(track_id)
+
 	if os.path.exists(PATH_CQT_H + str(track_id) + '.npy'):
 		if os.path.exists(PATH_CQT_P + str(track_id) + '.npy'):
 			if os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
