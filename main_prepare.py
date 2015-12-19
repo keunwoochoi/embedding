@@ -272,9 +272,9 @@ def process_all_about_cqt(track_id):
 				if os.path.exists(PATH_PGRAM + str(track_id) + '.npy'):
 					print "skip: %d" % track_id
 					return
-
+	pdb.set_trace()
 	CQT = load_cqt(track_id)
-	if not (os.path.exists(PATH_CQT_H + str(track_id) + '.npy') and os.path.exists(PATH_CQT_P + str(track_id) + '.npy')):
+	if not ( os.path.exists(PATH_CQT_H + str(track_id) + '.npy') and os.path.exists(PATH_CQT_P + str(track_id) + '.npy')  ):
 		do_HPS_on_CQT(CQT, track_id)
 	if not os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
 		do_chroma_cqt(CQT, track_id)	
