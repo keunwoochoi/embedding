@@ -33,7 +33,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
 		model.add(Activation('relu'))
-		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='same'))
 		# final_height = final_height / pool_sizes[i][0]
 		# final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
@@ -70,7 +70,7 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='tanh' ))
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='tanh'))
-		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='same'))
 
 	model.add(Flatten())
 	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
@@ -126,7 +126,7 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_ty
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='relu' ))
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
-		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='same'))
 		# final_height = final_height / pool_sizes[i][0]
 		# final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
@@ -184,7 +184,7 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
 		model.add(Activation('relu'))
-		model.add(MaxPooling2D(pool_size=pool_sizes[i], ignore_border=True))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='same'))
 		# final_height = final_height / pool_sizes[i][0]
 		# final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
