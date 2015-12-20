@@ -160,7 +160,6 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 		global_mean = -61.25 # should be mended with STFT values
 		global_std  = 14.36
 
-	pdb.set_trace()
 	train_x = (train_x - global_mean)/global_std	
 	valid_x = (valid_x - global_mean)/global_std
 	test_x  = (test_x - global_mean) /global_std
@@ -245,7 +244,7 @@ if __name__ == "__main__":
 		predicted = model.predict(train_x, batch_size=40)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
 
-		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=4, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[]) # history, early_stopping, weight_image_saver, checkpointer
 		# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
 		#test
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
