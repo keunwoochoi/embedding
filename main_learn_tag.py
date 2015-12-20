@@ -160,9 +160,10 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 		global_mean = -61.25 # should be mended with STFT values
 		global_std  = 14.36
 
-	train_x = (train_x - global_mean)/global_std	
-	valid_x = (valid_x - global_mean)/global_std
-	test_x  = (test_x - global_mean) /global_std
+	print "data point (x's) not normalised."
+	# train_x = (train_x - global_mean)/global_std	
+	# valid_x = (valid_x - global_mean)/global_std
+	# test_x  = (test_x - global_mean) /global_std
 
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
