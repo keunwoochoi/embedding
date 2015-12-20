@@ -70,7 +70,7 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='tanh' ))
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='tanh'))
-		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='valid'))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 
 	model.add(Flatten())
 	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
