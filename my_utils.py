@@ -131,21 +131,21 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	 										tf_type=tf_type, max_len_freq=256, width_image=256, 
 	 										clips_per_song=clips_per_song)
 	until = time.time()
-	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" 
+	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(train_x), len(train_inds), (until-start) )
 	start = time.time()
 	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, truths=label_matrix, 
 											tf_type=tf_type, max_len_freq=256, width_image=256, 
 											clips_per_song=clips_per_song)
 	until = time.time()
-	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" 
+	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(valid_x), len(valid_inds), (until-start) )
 	start = time.time()
 	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, 
 											tf_type=tf_type, max_len_freq=256, width_image=256, 
 											clips_per_song=clips_per_song)
 	until = time.time()
-	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" 
+	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(test_x), len(test_inds), (until-start) )
 	
 	if tf_type == 'cqt':
