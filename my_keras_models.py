@@ -4,6 +4,12 @@ import numpy as np
 import keras
 import os
 import pdb
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.optimizers import RMSprop, SGD
+from keras.layers.normalization import LRN2D
+import keras.regularizers
 
 def build_convnet_model(height, width, num_labels, num_layers=4):
 	""" It builds a convnet model using keras and returns it.
@@ -52,13 +58,38 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	print '--- complie fin. ---'
 	return model
 
+def build_classification_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg'):
+	''' should add BN '''
+	model = Sequential()
+	image_patch_sizes = [[3,3]]*num_layers
+	pool_sizes = [(2,2)]*num_layers
+
+	num_stacks = [64]*1 + [64]*(num_layers-1)
+	for i in xrange(num_layers):
+		if i == 0:
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='relu' ))
+		else:
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
+		model.add(Dropout(0.25))
+
+	model.add(Flatten())
+	model.add(Dense(1024, init='normal', activation='relu'))
+	model.add(Dropout(0.25))
+	model.add(Dense(1024, init='normal', activation='relu'))
+	model.add(Dropout(0.25))
+
+	model.add(Dense(num_labels, init='normal'))
+	model.add(Activation('softmax'))
+	optimiser = SGD(lr=5e-4, momentum=0.9, decay=1e-6, nesterov=True)
+	#rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
+	print '--- ready to compile keras model ---'
+	model.compile(loss='categorical_crossentropy', optimizer=optimiser) # mean_absolute_error, mean_squared_error, ...
+	print '--- complie fin. ---'
+	return model
+
+
 def build_regression_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg'):
-	from keras.models import Sequential
-	from keras.layers.core import Dense, Dropout, Activation, Flatten
-	from keras.layers.convolutional import Convolution2D, MaxPooling2D
-	from keras.optimizers import RMSprop, SGD
-	from keras.layers.normalization import LRN2D
-	import keras.regularizers
 	
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
@@ -78,7 +109,7 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear', W_regularizer=keras.regularizers.l1(0.01)))
-	optimiser = SGD(lr=1e-5, momentum=0.9, decay=1e-6, nesterov=True)
+	optimiser = SGD(lr=5e-4, momentum=0.9, decay=1e-6, nesterov=True)
 	#rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_squared_error', optimizer=optimiser) # mean_absolute_error, mean_squared_error, ...

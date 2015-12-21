@@ -4,6 +4,9 @@ from constants import *
 from environments import *
 import pdb
 import time
+import numpy as np
+from keras.utils import np_utils
+
 
 '''
 class Keras_Results():
@@ -91,5 +94,11 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 		seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=PATH_IMAGES+self.model_name_dir, filename_prefix=seconds+'_', normalize='local', mono=False)
 
+def continuous_to_categorical(y):
+	'''input y: continuous label, (N,M) array.
+	return: (N,M) array.
+	'''
+	maxind = np.argmax(y, axis=1)
+	return np_utils.to_categorical(y, y.shape[1])
 
 

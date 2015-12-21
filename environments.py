@@ -10,7 +10,7 @@ if device_name.startswith('ewert-server'):
 	isMacbook= False
 	isDT1     = False
 	isDT2 	 = False
-elif device_name in["KChoiMBPR2013.local", "lt91-51", 'lt91-51.eecs.qmul.ac.uk']:
+elif device_name in["KChoiMBPR2013.local", "KChoi.MBPR.2013.home", "lt91-51", 'lt91-51.eecs.qmul.ac.uk']:
 	isMacPro = False
 	isServer = False
 	isMacbook = True
