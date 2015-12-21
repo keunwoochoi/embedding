@@ -257,13 +257,18 @@ if __name__ == "__main__":
 		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", verbose=1, save_best_only=False)
 		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
 		history = my_keras_utils.History_Regression_Val()
-		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0)
+		if isRegression:
+			early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0)
+		else:
+			early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=5, verbose=0)
 		#train!
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', normalize='local', mono=False)
 		predicted = model.predict(train_x, batch_size=40)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
-
-		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+		if isRegression:
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+		else:
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
 		# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
 		#test
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)

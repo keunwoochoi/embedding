@@ -9,6 +9,8 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import RMSprop, SGD
 from keras.layers.normalization import LRN2D
+from keras.layers.normalization import BatchNormalization
+
 import keras.regularizers
 
 def build_convnet_model(height, width, num_labels, num_layers=4):
@@ -69,20 +71,23 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='relu' ))
 		else:
+			model.add(BatchNormalization())
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		model.add(Dropout(0.25))
 
 	model.add(Flatten())
-
+	model.add(BatchNormalization())
 	model.add(Dense(1024, init='normal'))
 	model.add(Activation('relu'))	
 	model.add(Dropout(0.25))
 	
+	model.add(BatchNormalization())
 	model.add(Dense(1024, init='normal'))
 	model.add(Activation('relu'))	
 	model.add(Dropout(0.25))
 
+	model.add(BatchNormalization())
 	model.add(Dense(num_labels, init='normal'))
 	model.add(Activation('softmax'))
 	optimiser = SGD(lr=5e-4, momentum=0.9, decay=1e-6, nesterov=True)
