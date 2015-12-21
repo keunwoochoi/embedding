@@ -95,7 +95,7 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 	for i in indices: # for every song
 		# print i
 		if tf_type == 'stft':
-			tf_representation = np.abs(file_manager.load_stft(i))
+			tf_representation = 10*np.log10(np.abs(file_manager.load_stft(i)))
 		elif tf_type=='cqt':
 			tf_representation = file_manager.load_cqt(i)
 
