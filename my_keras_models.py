@@ -37,9 +37,11 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 
 	for i in xrange(num_layers):
 		if i == 0:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width) ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same', input_shape=(2, height, width) ))
 		else:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same' ))
 		model.add(Activation('relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='same'))
 		# final_height = final_height / pool_sizes[i][0]
@@ -65,31 +67,37 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
+	
+	final_height, final_weight = height, width
 
-	num_stacks = [64]*1 + [64]*(num_layers-1)
+	num_stacks = [48]*1 + [48]*(num_layers-1)
 	for i in xrange(num_layers):
 		if i == 0:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='relu' ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same', input_shape=(2, height, width), activation='relu' ))
 		else:
 			model.add(BatchNormalization())
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same', activation='relu'))
+		final_height = final_height / pool_sizes[i][0]
+		final_width  = final_width  / pool_sizes[i][1]
+
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		model.add(Dropout(0.25))
-
+	print 'Input height,width: %d,%d, at the end of conv layer, h,w:%d,%d' % (height, width, final_height, final_width)
+	print ', so the flatten layer has %d units' % (final_height*final_width*num_stacks[-1])
 	model.add(Flatten())
+	
 	model.add(BatchNormalization())
-	model.add(Dense(1024, init='normal'))
-	model.add(Activation('relu'))	
+	model.add(Dense(1024, init='normal', activation='relu'))
 	model.add(Dropout(0.25))
 	
 	model.add(BatchNormalization())
-	model.add(Dense(1024, init='normal'))
-	model.add(Activation('relu'))	
+	model.add(Dense(1024, init='normal', activation='relu'))
 	model.add(Dropout(0.25))
 
-	model.add(BatchNormalization())
-	model.add(Dense(num_labels, init='normal'))
-	model.add(Activation('softmax'))
+	#model.add(BatchNormalization())
+	model.add(Dense(num_labels, init='normal', activation='softmax'))
 	optimiser = SGD(lr=5e-4, momentum=0.9, decay=1e-6, nesterov=True)
 	#rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
@@ -163,9 +171,11 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_ty
 
 	for i in xrange(num_layers):
 		if i == 0:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='relu' ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same', input_shape=(2, height, width), activation='relu' ))
 		else:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='relu'))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same', activation='relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='same'))
 		# final_height = final_height / pool_sizes[i][0]
 		# final_width  = final_width  / pool_sizes[i][1]
@@ -220,9 +230,11 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 
 	for i in xrange(num_layers):
 		if i == 0:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width) ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same', input_shape=(2, height, width) ))
 		else:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same' ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+								border_mode='same' ))
 		model.add(Activation('relu'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i], border_mode='same'))
 		# final_height = final_height / pool_sizes[i][0]
