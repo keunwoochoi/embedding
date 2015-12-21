@@ -68,7 +68,7 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
 	
-	final_height, final_weight = height, width
+	final_height, final_width = height, width
 
 	num_stacks = [48]*1 + [48]*(num_layers-1)
 	for i in xrange(num_layers):
