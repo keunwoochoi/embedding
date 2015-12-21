@@ -171,7 +171,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 
 def print_usage_and_die():
 	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type model_type num_of_layers'
-	print 'ex) $ python main_learn_tag.py 200 5000 cqt vgg 4 5 6'
+	print 'ex) $ python main_learn_tag.py 200 5000 cqt vgg classification 4 5 6'
 	sys.exit()
 
 if __name__ == "__main__":
@@ -249,7 +249,7 @@ if __name__ == "__main__":
 	 		model = my_keras_models.build_regression_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)
 		else:
 			print '--- ps. this is a classification task. ---'
-			 model = my_keras_models.build_classification_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)		
+			model = my_keras_models.build_classification_convnet_model(height=train_x.shape[2], width=train_x.shape[3], num_labels=train_y.shape[1], num_layers=num_layers, model_type=model_type)		
 	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
 
