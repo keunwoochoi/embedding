@@ -117,7 +117,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 		print '--- wrong tf_type:%s, it should be either stft or cqt---' % tf_type
 		return
 
-	file_manager = my_utils.File_Manager()
+	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
 	num_songs_train = min(num_train_songs, len(train_inds))
