@@ -263,12 +263,12 @@ if __name__ == "__main__":
 			early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=5, verbose=0)
 		#train!
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', normalize='local', mono=False)
-		predicted = model.predict(train_x, batch_size=40)
+		predicted = model.predict(train_x, batch_size=16)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
 		if isRegression:
 			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
 		else:
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=16, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, callbacks=[history, early_stopping, weight_image_saver, checkpointer])
 		# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
 		#test
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
