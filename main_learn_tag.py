@@ -72,7 +72,11 @@ if __name__ == "__main__":
 		train_y = my_keras_utils.continuous_to_categorical(train_y)
 		valid_y = my_keras_utils.continuous_to_categorical(valid_y)
 		test_y  = my_keras_utils.continuous_to_categorical(test_y)
-
+	
+	print 'labels of train_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
+	print 'labels of valid_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
+	print 'labels of test_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
+	
 	for num_layers in num_layers_list:
 		model_name = model_type + '_dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
 		model_name_dir = model_name + '/'
@@ -106,9 +110,9 @@ if __name__ == "__main__":
 		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
 		history = my_keras_utils.History_Regression_Val()
 		if isRegression:
-			early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0)
+			early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=20, verbose=0)
 		else:
-			early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=5, verbose=0)
+			early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=20, verbose=0)
 		#train!
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', 
 									normalize='local', mono=False)
