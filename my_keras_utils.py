@@ -99,7 +99,6 @@ def continuous_to_categorical(y):
 	return: (N,M) array.
 	'''
 	maxind = np.argmax(y, axis=1)
-	pdb.set_trace()
-	return np_utils.to_categorical(y, y.shape[1])
+	return np_utils.to_categorical(maxind, y.shape[1])
 
 
