@@ -4,6 +4,7 @@
 #matplotlib.use('Agg')
 from constants import *
 from environments import *
+
 import numpy as np
 
 import keras

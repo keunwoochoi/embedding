@@ -6,6 +6,7 @@ import os
 import cPickle as cP
 import time
 import sys
+import numpy as np
 
 
 class File_Manager():
