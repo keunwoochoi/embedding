@@ -59,7 +59,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	return model
 
 def build_classification_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg'):
-	''' should add BN '''
+	''' should add BN'''
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
@@ -74,9 +74,13 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 		model.add(Dropout(0.25))
 
 	model.add(Flatten())
-	model.add(Dense(1024, init='normal', activation='relu'))
+
+	model.add(Dense(1024, init='normal'))
+	model.add(Activation('relu'))	
 	model.add(Dropout(0.25))
-	model.add(Dense(1024, init='normal', activation='relu'))
+	
+	model.add(Dense(1024, init='normal'))
+	model.add(Activation('relu'))	
 	model.add(Dropout(0.25))
 
 	model.add(Dense(num_labels, init='normal'))
