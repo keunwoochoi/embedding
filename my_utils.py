@@ -33,9 +33,9 @@ class Hyperparams_Manager():
 			return self.pick_new_name()
 
 	def pick_new_name(self):
-		new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
+		new_name = adjspecies.random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
 		while new_name in self.dict:
-			new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
+			new_name = adjspecies.random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
 		return new_name
 
 	def save_new_setting(self, setting_dict):	
