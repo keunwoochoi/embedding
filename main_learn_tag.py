@@ -86,9 +86,6 @@ if __name__ == "__main__":
 	print ' --- num_layers: ', TR_CONST["num_layers"]
 	print ' --- task: %s' % args.task
 
-	
-	#HERE!
-
 	# label matrix
 	dim_latent_feature = 3
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -118,9 +115,12 @@ if __name__ == "__main__":
 		valid_y = my_keras_utils.continuous_to_categorical(valid_y)
 		test_y  = my_keras_utils.continuous_to_categorical(test_y)
 	
-		print 'labels of train_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
-		print 'labels of valid_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(valid_y, axis=0) / float(np.sum(valid_y))))
-		print 'labels of test_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(test_y, axis=0) / float(np.sum(test_y))))
+		print 'labels of train_y ratio: %4.2f, %4.2f, %4.2f' % \
+				tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
+		print 'labels of valid_y ratio: %4.2f, %4.2f, %4.2f' % \
+				tuple(np.asarray(np.sum(valid_y, axis=0) / float(np.sum(valid_y))))
+		print 'labels of test_y ratio: %4.2f, %4.2f, %4.2f' % \
+				tuple(np.asarray(np.sum(test_y, axis=0) / float(np.sum(test_y))))
 	
 	for num_layers in num_of_layers:
 		TR_CONST["num_layers"] = num_layers
@@ -200,7 +200,7 @@ if __name__ == "__main__":
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
 		
 		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
-		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='', 
+		my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', filename_prefix='', 
 									normalize='local', mono=False)
 		
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'

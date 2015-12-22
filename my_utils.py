@@ -28,16 +28,20 @@ class Hyperparams_Manager():
 		return previously used name if it is the same again.
 		'''
 		if self.has_setting(setting_dict):
+			return self.dict_str2name[dict2str(setting_dict)]
+		else:
+			return self.pick_new_name()
 
-	def new_name(self):
+	def pick_new_name(self):
 		new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
 		while new_name in self.dict:
 			new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
 		return new_name
 
-	def save_new_setting(self, setting_dictionary):		
+	def save_new_setting(self, setting_dictionary):	
+		new_name = self.pick_new_name()	
 		self.dict[new_name] = setting_dictionary
-		long_name = '_'.join([key+'.'+str(setting_dictionary[key]) for key in setting_dictionary])
+		long_name = dict2str(setting_dictionary)
 		self.dict_name2str[new_name]= long_name
 		self.dict_str2name[long_name] = new_name
 		cP.dump(self, open(PATH_DATA + FILE_DICT["hyperparam_manager"], 'w'))
@@ -49,8 +53,10 @@ class Hyperparams_Manager():
 		pprint.pprint(self.dict)
 
 	def has_setting(self, setting_dict):
-		return str(setting_dict.values()) in self.dict_name2str.values()
+		return dict2str(setting_dict) in self.dict_str2name
 
+def dict2str(setting_dict):
+	return '_'.join([key+'.'+str(setting_dictionary[key]) for key in setting_dictionary])
 
 class File_Manager():
 	def __init__(self):
