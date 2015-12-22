@@ -1,4 +1,4 @@
-from constants import *
+# from constants import *
 from environments import *
 import numpy as np
 import keras
@@ -84,7 +84,8 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		model.add(Dropout(0.25))
-	print 'Input height,width: %d,%d, at the end of conv layer, h,w:%d,%d' % (height, width, final_height, final_width)
+	print 'Input height,width: %d,%d, at the end of conv layer, h,w:%d,%d' \
+								% (height, width, final_height, final_width)
 	print ', so the flatten layer has %d units' % (final_height*final_width*num_stacks[-1])
 	model.add(Flatten())
 	

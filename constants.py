@@ -29,3 +29,4 @@ CQT_CONST["bins_per_note"] = 3
 CQT_CONST["bins_per_octave"] = CQT_CONST["bins_per_note"]*12
 CQT_CONST["sr"] = SR
 CQT_CONST["n_bins"] = CQT_CONST["bins_per_octave"]*CQT_CONST["num_octaves"]
+

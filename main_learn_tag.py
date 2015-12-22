@@ -4,12 +4,14 @@
 #matplotlib.use('Agg')
 from constants import *
 from environments import *
+from training_settings import *
+import argparse
+import os
+import pdb
 
 import numpy as np
 
 import keras
-import os
-import pdb
 import my_keras_models
 import my_keras_utils
 import my_utils
@@ -18,32 +20,76 @@ import time
 import sys
 import my_plots
 
+def parse_input(dict):
+	pass
+
+
 def print_usage_and_die():
 	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type model_type num_of_layers'
 	print 'ex) $ python main_learn_tag.py 200 5000 cqt vgg classification 4 5 6'
 	sys.exit()
 
 if __name__ == "__main__":
-	
-	if len(sys.argv) < 7:
-		print_usage_and_die()
 
-	nb_epoch = int(sys.argv[1])
-	num_train_songs = int(sys.argv[2])
-	tf_type = sys.argv[3]
-	model_type = sys.argv[4]
-	if sys.argv[5].lower() in ['reg', 'regression']:
-		isRegression = True
-		isClassification = False
-	elif sys.argv[5].lower() in ['cla', 'classification']:
-		isRegression = False
-		isClassification = True
+	parser = argparse.ArgumentParser(description='parser for input arguments')
+	parser.add_argument('-ne', '--n_epoch', type=int, 
+											help='set the number of epoch, default=50', 
+											required=False,
+											default=50)
+	parser.add_argument('-ns',  '--n_song', type=int, 
+											help='set the number of songs to train, default=300', 
+											required=False,
+											default=300)
+	parser.add_argument('-tf', '--tf', help='whether cqt or stft, default:cqt.', 
+								required=False,
+								default='cqt')
+	parser.add_argument('-m', '--model', help='set the model, default:vgg.', 
+								   		required=False, 
+								   		default='vgg')
+	parser.add_argument('-l', '--layers', type=int,
+								 		help='set the number(s) of layers, default=[5], set like 4 5 6',
+										nargs='+',
+										default=[5],
+										required=False)
+	parser.add_argument('-t', '--task', help='classification or regression', 
+									   required=False, 
+									   default='class')
+	parser.add_argument('-cps', '--clips_per_song', type=int,
+													help='set #clips/song',
+													required=False,
+													default=3)
 
-	num_layers_list = [int(sys.argv[i]) for i in xrange(6, len(sys.argv))]
-	print '--- num_layers are ---'
-	print num_layers_list
-	# nb_epoch = 1
-	clips_per_song = 3
+	args = parser.parse_args()
+
+	if args.n_epoch:
+		TR_CONST["num_epoch"] = args.n_epoch
+	if args.n_song:
+		TR_CONST["num_songs"] = args.n_song
+	if args.tf:
+		TR_CONST["tf_type"] = args.tf
+	if args.model:
+		TR_CONST["model_type"] = args.model
+	if args.layers:
+		TR_CONST["num_layers"] = args.layers
+	if args.task:
+		if args.task in['class', 'cla', 'c', 'classification']:
+			TR_CONST["isClass"] = True
+			TR_CONST["isRegre"] = False
+		else:
+			TR_CONST["isClass"] = False
+			TR_CONST["isRegre"] = True
+	if args.clips_per_song:
+		TR_CONST["clips_per_song"] = args.clips_per_song
+
+	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- tf_type: %s\n --- model_type: %s' % \
+			(TR_CONST["num_epoch"], TR_CONST["num_songs"], TR_CONST["tf_type"], TR_CONST["model_type"])
+	print ' --- num_layers: ', TR_CONST["num_layers"]
+	print ' --- task: %s' % args.task
+
+	hyperparams_manager = my_utils.Hyperparams_Manager()
+
+	#HERE!
+
 	# label matrix
 	dim_latent_feature = 3
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -61,24 +107,26 @@ if __name__ == "__main__":
 	print label_matrix.shape
 
 	# load dataset
-	print "I'll take %d clips for each song." % clips_per_song
+	print "I'll take %d clips for each song." % TR_CONST["clips_per_song"]
 	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix=label_matrix, 
-																		clips_per_song=clips_per_song, 
-																		num_train_songs=num_train_songs, 
-																		tf_type=tf_type)
+																		clips_per_song=TR_CONST["clips_per_song"], 
+																		num_train_songs=TR_CONST["num_songs"], 
+																		tf_type=TR_CONST["tf_type"])
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	# learning_id =  str(np.random.randint(999999))
-	if isClassification:
+	if TR_CONST["isClass"]:
 		train_y = my_keras_utils.continuous_to_categorical(train_y)
 		valid_y = my_keras_utils.continuous_to_categorical(valid_y)
 		test_y  = my_keras_utils.continuous_to_categorical(test_y)
 	
-	print 'labels of train_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
-	print 'labels of valid_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
-	print 'labels of test_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
+		print 'labels of train_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
+		print 'labels of valid_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(valid_y, axis=0) / float(np.sum(valid_y))))
+		print 'labels of test_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(test_y, axis=0) / float(np.sum(test_y))))
 	
-	for num_layers in num_layers_list:
-		model_name = model_type + '_dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' + sys.argv[3] + '_' + str(num_layers) + 'layers'
+	for num_layers in TR_CONST["num_layers"]:
+		TR_CONST["num_layers"] = num_layers 
+		model_name = TR_CONST["model_type"] + '_dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' \
+					+ sys.argv[3] + '_' + str(TR_CONST["num_layers"]) + 'layers'
 		model_name_dir = model_name + '/'
 		fileout = model_name + '_results'
 		print "="*60
@@ -91,15 +139,19 @@ if __name__ == "__main__":
 			os.mkdir(PATH_IMAGES + model_name_dir)
 		start = time.time()
 		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
-	 	if isRegression:
+	 	if TR_CONST["isRegre"]:
 	 		print '--- ps. this is a regression task. ---'
-	 		model = my_keras_models.build_regression_convnet_model(height=train_x.shape[2], width=train_x.shape[3], 
-	 																num_labels=train_y.shape[1], num_layers=num_layers, 
-	 																model_type=model_type)
+	 		model = my_keras_models.build_regression_convnet_model(height=train_x.shape[2], 
+	 																width=train_x.shape[3], 
+	 																num_labels=train_y.shape[1], 
+	 																num_layers=TR_CONST["num_layers"], 
+	 																model_type=TR_CONST["model_type"])
 		else:
 			print '--- ps. this is a classification task. ---'
-			model = my_keras_models.build_classification_convnet_model(height=train_x.shape[2], width=train_x.shape[3], 
-																		num_labels=train_y.shape[1], num_layers=num_layers, 
+			model = my_keras_models.build_classification_convnet_model(height=train_x.shape[2], 
+																		width=train_x.shape[3], 
+																		num_labels=train_y.shape[1], 
+																		num_layers=TR_CONST["num_layers"], 
 																		model_type=model_type)		
 	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
@@ -109,7 +161,7 @@ if __name__ == "__main__":
 														verbose=1, save_best_only=False)
 		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
 		history = my_keras_utils.History_Regression_Val()
-		if isRegression:
+		if TR_CONST["isRegre"]:
 			early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=20, verbose=0)
 		else:
 			early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=20, verbose=0)
@@ -118,12 +170,12 @@ if __name__ == "__main__":
 									normalize='local', mono=False)
 		predicted = model.predict(train_x, batch_size=16)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
-		if isRegression:
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=nb_epoch, 
+		if TR_CONST["isRegre"]:
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=TR_CONST["num_epoch"], 
 						show_accuracy=False, verbose=1, 
 						callbacks=[history, early_stopping, weight_image_saver, checkpointer])
 		else:
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=16, nb_epoch=nb_epoch, 
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=16, nb_epoch=TR_CONST["num_epoch"], 
 						show_accuracy=True, verbose=1, 
 						callbacks=[history, early_stopping, weight_image_saver, checkpointer])
 		# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
@@ -131,7 +183,7 @@ if __name__ == "__main__":
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		predicted = model.predict(test_x, batch_size=40)
 		#save results
-		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % nb_epoch), overwrite=True) 
+		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', history.val_losses)
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)

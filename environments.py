@@ -55,7 +55,7 @@ elif isDT1:
 elif isMacbook:
 	print "Do not use MacbookPro for computation!...I hope."
 	PATH_IMPORT = '/Users/gnu/mnt/c4dm/'
-	PATH_HOME   = '/Users/gnu/mnt/kc306home/'
+	PATH_HOME   = '/Users/gnu/GoogleDrive/phdCodes/'
 
 
 PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
@@ -77,7 +77,10 @@ PATH_CQT_P = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/cqt_percussive
 
 PATH_ILM_META = PATH_ILM + 'metadata/'
 
-PATH_WORK = PATH_HOME + "embedding/"
+if isMacbook:
+	PATH_WORK = PATH_HOME + "embedding_tag/"
+else:
+	PATH_WORK = PATH_HOME + "embedding/"
 PATH_DATA = PATH_WORK + "data/"
 PATH_MODEL= PATH_WORK + 'keras_models/'
 PATH_SENTI= PATH_WORK + "sentiment/" 
@@ -88,10 +91,18 @@ PATH_FIGURE = PATH_WORK + 'figures/'
 PATH_RESULTS= PATH_WORK + 'results/'
 
 for path in [PATH_DATA, PATH_MODEL, PATH_SENTI, PATH_IMAGES, 
-             PATH_FIGURE, PATH_RESULTS, PATH_MFCC, PATH_CHROMA,
-             PATH_HGRAM, PATH_PGRAM, PATH_CQT, PATH_STFT,
-             PATH_CQT_H, PATH_CQT_P]:
+             PATH_FIGURE, PATH_RESULTS]:
 	if not os.path.exists(path):
 		os.mkdir(path)
 
-sys.path.append(PATH_HOME + 'modules/' + 'librosa/')
+if isMacbook:
+	pass
+else:
+
+	for path in [PATH_MFCC, PATH_CHROMA,
+	             PATH_HGRAM, PATH_PGRAM, PATH_CQT, PATH_STFT,
+	             PATH_CQT_H, PATH_CQT_P]:
+		if not os.path.exists(path):
+			os.mkdir(path)
+
+	# sys.path.append(PATH_HOME + 'modules/' + 'librosa/')

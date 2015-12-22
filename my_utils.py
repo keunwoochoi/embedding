@@ -7,6 +7,36 @@ import cPickle as cP
 import time
 import sys
 import numpy as np
+import adjspecies
+import pprint	
+
+class Hyperparams_Manager():
+	def __init__(self):
+		self.dict = {}
+		self.dict_name2str = {}
+
+	def check_and_save(self, setting_dict):
+		if not has_setting(setting_dict):
+			self.save_new_setting(setting_dict)
+		else:
+			print 'This setting dictionary is already stored.'
+
+	def save_new_setting(self, setting_dictionary):
+		new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
+		while new_name in self.dict:
+			new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
+		self.dict[new_name] = setting_dictionary
+		self.dict_name2str[new_name]=str(setting_dictionary.values())
+		cP.dump(self, open(PATH_DATA + FILE_DICT["hyperparam_manager"], 'w'))
+
+	def list_setting_names(self):
+		pprint.pprint(self.dict.keys())
+
+	def list_settings(self):
+		pprint.pprint(self.dict)
+
+	def has_setting(self, setting_dict):
+		return str(setting_dict.values()) in self.dict_name2str.values()
 
 
 class File_Manager():
@@ -138,22 +168,28 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	print "--- Lets go! ---"
 	start = time.time()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix,
-	 										tf_type=tf_type, max_len_freq=256, width_image=256, 
-	 										clips_per_song=clips_per_song)
+	 										tf_type=tf_type, 
+	 										max_len_freq=TR_CONST["height_image"], 
+	 										width_image=TR_CONST["width_image"], 
+	 										clips_per_song=TR_CONST["clips_per_song"])
 	until = time.time()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(train_x), len(train_inds), (until-start) )
 	start = time.time()
 	valid_x, valid_y = get_input_output_set(file_manager, valid_inds, truths=label_matrix, 
-											tf_type=tf_type, max_len_freq=256, width_image=256, 
-											clips_per_song=clips_per_song)
+											tf_type=tf_type, 
+											max_len_freq=TR_CONST["height_image"], 
+											width_image=TR_CONST["width_image"], 
+											clips_per_song=TR_CONST["clips_per_song"])
 	until = time.time()
 	print "--- valid data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(valid_x), len(valid_inds), (until-start) )
 	start = time.time()
 	test_x,  test_y  = get_input_output_set(file_manager, test_inds, truths=label_matrix, 
-											tf_type=tf_type, max_len_freq=256, width_image=256, 
-											clips_per_song=clips_per_song)
+											tf_type=tf_type, 
+											max_len_freq=TR_CONST["height_image"], 
+											width_image=TR_CONST["width_image"], 
+											clips_per_song=TR_CONST["clips_per_song"])
 	until = time.time()
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(test_x), len(test_inds), (until-start) )
@@ -170,3 +206,5 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	test_x  = (test_x - global_mean) /global_std
 
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
+
+
