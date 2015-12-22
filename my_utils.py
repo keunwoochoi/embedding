@@ -13,8 +13,9 @@ import pprint
 
 class Hyperparams_Manager():
 	def __init__(self):
-		self.dict = {}
-		self.dict_name2str = {}
+		self.dict = {} #key:adjspecies, value: setting_dict
+		self.dict_name2str = {} #key: ajdspecies, value: str(setting_dict.values())
+		self.dict_str2name = {} # reverse of above.
 
 	def check_and_save(self, setting_dict):
 		if not has_setting(setting_dict):
@@ -22,12 +23,23 @@ class Hyperparams_Manager():
 		else:
 			print 'This setting dictionary is already stored.'
 
-	def save_new_setting(self, setting_dictionary):
+	def get_name(self, setting_dict):
+		'''return new name if it is new.
+		return previously used name if it is the same again.
+		'''
+		if self.has_setting(setting_dict):
+
+	def new_name(self):
 		new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
 		while new_name in self.dict:
 			new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
+		return new_name
+
+	def save_new_setting(self, setting_dictionary):		
 		self.dict[new_name] = setting_dictionary
-		self.dict_name2str[new_name]=str(setting_dictionary.values())
+		long_name = '_'.join([key+'.'+str(setting_dictionary[key]) for key in setting_dictionary])
+		self.dict_name2str[new_name]= long_name
+		self.dict_str2name[long_name] = new_name
 		cP.dump(self, open(PATH_DATA + FILE_DICT["hyperparam_manager"], 'w'))
 
 	def list_setting_names(self):

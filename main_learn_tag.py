@@ -33,29 +33,29 @@ if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description='parser for input arguments')
 	parser.add_argument('-ne', '--n_epoch', type=int, 
-											help='set the number of epoch, default=50', 
+											help='set the number of epoch, \ndefault=50', 
 											required=False,
 											default=50)
 	parser.add_argument('-ns',  '--n_song', type=int, 
-											help='set the number of songs to train, default=300', 
+											help='set the number of songs to train, \ndefault=300', 
 											required=False,
 											default=300)
-	parser.add_argument('-tf', '--tf', help='whether cqt or stft, default:cqt.', 
+	parser.add_argument('-tf', '--tf', help='whether cqt or stft, \ndefault=cqt.', 
 								required=False,
 								default='cqt')
-	parser.add_argument('-m', '--model', help='set the model, default:vgg.', 
+	parser.add_argument('-m', '--model', help='set the model, \ndefault=vgg_sequential.', 
 								   		required=False, 
 								   		default='vgg')
 	parser.add_argument('-l', '--layers', type=int,
-								 		help='set the number(s) of layers, default=[5], set like 4 5 6',
+								 		help='set the number(s) of layers, \ndefault=[5], set like 4 5 6',
 										nargs='+',
 										default=[5],
 										required=False)
-	parser.add_argument('-t', '--task', help='classification or regression', 
+	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=class', 
 									   required=False, 
 									   default='class')
 	parser.add_argument('-cps', '--clips_per_song', type=int,
-													help='set #clips/song',
+													help='set #clips/song, \ndefault=3',
 													required=False,
 													default=3)
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 	if args.model:
 		TR_CONST["model_type"] = args.model
 	if args.layers:
-		TR_CONST["num_layers"] = args.layers
+		num_of_layers = args.layers
 	if args.task:
 		if args.task in['class', 'cla', 'c', 'classification']:
 			TR_CONST["isClass"] = True
@@ -86,8 +86,7 @@ if __name__ == "__main__":
 	print ' --- num_layers: ', TR_CONST["num_layers"]
 	print ' --- task: %s' % args.task
 
-	hyperparams_manager = my_utils.Hyperparams_Manager()
-
+	
 	#HERE!
 
 	# label matrix
@@ -123,22 +122,24 @@ if __name__ == "__main__":
 		print 'labels of valid_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(valid_y, axis=0) / float(np.sum(valid_y))))
 		print 'labels of test_y ratio: %4.2f, %4.2f, %4.2f' % tuple(np.asarray(np.sum(test_y, axis=0) / float(np.sum(test_y))))
 	
-	for num_layers in TR_CONST["num_layers"]:
-		TR_CONST["num_layers"] = num_layers 
-		model_name = TR_CONST["model_type"] + '_dim'+str(dim_latent_feature)+'_'+sys.argv[1] +'epochs_' + sys.argv[2] + 'songs' \
-					+ sys.argv[3] + '_' + str(TR_CONST["num_layers"]) + 'layers'
+	for num_layers in num_of_layers:
+		TR_CONST["num_layers"] = num_layers
+		hyperparams_manager = my_utils.Hyperparams_Manager()
+		model_name = hyperparams_manager.get_name(TR_CONST)
+		print 'model name: %s' % model_name
+
 		model_name_dir = model_name + '/'
 		fileout = model_name + '_results'
-		print "="*60
-		print model_name
-		print "="*60
 
-		if not os.path.exists(PATH_MODEL + model_name_dir):
-			os.mkdir(PATH_MODEL + model_name_dir)
-		if not os.path.exists(PATH_IMAGES + model_name_dir):
-			os.mkdir(PATH_IMAGES + model_name_dir)
+		if not os.path.exists(PATH_RESULTS + model_name_dir):
+			os.mkdir(PATH_RESULTS + model_name_dir)
+			os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
+			os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
+			os.mkdir(PATH_RESULTS + model_name_dir + 'models/')
+		
 		start = time.time()
-		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" % (train_x.shape[2], train_x.shape[3], train_y.shape[1])
+		print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" \
+								% (train_x.shape[2], train_x.shape[3], train_y.shape[1])
 	 	if TR_CONST["isRegre"]:
 	 		print '--- ps. this is a regression task. ---'
 	 		model = my_keras_models.build_regression_convnet_model(height=train_x.shape[2], 
@@ -152,44 +153,53 @@ if __name__ == "__main__":
 																		width=train_x.shape[3], 
 																		num_labels=train_y.shape[1], 
 																		num_layers=TR_CONST["num_layers"], 
-																		model_type=model_type)		
+																		model_type=TR_CONST["model_type"])		
 	 	until = time.time()
 	 	print "--- keras model was built, took %d seconds ---" % (until-start)
-
 		#prepare callbacks
-		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_MODEL + model_name_dir +"weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
+		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS + model_name_dir+ "models/weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
 														verbose=1, save_best_only=False)
 		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
-		history = my_keras_utils.History_Regression_Val()
+		
 		if TR_CONST["isRegre"]:
+			history = my_keras_utils.History_Regression_Val()
 			early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=20, verbose=0)
 		else:
+			history = my_keras_utils.History_Classification_Val()
 			early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=20, verbose=0)
 		#train!
-		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='INIT_', 
-									normalize='local', mono=False)
+		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, 
+											filename_prefix='INIT_', 
+											normalize='local', 
+											mono=False)
 		predicted = model.predict(train_x, batch_size=16)
-		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_init.npy', [predicted, train_y])
+		np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 		if TR_CONST["isRegre"]:
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=32, nb_epoch=TR_CONST["num_epoch"], 
-						show_accuracy=False, verbose=1, 
-						callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+										batch_size=32, 
+										nb_epoch=TR_CONST["num_epoch"], 
+										show_accuracy=False, 
+										verbose=1, 
+										callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+			loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 		else:
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=16, nb_epoch=TR_CONST["num_epoch"], 
-						show_accuracy=True, verbose=1, 
-						callbacks=[history, early_stopping, weight_image_saver, checkpointer])
-		# model.fit(train_x, train_y, validation_data=(valid_x, valid_y), batch_size=40, nb_epoch=nb_epoch, show_accuracy=False, verbose=1, callbacks=[history, early_stopping, weight_image_saver])
-		#test
-		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
-		predicted = model.predict(test_x, batch_size=40)
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+										batch_size=16, 
+										nb_epoch=TR_CONST["num_epoch"], 
+										show_accuracy=True, 
+										verbose=1, 
+										callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True)
+		
+		predicted = model.predict(test_x, batch_size=16)
 		#save results
-		model.save_weights(PATH_MODEL + model_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
+		model.save_weights(PATH_RESULTS + model_name_dir + 'models/' + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 		
 		np.save(PATH_RESULTS + fileout + '_history.npy', history.val_losses)
 		np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 		np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
 		
-		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + fileout + '.png')
+		my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, filename_prefix='', 
 									normalize='local', mono=False)
 		

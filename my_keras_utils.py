@@ -39,7 +39,6 @@ class Keras_Results():
 
 
 
-
 class History_Classification(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""
 	def on_train_begin(self, logs={}):
@@ -83,16 +82,22 @@ class History_Regression_Val(keras.callbacks.Callback):
 		self.val_losses.append(logs.get('val_loss'))
 
 class Weight_Image_Saver(keras.callbacks.Callback):
-	def __init__(self, model_name_dir):
-		self.model_name_dir = model_name_dir
+	def __init__(self, path_to_save):
+		self.path_to_save = path_to_save
 		
 	def on_train_begin(self, logs={}):
 		seconds = str(int(time.time()))
-		my_plots.save_model_as_image(self.model, save_path=PATH_IMAGES+self.model_name_dir, filename_prefix=seconds+'_INIT_', normalize='local', mono=False)
+		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
+												filename_prefix=seconds+'_INIT_', 
+												normalize='local', 
+												mono=False)
 
 	def on_epoch_end(self, batch, logs={}):
 		seconds = str(int(time.time()))
-		my_plots.save_model_as_image(self.model, save_path=PATH_IMAGES+self.model_name_dir, filename_prefix=seconds+'_', normalize='local', mono=False)
+		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
+												filename_prefix=seconds+'_', 
+												normalize='local', 
+												mono=False)
 
 def continuous_to_categorical(y):
 	'''input y: continuous label, (N,M) array.
