@@ -1,6 +1,7 @@
 
 from constants import *
 from environments import *
+from training_settings import *
 
 import os
 import cPickle as cP
