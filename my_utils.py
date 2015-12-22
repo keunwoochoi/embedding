@@ -38,10 +38,10 @@ class Hyperparams_Manager():
 			new_name = random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
 		return new_name
 
-	def save_new_setting(self, setting_dictionary):	
+	def save_new_setting(self, setting_dict):	
 		new_name = self.pick_new_name()	
-		self.dict[new_name] = setting_dictionary
-		long_name = dict2str(setting_dictionary)
+		self.dict[new_name] = setting_dict
+		long_name = dict2str(setting_dict)
 		self.dict_name2str[new_name]= long_name
 		self.dict_str2name[long_name] = new_name
 		cP.dump(self, open(PATH_DATA + FILE_DICT["hyperparam_manager"], 'w'))
@@ -56,7 +56,7 @@ class Hyperparams_Manager():
 		return dict2str(setting_dict) in self.dict_str2name
 
 def dict2str(setting_dict):
-	return '_'.join([key+'.'+str(setting_dictionary[key]) for key in setting_dictionary])
+	return '_'.join([key+'.'+str(setting_dict[key]) for key in setting_dict])
 
 class File_Manager():
 	def __init__(self):
