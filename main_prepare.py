@@ -473,8 +473,10 @@ def get_tfidf():
 	return mood_tags_tfidf_matrix
 
 def process_boundaries(path_to_read):
-	boundaries, labels = msaf.process(path_to_read, boundaries_id="scluster", 
+	boundaries, labels = msaf.process(path_to_read, n_jobs=1,
+													boundaries_id="scluster", 
 													labels_id="scluster")
+
 	return [boundaries, labels]
 	
 def get_boundaries_all(isTest=False):
@@ -495,7 +497,7 @@ def get_boundaries_all(isTest=False):
 	print 'msaf for %d songs:' % len(track_ids)
 	ret = {}
 
-	if False:
+	if True:
 		#nested multiprocessing doesn't work for msaf
 		p = Pool(24)
 		results = p.map(process_boundaries, paths_to_pass)
@@ -508,6 +510,7 @@ def get_boundaries_all(isTest=False):
 	else:
 		for idx_path, path in enumerate(paths_to_pass):
 			ret[track_ids[idx_path]] = process_boundaries(path)
+			print 'boundary and label: done: %s' % track_ids[idx_path]
 	time_consumed = time.time() - start
 	print 'boundary and labelling done! - for %d seconds' % time_consumed
 	cP.dump(ret, open(PATH_DATA + "boundaries_and_labels_by_scluster.cp", "w"))
