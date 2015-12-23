@@ -472,13 +472,14 @@ def get_tfidf():
 
 	return mood_tags_tfidf_matrix
 
+def process_boundaries(track_id):
+	boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", 
+																					labels_id="scluster")
+	return [boundaries, labels]
+	
 def get_boundaries_all(isTest=False):
 	"""get boundaries and labels using msaf. """
 	import msaf
-	def process_boundaries(track_id):
-		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", 
-																						labels_id="scluster")
-		return [boundaries, labels]
 	
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
