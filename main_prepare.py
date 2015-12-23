@@ -472,9 +472,9 @@ def get_tfidf():
 
 	return mood_tags_tfidf_matrix
 
-def process_boundaries(track_id):
-	boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", 
-																					labels_id="scluster")
+def process_boundaries(path_to_read):
+	boundaries, labels = msaf.process(path_to_read, boundaries_id="scluster", 
+													labels_id="scluster")
 	return [boundaries, labels]
 	
 def get_boundaries_all(isTest=False):
@@ -485,11 +485,15 @@ def get_boundaries_all(isTest=False):
 	
 	if isTest:
 		track_ids = track_ids[0:3]
+		dict_id_path = dict_id_path[0:3]
+
+	paths_to_pass = [PATH_ILM_AUDIO + path for path in dict_id_path]
+	
 	print 'msaf for %d songs:' % len(track_ids)
 	ret = {}
 
 	p = Pool(24)
-	results = p.map(process_boundaries, track_ids)
+	results = p.map(process_boundaries, paths_to_pass)
 	p.close()
 	p.join()
 	for ind, track_id in enumerate(track_ids):
@@ -497,7 +501,7 @@ def get_boundaries_all(isTest=False):
 	if isTest:
 		pdb.set_trace()
 
-	cP.dump(ret, open(PATH_DATA + "boundaries.cp", "w"))
+	cP.dump(ret, open(PATH_DATA + "boundaries_and_labels_by_scluster.cp", "w"))
 
 	return
 
