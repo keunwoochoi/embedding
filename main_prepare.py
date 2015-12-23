@@ -495,7 +495,7 @@ def get_boundaries_all(isTest=False):
 	paths_to_pass = []
 	[paths_to_pass.append(dict_id_path[track_id]) for track_id in track_ids]
 	
-	print 'msaf for %d songs:' % len(track_ids)
+	print 'msaf for %d songs:' % len(paths_to_pass)
 	
 	ret = {}
 	if True:
