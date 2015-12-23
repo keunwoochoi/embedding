@@ -479,7 +479,7 @@ def process_boundaries(path_to_read):
 	
 def get_boundaries_all(isTest=False):
 	"""get boundaries and labels using msaf. """
-	
+	start = time.time()
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	
@@ -495,15 +495,21 @@ def get_boundaries_all(isTest=False):
 	print 'msaf for %d songs:' % len(track_ids)
 	ret = {}
 
-	p = Pool(24)
-	results = p.map(process_boundaries, paths_to_pass)
-	p.close()
-	p.join()
-	for ind, track_id in enumerate(track_ids):
-		ret[track_id] = results[ind]
-	if isTest:
-		pdb.set_trace()
-
+	if False:
+		#nested multiprocessing doesn't work for msaf
+		p = Pool(24)
+		results = p.map(process_boundaries, paths_to_pass)
+		p.close()
+		p.join()
+		for ind, track_id in enumerate(track_ids):
+			ret[track_id] = results[ind]
+		if isTest:
+			pdb.set_trace()
+	else:
+		for idx_path, path in enumerate(paths_to_pass):
+			ret[track_ids[idx_path]] = process_boundaries(path)
+	time_consumed = time.time() - start
+	print 'boundary and labelling done! - for %d seconds' % time_consumed
 	cP.dump(ret, open(PATH_DATA + "boundaries_and_labels_by_scluster.cp", "w"))
 
 	return
