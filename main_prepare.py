@@ -472,10 +472,37 @@ def get_tfidf():
 
 	return mood_tags_tfidf_matrix
 
+def get_boundaries_all(isTest=False):
+	"""get boundaries and labels using msaf. """
+	import msaf
+	def process_voundaries(track_id):
+		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", 
+																						labels_id="scluster")
+		return [boundaries, labels]
+	
+	if isTest:
+		track_ids = track_ids[0:3]
+	print 'msaf for %d songs:' % len(track_ids)
+	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
+	ret = {}
+
+	p = Pool(24)
+	results = p.map(process_boundaries, track_ids)
+	p.close()
+	p.join()
+	for ind, track_id in enumerate(track_ids):
+		ret[track_id] = results[ind]
+	if isTest:
+		pdb.set_trace()
+
+	cP.dump(ret, open(PATH_DATA + "boundaries.cp", "w"))
+
+	return
 
 if __name__=="__main__":
 
-	# preprocess() # read text file and generate dictionaries.
+	# preproess() # read text file and generate dictionaries.
 	
 	if False and "if in a case I'd like to convert more songs or other transformations ":
 		prepare_transforms(sys.argv)
@@ -516,29 +543,14 @@ if __name__=="__main__":
 					W[ind,:] = W[ind,:]/np.linalg.norm(W[ind,:])
 
 				np.save(PATH_DATA + filename_out, W)
-	print '## structure segmentation?'
+	print '## structure segmentation. add any argument to test it.'
 	# structural segmentation
 	if False or 'after understand input arguments of msaf':
-		print 'start using msaf'
-		import msaf
-		track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
-		dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
-
-		start = time.clock()
-		for track_id in track_ids[0:10]:
-			print '...for ' + PATH_ILM_AUDIO + dict_id_path[track_id]
-			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="cnmf", labels_id="cnmf")
-			print 'msaf: cnmf done'
-		until = time.clock()
-		time_cnmf = until - start
-		start = time.clock()
-		for track_id in track_ids[0:10]:
-			boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", labels_id="scluster")
-			print 'msaf: scluster done'
-		until = time.clock()
-		time_scluster = until - start
-		print "time comsumed : %f vs %f" % (time_cnmf, time_scluster)
-
-
+		if len(sys.argv) == 1:
+			get_boundaries_all(isTest=False)
+		else
+			get_boundaries_all(isTest=True)
+		
+		
 
 
