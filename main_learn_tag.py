@@ -159,7 +159,7 @@ if __name__ == "__main__":
 		#prepare callbacks
 		checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS + model_name_dir+ "models/weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
 														verbose=1, save_best_only=False)
-		weight_image_saver = my_keras_utils.Weight_Image_Saver(model_name_dir)
+		weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 		
 		if TR_CONST["isRegre"]:
 			history = my_keras_utils.History_Regression_Val()
@@ -168,7 +168,7 @@ if __name__ == "__main__":
 			history = my_keras_utils.History_Classification_Val()
 			early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=20, verbose=0)
 		#train!
-		my_plots.save_model_as_image(model, save_path=PATH_IMAGES+model_name_dir, 
+		my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 											filename_prefix='INIT_', 
 											normalize='local', 
 											mono=False)

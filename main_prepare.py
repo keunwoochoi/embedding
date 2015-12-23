@@ -477,7 +477,7 @@ if __name__=="__main__":
 
 	# preprocess() # read text file and generate dictionaries.
 	
-	if False or "if in a case I'd like to convert more songs or other transformations ":
+	if False and "if in a case I'd like to convert more songs or other transformations ":
 		prepare_transforms(sys.argv)
 
 	# tf-idf
@@ -517,7 +517,6 @@ if __name__=="__main__":
 
 				np.save(PATH_DATA + filename_out, W)
 	print '## structure segmentation?'
-	sys.exit(0)
 	# structural segmentation
 	if False or 'after understand input arguments of msaf':
 		print 'start using msaf'
