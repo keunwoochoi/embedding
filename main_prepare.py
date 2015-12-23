@@ -479,8 +479,6 @@ def process_boundaries(track_id):
 	
 def get_boundaries_all(isTest=False):
 	"""get boundaries and labels using msaf. """
-	import msaf
-	
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
@@ -549,6 +547,7 @@ if __name__=="__main__":
 	print '## structure segmentation. add any argument to test it.'
 	# structural segmentation
 	if False or 'after understand input arguments of msaf':
+		import msaf
 		if len(sys.argv) == 1:
 			get_boundaries_all(isTest=False)
 		else:
