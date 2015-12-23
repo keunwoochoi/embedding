@@ -548,7 +548,7 @@ if __name__=="__main__":
 	if False or 'after understand input arguments of msaf':
 		if len(sys.argv) == 1:
 			get_boundaries_all(isTest=False)
-		else
+		else:
 			get_boundaries_all(isTest=True)
 		
 		
