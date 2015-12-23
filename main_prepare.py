@@ -475,7 +475,7 @@ def get_tfidf():
 def get_boundaries_all(isTest=False):
 	"""get boundaries and labels using msaf. """
 	import msaf
-	def process_voundaries(track_id):
+	def process_boundaries(track_id):
 		boundaries, labels = msaf.process(PATH_ILM_AUDIO + dict_id_path[track_id], boundaries_id="scluster", 
 																						labels_id="scluster")
 		return [boundaries, labels]
