@@ -480,11 +480,13 @@ def get_boundaries_all(isTest=False):
 																						labels_id="scluster")
 		return [boundaries, labels]
 	
+	
+	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
+	
 	if isTest:
 		track_ids = track_ids[0:3]
 	print 'msaf for %d songs:' % len(track_ids)
-	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
-	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	ret = {}
 
 	p = Pool(24)
