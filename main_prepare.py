@@ -487,10 +487,10 @@ def get_boundaries_all(isTest=False):
 		track_ids = track_ids[0:3]
 		dict_id_path_small = {}
 		[dict_id_path_small.update({track_id:dict_id_path[track_id]}) for track_id in track_ids]
-		pdb.set_trace()
 		dict_id_path = dict_id_path_small
 
-	paths_to_pass = [PATH_ILM_AUDIO + path for path in dict_id_path]
+	paths_to_pass = []
+	[paths_to_pass.append(dict_id_path[track_id]) for track_id in track_ids]
 	
 	print 'msaf for %d songs:' % len(track_ids)
 	ret = {}
