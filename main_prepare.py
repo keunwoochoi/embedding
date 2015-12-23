@@ -495,12 +495,12 @@ def get_boundaries_all(isTest=False):
 	[paths_to_pass.append(dict_id_path[track_id]) for track_id in track_ids]
 	
 	print 'msaf for %d songs:' % len(track_ids)
-	ret = {}
+	
 
 	if True:
 		#nested multiprocessing doesn't work for msaf
 		p = Pool(24)
-		results = p.map(process_boundaries, paths_to_pass)
+		result_boundaries, result_labels = p.map(process_boundaries, paths_to_pass)
 		p.close()
 		p.join()
 		for ind, track_id in enumerate(track_ids):
@@ -513,6 +513,10 @@ def get_boundaries_all(isTest=False):
 			print 'boundary and label: done: %s' % track_ids[idx_path]
 	time_consumed = time.time() - start
 	print 'boundary and labelling done! - for %d seconds' % time_consumed
+
+	ret = {}
+	for idx, track_id in enumerate(track_ids):
+		ret[track_id] = [result_boundaries[idx], result_labels[idx]]
 	cP.dump(ret, open(PATH_DATA + "boundaries_and_labels_by_scluster.cp", "w"))
 
 	return
