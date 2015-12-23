@@ -486,7 +486,7 @@ def get_boundaries_all(isTest=False):
 	if isTest:
 		track_ids = track_ids[0:3]
 		dict_id_path_small = {}
-		[dict_id_path_small.append(dict_id_path[track_id]) for track_id in track_ids]
+		[dict_id_path_small.update({track_id:dict_id_path[track_id]}) for track_id in track_ids]
 		pdb.set_trace()
 		dict_id_path = dict_id_path_small
 
