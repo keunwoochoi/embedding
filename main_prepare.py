@@ -476,8 +476,9 @@ def process_boundaries(path_to_read):
 	boundaries, labels = msaf.process(path_to_read, n_jobs=1,
 													boundaries_id="scluster", 
 													labels_id="scluster")
-
-	return [boundaries, labels]
+	print boundaries
+	print labels
+	return (boundaries, labels)
 	
 def get_boundaries_all(isTest=False):
 	"""get boundaries and labels using msaf. """
@@ -496,11 +497,11 @@ def get_boundaries_all(isTest=False):
 	
 	print 'msaf for %d songs:' % len(track_ids)
 	
-
+	ret = {}
 	if True:
 		#nested multiprocessing doesn't work for msaf
 		p = Pool(24)
-		result_boundaries, result_labels = p.map(process_boundaries, paths_to_pass)
+		results = p.map(process_boundaries, paths_to_pass)
 		p.close()
 		p.join()
 		for ind, track_id in enumerate(track_ids):
@@ -514,9 +515,6 @@ def get_boundaries_all(isTest=False):
 	time_consumed = time.time() - start
 	print 'boundary and labelling done! - for %d seconds' % time_consumed
 
-	ret = {}
-	for idx, track_id in enumerate(track_ids):
-		ret[track_id] = [result_boundaries[idx], result_labels[idx]]
 	cP.dump(ret, open(PATH_DATA + "boundaries_and_labels_by_scluster.cp", "w"))
 
 	return
