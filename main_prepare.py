@@ -491,7 +491,7 @@ def get_boundaries_all(isTest=False):
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	
 	if isTest:
-		track_ids = track_ids[0:3]
+		track_ids = track_ids[0:30]
 		dict_id_path_small = {}
 		[dict_id_path_small.update({track_id:dict_id_path[track_id]}) for track_id in track_ids]
 		dict_id_path = dict_id_path_small
