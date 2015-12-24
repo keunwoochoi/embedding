@@ -28,6 +28,7 @@ class Hyperparams_Manager():
 		return previously used name if it is the same again.
 		'''
 		if self.has_setting(setting_dict):
+			print 'return once used name:%s' %  self.dict_str2name[dict2str(setting_dict)]
 			return self.dict_str2name[dict2str(setting_dict)]
 		else:
 			return self.pick_new_name()
@@ -101,7 +102,7 @@ def write_setting_as_texts(path_to_save, setting_dict):
 	f = open(path_to_save + timeinfo + '.time', 'w')
 	f.close()
 	for key in setting_dict:
-		with open(path_to_save+str(key)+ ': ' + str(setting_dict[key])+'.txt', 'w') as f:
+		with open(path_to_save+ 'a_'+str(key)+ ': ' + str(setting_dict[key])+'.txt', 'w') as f:
 			pass
 	return
 
