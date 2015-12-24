@@ -13,19 +13,18 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 	'''
 	if acc:
 		f, (ax1, ax2) = plt.subplots(1,2)
-        ax1.plot(loss)
-        ax1.plot(val_loss)
-        ax1.set_title('Loss')
+		ax1.plot(loss)
+		ax1.plot(val_loss)
+		ax1.set_title('Loss')
 
-        ax2.plot(acc)
-        if val_acc:
-            ax2.plot(val_acc)
+		ax2.plot(acc)
+		if val_acc:
+			ax2.plot(val_acc)
 
-        ax2.set_title('Accuracy')
-        print 'what the fuck?'
-
-    else:
-        print 'shit?'
+		ax2.set_title('Accuracy')
+		print 'what the fuck?'
+	else:
+		print 'shit?'
 		f = plt.plot(loss)
 		plt.plot(val_loss)
 
@@ -33,72 +32,72 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 	plt.close()
 
 def make_mosaic(imgs, normalize, border=1):
-    """
-    Given a set of images with all the same shape, makes a
-    mosaic with nrows and ncols
-    modification: compute nrows/ncols implicitely
-    imgs: 3D tensor shaped as [num_image, height, width]
-    normalize: 'local', 'global', 'none'
-    """
-    
+	"""
+	Given a set of images with all the same shape, makes a
+	mosaic with nrows and ncols
+	modification: compute nrows/ncols implicitely
+	imgs: 3D tensor shaped as [num_image, height, width]
+	normalize: 'local', 'global', 'none'
+	"""
+	
 
-    nimgs = imgs.shape[0]
-    imshape = imgs.shape[1:]
-    #print nimgs
-    #print imshape
-    
-    from numpy import ceil, sqrt
+	nimgs = imgs.shape[0]
+	imshape = imgs.shape[1:]
+	#print nimgs
+	#print imshape
+	
+	from numpy import ceil, sqrt
 
-    if nimgs == 32:
-    	ncols = 8
-    	nrows = 4
-    elif nimgs == 48:
-    	ncols = 8
-    	nrows = 6
-    elif nimgs == 64:
-    	ncols = 8
-    	nrows = 8
-    elif nimgs== 24:
-    	ncols = 6
-    	nrows = 4
-    elif nimgs==96:
-    	ncols = 8
-    	nrows = 12
-    elif nimgs==40:
-        ncols = 8
-        nrows = 5
-    else:
-    	ncols = int(ceil(sqrt(nimgs)))
-    	nrows = int(ceil(float(nimgs) / ncols))
-    '''
-    mosaic = ma.masked_all((nrows * imshape[0] + (nrows - 1) * border,
-                            ncols * imshape[1] + (ncols - 1) * border),
-                            dtype=np.float32)
-    '''
-    mosaic = np.zeros((nrows * imshape[0] + (nrows - 1) * border,
-            	        ncols * imshape[1] + (ncols - 1) * border),
-                        dtype=np.float32)
-    paddedh = imshape[0] + border
-    paddedw = imshape[1] + border
+	if nimgs == 32:
+		ncols = 8
+		nrows = 4
+	elif nimgs == 48:
+		ncols = 8
+		nrows = 6
+	elif nimgs == 64:
+		ncols = 8
+		nrows = 8
+	elif nimgs== 24:
+		ncols = 6
+		nrows = 4
+	elif nimgs==96:
+		ncols = 8
+		nrows = 12
+	elif nimgs==40:
+		ncols = 8
+		nrows = 5
+	else:
+		ncols = int(ceil(sqrt(nimgs)))
+		nrows = int(ceil(float(nimgs) / ncols))
+	'''
+	mosaic = ma.masked_all((nrows * imshape[0] + (nrows - 1) * border,
+							ncols * imshape[1] + (ncols - 1) * border),
+							dtype=np.float32)
+	'''
+	mosaic = np.zeros((nrows * imshape[0] + (nrows - 1) * border,
+						ncols * imshape[1] + (ncols - 1) * border),
+						dtype=np.float32)
+	paddedh = imshape[0] + border
+	paddedw = imshape[1] + border
 
-    global_max = np.max(imgs)
-    global_min = np.min(imgs)
+	global_max = np.max(imgs)
+	global_min = np.min(imgs)
 
-    for i in xrange(nimgs):
-    	#print imgs[i]
-        row = int(np.floor(i / ncols))
-        col = i % ncols
-        if normalize == 'local':
-        	img_min = np.min(imgs[i])
-        	img_max = np.max(imgs[i])
-        	imgs[i] = (imgs[i] - img_min) / (img_max - img_min)
-        elif normalize == 'global':
-        	imgs[i] = (imgs[i] - global_min) / (global_max - global_min)
-        #pdb.set_trace()
-        mosaic[row * paddedh:row * paddedh + imshape[0],
-               col * paddedw:col * paddedw + imshape[1]] = imgs[i]
-    #mosaic = 255 * mosaic # imsave want it to be 8-bit integer 
-    return mosaic
+	for i in xrange(nimgs):
+		#print imgs[i]
+		row = int(np.floor(i / ncols))
+		col = i % ncols
+		if normalize == 'local':
+			img_min = np.min(imgs[i])
+			img_max = np.max(imgs[i])
+			imgs[i] = (imgs[i] - img_min) / (img_max - img_min)
+		elif normalize == 'global':
+			imgs[i] = (imgs[i] - global_min) / (global_max - global_min)
+		#pdb.set_trace()
+		mosaic[row * paddedh:row * paddedh + imshape[0],
+			   col * paddedw:col * paddedw + imshape[1]] = imgs[i]
+	#mosaic = 255 * mosaic # imsave want it to be 8-bit integer 
+	return mosaic
 
 def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='local', mono=True):
 	'''input: keras model variable and strings.
