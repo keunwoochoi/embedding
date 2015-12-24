@@ -499,7 +499,7 @@ def get_boundaries_all(isTest=False):
 	print 'msaf for %d songs:' % len(paths_to_pass)
 	
 	ret = {}
-	if True:
+	if False:
 		#nested multiprocessing doesn't work for msaf
 		p = Pool(24)
 		results = p.map(process_boundaries, paths_to_pass)
