@@ -23,7 +23,7 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 
         ax2.set_title('Accuracy')
 
-	else:
+	elif acc is None:
 		f = plt.plot(loss)
 		plt.plot(val_loss)
 
