@@ -474,12 +474,15 @@ def get_tfidf():
 
 def process_boundaries(path_to_read):
 	print 'start spawn process'
-	results = msaf.process(path_to_read, n_jobs=1,
-													boundaries_id="scluster", 
-													labels_id="scluster")
-	pdb.set_trace()
-	print boundaries
-	print labels
+	try:
+		boundaries, labels = msaf.process(path_to_read, n_jobs=1,
+										boundaries_id="scluster", 
+										labels_id="scluster")
+	except ValueError:
+		boundaries = []
+		labels = []
+		print 'Perhaps path error:%s' % path_to_read	
+	print 'boundary and label: done: %s' % path_to_read
 	return (boundaries, labels)
 	
 def get_boundaries_all(isTest=False):
@@ -513,7 +516,7 @@ def get_boundaries_all(isTest=False):
 	else:
 		for idx_path, path in enumerate(paths_to_pass):
 			ret[track_ids[idx_path]] = process_boundaries(path)
-			print 'boundary and label: done: %s' % track_ids[idx_path]
+			
 	time_consumed = time.time() - start
 	print 'boundary and labelling done! - for %d seconds' % time_consumed
 
