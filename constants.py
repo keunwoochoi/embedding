@@ -22,6 +22,8 @@ FILE_DICT["mood_embeddings"] = "moodname_embeddings.cP" # dictionary
 FILE_DICT["sentiment_big_dict"] = "sentiment_dictionary.cP" # big one
 FILE_DICT["mood_sentiment"] = "sentiment_mood_dictionary.cP" # Mood_Sentiment class, only has my mood lists <100
 
+FILE_DICT["hyperparam_manager"] = "hyperparam_manager.cP"
+
 CQT_CONST = {}
 CQT_CONST["hop_len"] = 512
 CQT_CONST["num_octaves"] = 7

@@ -473,7 +473,6 @@ def get_tfidf():
 	return mood_tags_tfidf_matrix
 
 def process_boundaries(path_to_read):
-	print 'start spawn process'
 	try:
 		boundaries, labels = msaf.process(path_to_read, n_jobs=1,
 										boundaries_id="scluster", 
@@ -503,7 +502,7 @@ def get_boundaries_all(isTest=False):
 	print 'msaf for %d songs:' % len(paths_to_pass)
 	
 	ret = {}
-	if False:
+	if True:
 		#nested multiprocessing doesn't work for msaf
 		p = Pool(24)
 		results = p.map(process_boundaries, paths_to_pass)
