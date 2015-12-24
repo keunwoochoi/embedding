@@ -3,7 +3,7 @@ TR_CONST["dim_labels"] = 3
 TR_CONST["height_image"] = 256
 TR_CONST["width_image"] = 128
 TR_CONST["clips_per_song"] = 3
-TR_CONST["tf_type"] = 'cqt' # can be overriden
+TR_CONST["tf_type"] = ['cqt'] # can be overriden
 TR_CONST["isClass"] = True # can be overriden
 TR_CONST["isRegre"] = False
 

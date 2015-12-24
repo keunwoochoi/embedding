@@ -24,6 +24,9 @@ FILE_DICT["mood_sentiment"] = "sentiment_mood_dictionary.cP" # Mood_Sentiment cl
 
 FILE_DICT["hyperparam_manager"] = "hyperparam_manager.cP"
 
+FILE_DICT["segmentation"] = "boundaries_and_labels_by_scluster.cp"
+
+
 CQT_CONST = {}
 CQT_CONST["hop_len"] = 512
 CQT_CONST["num_octaves"] = 7

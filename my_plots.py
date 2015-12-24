@@ -9,10 +9,18 @@ import numpy.ma as ma
 
 def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history.png'):
 	'''
-	subplots; acc-valacc on top, loss-val_loss on bottom
+	subplots of loss and acc
 	'''
 	if acc:
-		pass
+		f, (ax1, ax2) = plt.subplots(1,2)
+        ax1.plot(loss)
+        ax1.plot(val_loss)
+        ax1.set_title('Loss')
+
+        ax2.plot(acc)
+        if val_acc:
+            ax2.plot(val_acc)
+        ax2.set_title('Accuracy')
 	else:
 
 		f = plt.plot(loss)

@@ -486,6 +486,10 @@ def process_boundaries(path_to_read):
 	
 def get_boundaries_all(isTest=False):
 	"""get boundaries and labels using msaf. """
+	if os.path.exists(PATH_DATA + FILE_DICT["segmentation"]):
+		print 'Boundary file already exists: %s' % (PATH_DATA + FILE_DICT["segmentation"])
+		print 'Please remove the file first to proceed.'
+		return
 	start = time.time()
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
@@ -517,7 +521,7 @@ def get_boundaries_all(isTest=False):
 	time_consumed = time.time() - start
 	print 'boundary and labelling done! - for %d seconds' % time_consumed
 
-	cP.dump(ret, open(PATH_DATA + "boundaries_and_labels_by_scluster.cp", "w"))
+	cP.dump(ret, open(PATH_DATA + FILE_DICT["segmentation"], "w"))
 
 	return
 
@@ -573,7 +577,7 @@ if __name__=="__main__":
 			get_boundaries_all(isTest=False)
 		else:
 			get_boundaries_all(isTest=True)
-		
+	# pick the most important segments
 		
 
 
