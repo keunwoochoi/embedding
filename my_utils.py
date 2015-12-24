@@ -98,7 +98,7 @@ class File_Manager():
 def write_setting_as_texts(path_to_save, setting_dict):
 	from datetime import datetime
 	timeinfo = datetime.now().strftime('%Y-%m-%d %H:%M')
-	f = open(path_to_save + timeinfo + '.time')
+	f = open(path_to_save + timeinfo + '.time', 'w')
 	f.close()
 	for key in setting_dict:
 		with open(path_to_save+str(key)+ ': ' + setting_dict[key]+'.txt', 'w') as f:
