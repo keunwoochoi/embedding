@@ -491,7 +491,7 @@ def get_boundaries_all(isTest=False):
 	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
 	
 	if isTest:
-		track_ids = track_ids[0:30]
+		track_ids = track_ids[0:3]
 		dict_id_path_small = {}
 		[dict_id_path_small.update({track_id:dict_id_path[track_id]}) for track_id in track_ids]
 		dict_id_path = dict_id_path_small
@@ -510,8 +510,6 @@ def get_boundaries_all(isTest=False):
 		p.join()
 		for ind, track_id in enumerate(track_ids):
 			ret[track_id] = results[ind]
-		if isTest:
-			pdb.set_trace()
 	else:
 		for idx_path, path in enumerate(paths_to_pass):
 			ret[track_ids[idx_path]] = process_boundaries(path)
@@ -571,6 +569,7 @@ if __name__=="__main__":
 	if False or 'after understand input arguments of msaf':
 		import msaf
 		if len(sys.argv) == 1:
+			print 'msaf for the whole song!'
 			get_boundaries_all(isTest=False)
 		else:
 			get_boundaries_all(isTest=True)
