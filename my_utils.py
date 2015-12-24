@@ -102,7 +102,7 @@ def write_setting_as_texts(path_to_save, setting_dict):
 	f.close()
 	for key in setting_dict:
 		with open(path_to_save+str(key)+ ': ' + setting_dict[key]+'.txt', 'w') as f:
-
+			pass
 	return
 
 def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=256, width_image=256, clips_per_song=0):
