@@ -89,7 +89,7 @@ if __name__ == "__main__":
 	print ' --- task: %s' % args.task
 
 	# label matrix
-	dim_latent_feature = 3
+	dim_latent_feature = TR_CONST["dim_labels"]
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
 	label_matrix_filename = (FILE_DICT["mood_latent_tfidf_matrix"] % dim_latent_feature) # tfidf is better!
 	
