@@ -474,9 +474,10 @@ def get_tfidf():
 
 def process_boundaries(path_to_read):
 	print 'start spawn process'
-	boundaries, labels = msaf.process(path_to_read, n_jobs=1,
+	results = msaf.process(path_to_read, n_jobs=1,
 													boundaries_id="scluster", 
 													labels_id="scluster")
+	pdb.set_trace()
 	print boundaries
 	print labels
 	return (boundaries, labels)
