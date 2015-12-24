@@ -56,7 +56,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	model.add(Dropout(0.25))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear'))
-	rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
+	rmsprop = RMSprop(lr=3e-6, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_squared_error', optimizer=rmsprop)
 	print '--- complie fin. ---'
@@ -99,7 +99,7 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 
 	#model.add(BatchNormalization())
 	model.add(Dense(num_labels, init='normal', activation='softmax'))
-	optimiser = SGD(lr=3e-5, momentum=0.9, decay=1e-6, nesterov=True)
+	optimiser = SGD(lr=1e-5, momentum=0.9, decay=1e-6, nesterov=True)
 	#rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='categorical_crossentropy', optimizer=optimiser) # mean_absolute_error, mean_squared_error, ...
@@ -127,7 +127,7 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
 	
 	model.add(Dense(num_labels, init='normal', activation='linear', W_regularizer=keras.regularizers.l1(0.01)))
-	optimiser = SGD(lr=5e-4, momentum=0.9, decay=1e-6, nesterov=True)
+	optimiser = SGD(lr=3e-5, momentum=0.9, decay=1e-6, nesterov=True)
 	#rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss='mean_squared_error', optimizer=optimiser) # mean_absolute_error, mean_squared_error, ...

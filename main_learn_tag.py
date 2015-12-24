@@ -59,6 +59,10 @@ if __name__ == "__main__":
 													help='set #clips/song, \ndefault=3',
 													required=False,
 													default=3)
+	parser.add_argument('-dl', '--dim_labels', type=int,
+												help='set dimension of label, \ndefault=3',
+												required=False,
+												default=3)
 
 	args = parser.parse_args()
 
@@ -81,6 +85,9 @@ if __name__ == "__main__":
 			TR_CONST["isRegre"] = True
 	if args.clips_per_song:
 		TR_CONST["clips_per_song"] = args.clips_per_song
+	if args.dim_labels:
+		TR_CONST["dim_labels"] = args.dim_labels
+
 
 	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
 			(TR_CONST["num_epoch"], TR_CONST["num_songs"], TR_CONST["model_type"])
