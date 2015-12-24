@@ -101,7 +101,7 @@ def write_setting_as_texts(path_to_save, setting_dict):
 	f = open(path_to_save + timeinfo + '.time')
 	f.close()
 	for key in setting_dict:
-		with open(path_to_save+key+ ': ' +setting_dict[key]'.txt', 'w') as f:
+		with open(path_to_save+str(key)+ ': ' + setting_dict[key]+'.txt', 'w') as f:
 
 	return
 
