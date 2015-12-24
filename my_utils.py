@@ -95,7 +95,11 @@ class File_Manager():
 
 		return rand_inds[0:num_train], rand_inds[num_train:num_train+num_valid], rand_inds[num_train+num_valid:]
 
+def write_setting_as_texts(path_to_save, setting_dict):
+	for key in setting_dict:
+		with open(path_to_save+key+ ': ' +setting_dict[key]'.txt', 'w') as f:
 
+	return
 
 def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=256, width_image=256, clips_per_song=0):
 	"""indices: list consists of integers between [0, 9320], 

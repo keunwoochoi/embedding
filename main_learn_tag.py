@@ -107,6 +107,9 @@ if __name__ == "__main__":
 	# load dataset
 	for tf_type in tf_types:
 		TR_CONST["tf_type"] = tf_type
+		print '='*60
+		print 'tf type: %s' % tf_type
+		print '='*60
 		print "I'll take %d clips for each song." % TR_CONST["clips_per_song"]
 		train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix=label_matrix, 
 																			clips_per_song=TR_CONST["clips_per_song"], 
@@ -130,8 +133,9 @@ if __name__ == "__main__":
 			TR_CONST["num_layers"] = num_layers
 			hyperparams_manager = my_utils.Hyperparams_Manager()
 			model_name = hyperparams_manager.get_name(TR_CONST)
+			print '-'*60
 			print 'model name: %s' % model_name
-
+			print '-'*60
 			model_name_dir = model_name + '/'
 			fileout = model_name + '_results'
 
@@ -140,7 +144,7 @@ if __name__ == "__main__":
 				os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 				os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
 				os.mkdir(PATH_RESULTS + model_name_dir + 'models/')
-			
+			write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
 			start = time.time()
 			print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" \
 									% (train_x.shape[2], train_x.shape[3], train_y.shape[1])
