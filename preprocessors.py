@@ -76,7 +76,8 @@ def postprocess_boundaries():
 	#track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	frame_per_sec = SR / HOP_LEN
 	segment_selection = {}
-	for idx, track_id in enumerate(file_manager.track_ids[0:5]):
+	min_num_selected = 999999
+	for idx, track_id in enumerate(file_manager.track_ids):
 		boundaries, labels = dict_segmentation[track_id]
 		CQT = 10**(0.05*file_manager.load_cqt(idx))
 		CQT = CQT ** 2 # energy.
@@ -106,7 +107,8 @@ def postprocess_boundaries():
 				result.append(long_boundaries[segment_idx])
 				labels_added.append(long_labels[segment_idx])
 		segment_selection[track_id] = result
-		print 'track_id %d : Done for boundary post processing' % track_id
+		print 'track_id %d : Done for boundary post processing, %d segments selected.' % (track_id, len(result))
+		min_num_selected = np.min(min_num_selected, len(result))
 	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w'))
 	pdb.set_trace()
 	return
