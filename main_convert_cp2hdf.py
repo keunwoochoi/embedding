@@ -5,9 +5,9 @@ load all .cp files and put them into hdf with corresponding dataset names.
 import os
 import sys
 import h5py
-import numpy
+import numpy as np
 import cPickle
-import my_utils
+import my_utils	
 from environments import *
 from constants import *
 
