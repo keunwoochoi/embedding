@@ -77,7 +77,7 @@ def postprocess_boundaries():
 	segment_selection = {}
 	for idx, track_id in enumerate(file_manager.track_ids):
 		boundaries, labels = dict_segmentation[track_id]
-		CQT = 10**(0.05*file_manager.load_CQT(idx))
+		CQT = 10**(0.05*file_manager.load_cqt(idx))
 		CQT = CQT ** 2 # energy.
 		CQT = np.sum(CQT, axis=2) # downmix
 		frame_energies = np.sum(CQT, axis=0) # sum of energy in each frame
