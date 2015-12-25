@@ -73,6 +73,19 @@ class File_Manager():
 		path = self.id_path[self.track_ids[ind]]
 		return librosa.load(path, sr=SR, mono=False)
 	'''
+	def load(self, ind, data_type):
+		if data_type == 'cqt':
+			return load_cqt(ind)
+		elif data_type == 'stft':
+			return load_stft(ind)
+		# make more for mfcc, chroma, ... 
+
+	def load_mfcc(self, ind):
+		return
+
+	def load_chroma(self, ind):
+		return
+
 	def load_stft(self, ind):
 		return np.load( PATH_STFT + str(self.track_ids[ind]) + '.npy')
 

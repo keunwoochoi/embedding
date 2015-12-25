@@ -3,7 +3,7 @@ SR = 22050
 N_FFT = 1024
 WIN_LEN = 1024
 HOP_LEN = 512 # 11 sec --> 512 frames
-
+FRAMES_PER_SEC = SR / HOP_LEN
 
 FILE_DICT = {}
 FILE_DICT["id_path"] = "id_path_dict_w_audio.cP" #dict
@@ -34,4 +34,4 @@ CQT_CONST["bins_per_note"] = 3
 CQT_CONST["bins_per_octave"] = CQT_CONST["bins_per_note"]*12
 CQT_CONST["sr"] = SR
 CQT_CONST["n_bins"] = CQT_CONST["bins_per_octave"]*CQT_CONST["num_octaves"]
-
+CQT_CONST["frames_per_sec"] = float(CQT_CONST["sr"]) / CQT_CONST["hop_len"]
