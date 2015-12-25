@@ -75,7 +75,7 @@ def postprocess_boundaries():
 	#track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	frame_per_sec = SR / HOP_LEN
 	segment_selection = {}
-	for idx, track_id in enumerate(file_manager.track_ids):
+	for idx, track_id in enumerate(file_manager.track_ids[0:5]):
 		boundaries, labels = dict_segmentation[track_id]
 		CQT = 10**(0.05*file_manager.load_cqt(idx))
 		CQT = CQT ** 2 # energy.
