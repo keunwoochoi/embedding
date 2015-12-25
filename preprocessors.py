@@ -1,0 +1,108 @@
+"""functions and modules that are used in main_prepare.
+25 Dec 2015, Keunwoo Choi"""
+
+
+import numpy as np
+import cPickle as cP
+import msaf
+import my_utils
+from environments import *
+from constants import *
+
+
+def process_boundaries(path_to_read):
+	try:
+		boundaries, labels = msaf.process(path_to_read, n_jobs=1,
+										boundaries_id="scluster", 
+										labels_id="scluster")
+	except ValueError:
+		boundaries = []
+		labels = []
+		print 'Perhaps path error:%s' % path_to_read	
+	print 'boundary and label: done: %s' % path_to_read
+	return (boundaries, labels)
+	
+def get_boundaries_all(isTest=False):
+	"""get boundaries and labels using msaf. """
+	if os.path.exists(PATH_DATA + FILE_DICT["segmentation"]):
+		print 'Boundary file already exists: %s' % (PATH_DATA + FILE_DICT["segmentation"])
+		print 'Please remove the file first to proceed.'
+		return
+	start = time.time()
+	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	dict_id_path = cP.load(open(PATH_DATA + "id_path_dict_w_audio.cP", "r"))
+	
+	if isTest:
+		track_ids = track_ids[0:3]
+		dict_id_path_small = {}
+		[dict_id_path_small.update({track_id:dict_id_path[track_id]}) for track_id in track_ids]
+		dict_id_path = dict_id_path_small
+
+	paths_to_pass = []
+	[paths_to_pass.append(PATH_ILM_AUDIO + dict_id_path[track_id]) for track_id in track_ids]
+	
+	print 'msaf for %d songs:' % len(paths_to_pass)
+	
+	ret = {}
+	if True:
+		#nested multiprocessing doesn't work for msaf
+		p = Pool(24)
+		results = p.map(process_boundaries, paths_to_pass)
+		p.close()
+		p.join()
+		for ind, track_id in enumerate(track_ids):
+			ret[track_id] = results[ind]
+	else:
+		for idx_path, path in enumerate(paths_to_pass):
+			ret[track_ids[idx_path]] = process_boundaries(path)
+			
+	time_consumed = time.time() - start
+	print 'boundary and labelling done! - for %d seconds' % time_consumed
+
+	cP.dump(ret, open(PATH_DATA + FILE_DICT["segmentation"], "w"))
+
+	return
+
+
+def postprocess_boundaries():
+	'''load segmentation dictionary, process labels so that
+	- consider only segmentation longer than 6-s
+	- same label --> merge??????? (not sure)
+	- compute average energy of each segment,
+	'''
+	file_manager = my_utils.File_Manager()
+	dict_segmentation = cp.load(PATH_DATA + FILE_DICT["segmentation"]) # track_id : (boundaries, labels)
+	#track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	frame_per_sec = SR / HOP_LEN
+	segment_selection = {}
+	for idx, track_id in enumerate(file_manager.track_ids):
+		boundaries, labels = dict_segmentation[track_id]
+		CQT = 10**(0.05*file_manager.load_CQT(idx))
+		CQT = CQT ** 2 # energy.
+		CQT = np.sum(CQT, axis=2) # downmix
+		frame_energies = np.sum(CQT, axis=0) # sum of energy in each frame
+		# compute mean energy, only for segments >= 6-seconds
+		boundaries = np.round(frame_per_sec*boundaries) # [sec] --> [frame]
+		boundaries[0] = 0
+		boundaries[-1] = len(frame_energies) 
+		average_energies = []
+		long_boundaries = []
+		for b_idx, b_from in enumerate(boundaries[:-1]):
+			b_to = boundaries[b_idx+1]
+			if b_to - b_from <= frame_per_sec*6:
+				continue
+			long_boundaries.append((b_from, b_to))
+			average_energies.append(np.mean(frame_energies[b_from:b_to]))
+			long_labels.append(labels[b_idx])
+		# pick segments.
+		order = np.argsort(average_energies)
+		result = []
+		labels_added = []
+		for segment_idx in order:
+			if long_labels[segment_idx] not in labels_added:
+				result.append(long_boundaries)
+				labels_added.append(long_labels[segment_idx])
+		segment_selection[track_id] = result
+		print 'track_id %d : Done for boundary post processing' % track_id
+	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"]))
+	return
