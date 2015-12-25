@@ -9,6 +9,7 @@ import my_utils
 from environments import *
 from constants import *
 
+import pdb
 
 def process_boundaries(path_to_read):
 	try:
@@ -105,5 +106,6 @@ def postprocess_boundaries():
 				labels_added.append(long_labels[segment_idx])
 		segment_selection[track_id] = result
 		print 'track_id %d : Done for boundary post processing' % track_id
-	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"]))
+	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w'))
+	pdb.set_trace()
 	return
