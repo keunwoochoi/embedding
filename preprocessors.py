@@ -88,17 +88,19 @@ def postprocess_boundaries():
 		boundaries[0] = 0
 		boundaries[-1] = len(frame_energies) 
 		average_energies = []
+		long_average_energies = []
 		long_boundaries = []
 		long_labels = []
 		for b_idx, b_from in enumerate(boundaries[:-1]):
 			b_to = boundaries[b_idx+1]
+			average_energies.append(np.mean(frame_energies[b_from:b_to]))
 			if b_to - b_from <= frame_per_sec*6:
 				continue
 			long_boundaries.append((b_from, b_to))
-			average_energies.append(np.mean(frame_energies[b_from:b_to]))
+			long_average_energies.append(np.mean(frame_energies[b_from:b_to]))
 			long_labels.append(labels[b_idx])
 		# pick segments.
-		order = np.argsort(average_energies) # increasing order
+		order = np.argsort(long_average_energies) # increasing order
 		order = order[::-1] # decreasing order
 		result = []
 		labels_added = []
@@ -106,10 +108,20 @@ def postprocess_boundaries():
 			if long_labels[segment_idx] not in labels_added:
 				result.append(long_boundaries[segment_idx])
 				labels_added.append(long_labels[segment_idx])
+		#not very often, but less then 3 are selected...
+		if len(result) < 3:
+			new_order = np.argsort(average_energies)
+			order = order[::-1]
+			result = []
+			labels.added = []
+			for segment_idx in order:
+				if labels[segment_idx] not in labels_added:
+					result.append(boundaries[segment_idx])
+					labels_added.append(labels[segment_idx])
+			pdb.set_trace()
+
 		segment_selection[track_id] = result
 		print 'track_id %d : Done for boundary post processing, %d segments selected.' % (track_id, len(result))
-		if len(result) < 3:
-			pdb.set_trace()
 
 	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w'))
 	pdb.set_trace()
