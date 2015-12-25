@@ -84,16 +84,19 @@ def postprocess_boundaries():
 	for idx, track_id in enumerate(file_manager.track_ids):
 		idx = 4858 # debug
 		track_id = file_manager.track_ids[idx]
-		boundaries, labels = dict_segmentation[track_id]
+		# load cqt
 		CQT = 10**(0.05*file_manager.load_cqt(idx))
 		CQT = CQT ** 2 # energy.
 		CQT = np.sum(CQT, axis=2) # downmix
 		frame_energies = np.sum(CQT, axis=0) # sum of energy in each frame
-		# compute mean energy, only for segments >= 6-seconds
-		boundaries = np.round(frame_per_sec*boundaries).astype(np.int32) # [sec] --> [frame]
+		# load boundaries
+		boundaries, labels = dict_segmentation[track_id]
 		if len(boundaries) < 1:
 			boundaries = [0, len(frame_energies)]
+			labels = [1]
 			pdb.set_trace()
+		# compute mean energy, only for segments >= 6-seconds
+		boundaries = np.round(frame_per_sec*boundaries).astype(np.int32) # [sec] --> [frame]
 		boundaries[0] = 0
 		boundaries[-1] = len(frame_energies) 
 		average_energies = []
