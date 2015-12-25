@@ -126,7 +126,8 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 	if len_freq > max_len_freq:
 		len_freq = max_len_freq
 	else:
-		print 'You set max_len_freq as %d, but it doesnt have that many frequency bins, so it will use all it has, which is %d.' % (max_len_freq, len_freq)
+		print 'You set max_len_freq as %d, but it doesnt have that many frequency bins, \
+						 so it will use all it has, which is %d.' % (max_len_freq, len_freq)
 
 	num_labels = truths.shape[1]
 	width = width_image

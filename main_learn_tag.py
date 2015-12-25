@@ -20,10 +20,6 @@ import time
 import sys
 import my_plots
 
-def parse_input(dict):
-	pass
-
-
 def print_usage_and_die():
 	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type model_type num_of_layers'
 	print 'ex) $ python main_learn_tag.py 200 5000 cqt vgg classification 4 5 6'
@@ -88,7 +84,6 @@ if __name__ == "__main__":
 	if args.dim_labels:
 		TR_CONST["dim_labels"] = args.dim_labels
 
-
 	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
 			(TR_CONST["num_epoch"], TR_CONST["num_songs"], TR_CONST["model_type"])
 	print 'tf types:', tf_types
@@ -123,6 +118,7 @@ if __name__ == "__main__":
 																			num_train_songs=TR_CONST["num_songs"], 
 																			tf_type=TR_CONST["tf_type"])
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
+		# train_x : (num_samples, num_channel, height, width)
 		# learning_id =  str(np.random.randint(999999))
 		if TR_CONST["isClass"]:
 			train_y = my_keras_utils.continuous_to_categorical(train_y)

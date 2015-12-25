@@ -63,6 +63,9 @@ PATH_CQT  = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
 
 PATH_WIKI = PATH_IMPORT + "c4dm-datasets/Wikipedia_dump/"
 PATH_ILM = PATH_IMPORT + 'c4dm-01/ilm10k-dataset/'
+
+PATH_HDF = PATH_ILM + 'hdf/'
+
 PATH_ILM_ACT = PATH_ILM + 'act-coordinates/'
 #PATH_ILM_AUDIO = PATH_ILM + 'ilmaudio/'
 PATH_ILM_AUDIO = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_copy/'
@@ -101,7 +104,7 @@ else:
 
 	for path in [PATH_MFCC, PATH_CHROMA,
 	             PATH_HGRAM, PATH_PGRAM, PATH_CQT, PATH_STFT,
-	             PATH_CQT_H, PATH_CQT_P]:
+	             PATH_CQT_H, PATH_CQT_P, PATH_HDF]:
 		if not os.path.exists(path):
 			os.mkdir(path)
 
