@@ -108,7 +108,7 @@ def postprocess_boundaries():
 				labels_added.append(long_labels[segment_idx])
 		segment_selection[track_id] = result
 		print 'track_id %d : Done for boundary post processing, %d segments selected.' % (track_id, len(result))
-		min_num_selected = np.min(min_num_selected, len(result))
+		min_num_selected = np.min((min_num_selected, len(result)))
 	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w'))
 	pdb.set_trace()
 	return
