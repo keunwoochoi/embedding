@@ -525,6 +525,50 @@ def get_boundaries_all(isTest=False):
 
 	return
 
+def postprocess_boundaries():
+	'''load segmentation dictionary, process labels so that
+	- consider only segmentation longer than 6-s
+	- same label --> merge??????? (not sure)
+	- compute average energy of each segment,
+	'''
+	file_manager = my_utils.File_Manager()
+	dict_segmentation = cp.load(PATH_DATA + FILE_DICT["segmentation"]) # track_id : (boundaries, labels)
+	#track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	frame_per_sec = SR / HOP_LEN
+	segment_selection = {}
+	for idx, track_id in enumerate(file_manager.track_ids):
+		boundaries, labels = dict_segmentation[track_id]
+		CQT = 10**(0.05*file_manager.load_CQT(idx))
+		CQT = CQT ** 2 # energy.
+		CQT = np.sum(CQT, axis=2) # downmix
+		frame_energies = np.sum(CQT, axis=0) # sum of energy in each frame
+		# compute mean energy, only for segments >= 6-seconds
+		boundaries = np.round(frame_per_sec*boundaries) # [sec] --> [frame]
+		boundaries[0] = 0
+		boundaries[-1] = len(frame_energies) 
+		average_energies = []
+		long_boundaries = []
+		for b_idx, b_from in enumerate(boundaries[:-1]):
+			b_to = boundaries[b_idx+1]
+			if b_to - b_from <= frame_per_sec*6:
+				continue
+			long_boundaries.append((b_from, b_to))
+			average_energies.append(np.mean(frame_energies[b_from:b_to]))
+			long_labels.append(labels[b_idx])
+		# pick segments.
+		order = np.argsort(average_energies)
+		result = []
+		labels_added = []
+		for segment_idx in order:
+			if long_labels[segment_idx] not in labels_added:
+				result.append(long_boundaries)
+				labels_added.append(long_labels[segment_idx])
+		segment_selection[track_id] = result
+		print 'track_id %d : Done for boundary post processing' % track_id
+	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"]))
+	return
+
+
 if __name__=="__main__":
 
 	# preproess() # read text file and generate dictionaries.
@@ -578,6 +622,8 @@ if __name__=="__main__":
 		else:
 			get_boundaries_all(isTest=True)
 	# pick the most important segments
+	if False or 'after segmentation, select segments.':
+		postprocess_boundaries()
 		
 
 
