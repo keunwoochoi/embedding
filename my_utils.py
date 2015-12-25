@@ -192,8 +192,8 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	num_songs_train = min(num_train_songs, len(train_inds))
 	
 	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[:400]
-	test_inds  = test_inds [:500]
+	valid_inds = valid_inds[:10]
+	test_inds  = test_inds [:10]
 	print "--- Lets go! ---"
 	start = time.time()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix,
