@@ -70,6 +70,10 @@ def postprocess_boundaries():
 	- consider only segmentation longer than 6-s
 	- same label --> merge??????? (not sure)
 	- compute average energy of each segment,
+
+	*** NOT all the results has 3> segments. Even 0 segment exists. 
+	Perhaps a workaround should be employed. 
+
 	'''
 	file_manager = my_utils.File_Manager()
 	dict_segmentation = cP.load(open(PATH_DATA + FILE_DICT["segmentation"], 'r')) # track_id : (boundaries, labels)
