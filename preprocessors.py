@@ -77,8 +77,10 @@ def postprocess_boundaries():
 	'''
 	file_manager = my_utils.File_Manager()
 	if os.path.exists(PATH_DATA + FILE_DICT["segment_selection"]):
+
 		segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], 'r')) # dictionary of key and list, which is consists of tuples (frame_strt, frame_end) for segments
 		begin_idx = len(segment_selection)
+		print 'Load from previously processed segment selection, which is done by %d' % begin_idx
 	else:
 		segment_selection = {}
 		begin_idx = 0
@@ -130,9 +132,10 @@ def postprocess_boundaries():
 		segment_selection[track_id] = result
 		print result
 		print 'idx %d, track_id %d : Done for boundary post processing, %d segments selected.' % (idx, track_id, len(result))
-		if idx % 300 == 0:
+		if idx % 10 == 0:
+			print '...saving...'
 			cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w')) # dictionary of key and list, which is consists of tuples (frame_strt, frame_end) for segments
 
 	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w')) # dictionary of key and list, which is consists of tuples (frame_strt, frame_end) for segments
-	pdb.set_trace()
+	print "DONE:preprocessing of selecting clips from songs using msaf"
 	return
