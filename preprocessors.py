@@ -87,6 +87,7 @@ def postprocess_boundaries():
 		boundaries[-1] = len(frame_energies) 
 		average_energies = []
 		long_boundaries = []
+		long_labels = []
 		for b_idx, b_from in enumerate(boundaries[:-1]):
 			b_to = boundaries[b_idx+1]
 			if b_to - b_from <= frame_per_sec*6:
