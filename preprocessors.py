@@ -108,20 +108,9 @@ def postprocess_boundaries():
 			if long_labels[segment_idx] not in labels_added:
 				result.append(long_boundaries[segment_idx])
 				labels_added.append(long_labels[segment_idx])
-		#not very often, but less then 3 are selected...
-		if len(result) < 3:
-			new_order = np.argsort(average_energies)
-			order = order[::-1]
-			result = []
-			labels_added = []
-			for segment_idx in order:
-				if labels[segment_idx] not in labels_added:
-					result.append(boundaries[segment_idx])
-					labels_added.append(labels[segment_idx])
-			pdb.set_trace()
-
+		
 		segment_selection[track_id] = result
-		print 'track_id %d : Done for boundary post processing, %d segments selected.' % (track_id, len(result))
+		print 'idx %d, track_id %d : Done for boundary post processing, %d segments selected.' % (idx, track_id, len(result))
 
 	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w'))
 	pdb.set_trace()
