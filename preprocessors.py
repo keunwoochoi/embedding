@@ -83,6 +83,7 @@ def postprocess_boundaries():
 	min_num_selected = 999999
 	for idx, track_id in enumerate(file_manager.track_ids):
 		idx = 4858 # debug
+		track_id = file_manager.track_ids[idx]
 		boundaries, labels = dict_segmentation[track_id]
 		CQT = 10**(0.05*file_manager.load_cqt(idx))
 		CQT = CQT ** 2 # energy.
@@ -92,6 +93,7 @@ def postprocess_boundaries():
 		boundaries = np.round(frame_per_sec*boundaries).astype(np.int32) # [sec] --> [frame]
 		if len(boundaries) < 1:
 			boundaries = [0, len(frame_energies)]
+			pdb.set_trace()
 		boundaries[0] = 0
 		boundaries[-1] = len(frame_energies) 
 		average_energies = []
@@ -115,7 +117,7 @@ def postprocess_boundaries():
 			if long_labels[segment_idx] not in labels_added:
 				result.append(long_boundaries[segment_idx])
 				labels_added.append(long_labels[segment_idx])
-		
+		pdb.set_trace()
 		segment_selection[track_id] = result
 		print 'idx %d, track_id %d : Done for boundary post processing, %d segments selected.' % (idx, track_id, len(result))
 
