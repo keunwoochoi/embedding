@@ -83,7 +83,7 @@ def postprocess_boundaries():
 		CQT = np.sum(CQT, axis=2) # downmix
 		frame_energies = np.sum(CQT, axis=0) # sum of energy in each frame
 		# compute mean energy, only for segments >= 6-seconds
-		boundaries = np.round(frame_per_sec*boundaries) # [sec] --> [frame]
+		boundaries = np.round(frame_per_sec*boundaries).astype(np.int32) # [sec] --> [frame]
 		boundaries[0] = 0
 		boundaries[-1] = len(frame_energies) 
 		average_energies = []
@@ -97,12 +97,13 @@ def postprocess_boundaries():
 			average_energies.append(np.mean(frame_energies[b_from:b_to]))
 			long_labels.append(labels[b_idx])
 		# pick segments.
-		order = np.argsort(average_energies)
+		order = np.argsort(average_energies) # increasing order
+		order = order[::-1] # decreasing order
 		result = []
 		labels_added = []
 		for segment_idx in order:
 			if long_labels[segment_idx] not in labels_added:
-				result.append(long_boundaries)
+				result.append(long_boundaries[segment_idx])
 				labels_added.append(long_labels[segment_idx])
 		segment_selection[track_id] = result
 		print 'track_id %d : Done for boundary post processing' % track_id
