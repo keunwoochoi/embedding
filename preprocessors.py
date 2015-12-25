@@ -76,14 +76,19 @@ def postprocess_boundaries():
 
 	'''
 	file_manager = my_utils.File_Manager()
+	if os.path.exists(PATH_DATA + FILE_DICT["segment_selection"]):
+		segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], 'r')) # dictionary of key and list, which is consists of tuples (frame_strt, frame_end) for segments
+		begin_idx = len(segment_selection)
+	else:
+		segment_selection = {}
+		begin_idx = 0
+		
 	dict_segmentation = cP.load(open(PATH_DATA + FILE_DICT["segmentation"], 'r')) # track_id : (boundaries, labels)
 	#track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	frame_per_sec = SR / HOP_LEN
-	segment_selection = {}
+	
 	min_num_selected = 999999
-	for idx, track_id in enumerate(file_manager.track_ids):
-		idx = 4858 # debug
-		track_id = file_manager.track_ids[idx]
+	for idx, track_id in enumerate(file_manager.track_ids[begin_idx:]):
 		# load cqt
 		CQT = 10**(0.05*file_manager.load_cqt(idx))
 		CQT = CQT ** 2 # energy.
@@ -94,7 +99,6 @@ def postprocess_boundaries():
 		if len(boundaries) < 1:
 			boundaries = np.array([0, len(frame_energies)])
 			labels = np.array([1])
-			pdb.set_trace()
 		if isinstance(boundaries, list):
 			boundaries = np.array(boundaries)
 			labels = np.array(labels)
@@ -123,9 +127,11 @@ def postprocess_boundaries():
 			if long_labels[segment_idx] not in labels_added:
 				result.append(long_boundaries[segment_idx])
 				labels_added.append(long_labels[segment_idx])
-		pdb.set_trace()
 		segment_selection[track_id] = result
+		print result
 		print 'idx %d, track_id %d : Done for boundary post processing, %d segments selected.' % (idx, track_id, len(result))
+		if idx % 300 == 0:
+			cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w')) # dictionary of key and list, which is consists of tuples (frame_strt, frame_end) for segments
 
 	cP.dump(segment_selection, open(PATH_DATA + FILE_DICT["segment_selection"], 'w')) # dictionary of key and list, which is consists of tuples (frame_strt, frame_end) for segments
 	pdb.set_trace()
