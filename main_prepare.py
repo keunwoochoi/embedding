@@ -614,7 +614,7 @@ if __name__=="__main__":
 				np.save(PATH_DATA + filename_out, W)
 	print '## structure segmentation. add any argument to test it.'
 	# structural segmentation
-	if False or 'after understand input arguments of msaf':
+	if False and 'after understand input arguments of msaf':
 		import msaf
 		if len(sys.argv) == 1:
 			print 'msaf for the whole song!'
