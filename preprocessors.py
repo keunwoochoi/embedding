@@ -113,7 +113,7 @@ def postprocess_boundaries():
 			new_order = np.argsort(average_energies)
 			order = order[::-1]
 			result = []
-			labels.added = []
+			labels_added = []
 			for segment_idx in order:
 				if labels[segment_idx] not in labels_added:
 					result.append(boundaries[segment_idx])
