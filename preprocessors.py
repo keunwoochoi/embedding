@@ -90,7 +90,9 @@ def postprocess_boundaries():
 	frame_per_sec = SR / HOP_LEN
 	
 	min_num_selected = 999999
-	for idx, track_id in enumerate(file_manager.track_ids[begin_idx:]):
+	for idx, track_id in enumerate(file_manager.track_ids):
+		if idx < begin_idx:
+			continue
 		# load cqt
 		CQT = 10**(0.05*file_manager.load_cqt(idx))
 		CQT = CQT ** 2 # energy.
