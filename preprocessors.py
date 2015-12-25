@@ -92,9 +92,12 @@ def postprocess_boundaries():
 		# load boundaries
 		boundaries, labels = dict_segmentation[track_id]
 		if len(boundaries) < 1:
-			boundaries = [0, len(frame_energies)]
-			labels = [1]
+			boundaries = np.array([0, len(frame_energies)])
+			labels = np.array([1])
 			pdb.set_trace()
+		if isinstance(boundaries, list):
+			boundaries = np.array(boundaries)
+			labels = np.array(labels)
 		# compute mean energy, only for segments >= 6-seconds
 		boundaries = np.round(frame_per_sec*boundaries).astype(np.int32) # [sec] --> [frame]
 		boundaries[0] = 0
