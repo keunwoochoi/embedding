@@ -125,12 +125,12 @@ if __name__ == "__main__":
 			valid_y = my_keras_utils.continuous_to_categorical(valid_y)
 			test_y  = my_keras_utils.continuous_to_categorical(test_y)
 		
-			print 'labels of train_y ratio: '
-			print tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
-			print 'labels of valid_y ratio: '
-			print tuple(np.asarray(np.sum(valid_y, axis=0) / float(np.sum(valid_y))))
-			print 'labels of test_y ratio: '
-			print tuple(np.asarray(np.sum(test_y, axis=0) / float(np.sum(test_y))))
+			print 'labels of train_y ratio: ' + '%4.2f'*TR_CONST["dim_labels"] % \
+					tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
+			print 'labels of valid_y ratio: '+ '%4.2f'*TR_CONST["dim_labels"] % \
+					tuple(np.asarray(np.sum(valid_y, axis=0) / float(np.sum(valid_y))))
+			print 'labels of test_y ratio: '+ '%4.2f'*TR_CONST["dim_labels"] % \
+					tuple(np.asarray(np.sum(test_y, axis=0) / float(np.sum(test_y))))
 		
 		for num_layers in num_of_layers:
 			TR_CONST["num_layers"] = num_layers
