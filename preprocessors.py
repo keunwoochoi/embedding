@@ -71,7 +71,7 @@ def postprocess_boundaries():
 	- compute average energy of each segment,
 	'''
 	file_manager = my_utils.File_Manager()
-	dict_segmentation = cP.load(PATH_DATA + FILE_DICT["segmentation"]) # track_id : (boundaries, labels)
+	dict_segmentation = cP.load(open(PATH_DATA + FILE_DICT["segmentation"], 'r')) # track_id : (boundaries, labels)
 	#track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	frame_per_sec = SR / HOP_LEN
 	segment_selection = {}
