@@ -15,6 +15,9 @@ from constants import *
 import pdb
 
 FILE_MANAGER = my_utils.File_Manager()
+HEIGHT['cqt'] = FILE_MANAGER.load_cqt(0).shape[0]
+HEIGHT['stft']= FILE_MANAGER.load_stft(0).shape[0]
+print 'cqt and stft height: %d and %d' % (HEIGHT['cqt'], HEIGHT['stft'])
 
 def select_and_save_each(args):
 	track_id, idx, boundaries, path, tf_type = args
@@ -24,7 +27,7 @@ def select_and_save_each(args):
 	clips_per_song = 3
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
-	
+	ret = np.zeros((HEIGHT[tf_type], tf_width, clips_per_song))
 	if len(boundaries) < clips_per_song:
 		boundaries = []
 		num_frames = tf_stereo.shape[1]
