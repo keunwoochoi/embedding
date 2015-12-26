@@ -262,8 +262,7 @@ def log_amplitude(S):
 	magnitude = np.abs(S)
 	__ref = np.abs(ref_power)
 	log_spec = 10.0 * np.log10(np.maximum(amin, magnitude))
-	log_spec -= 10.0 * np.log10(np.maximum(amin, __ref))
-	log_spec = np.maximum(log_spec, log_spec.max() - top_db)
+	return np.maximum(log_spec, log_spec.max() - top_db)
 
 	return log_spec
 
