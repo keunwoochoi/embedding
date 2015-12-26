@@ -256,7 +256,9 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 def log_amplitude(S):
 	'''copy and paste of librosa.core.logamplitude
 	with the default values.'''
-	ref_power=1.0, amin=1e-10, top_db=80.0
+	ref_power=1.0
+	amin=1e-10
+	top_db=80.0
 	magnitude = np.abs(S)
 	__ref = np.abs(ref_power)
 	log_spec = 10.0 * np.log10(np.maximum(amin, magnitude))
