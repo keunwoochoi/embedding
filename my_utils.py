@@ -253,3 +253,9 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 
+def log_amplitude(tf_representation):
+	return 10*np.log10(tf_representation)
+
+def inv_log_amplitude(tf_representation):
+	return 10**(0.05*tf_representation)
+

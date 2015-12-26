@@ -23,7 +23,6 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	# create or load dataset
 	if os.path.exists(PATH_HDF + filename):
 		file_write = h5py.File(PATH_HDF + filename, 'r+')
-
 		print 'loading hdf file that exists already there.'
 	else:
 		file_write = h5py.File(PATH_HDF + filename, 'w')
@@ -38,7 +37,6 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	tf_height, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	tf_stereo = np.zeros((tf_height, tf_width, 2))
-	# tf_downmix = np.zeros((tf_height, tf_width, 1))
 	# fill the dataset.
 	for song_idx, track_id in enumerate(song_file_inds):
 		if not np.sum(data_cqt[song_idx + (clips_per_song-1)*num_songs, :, :, :]) == 0.0:
@@ -47,6 +45,10 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		track_id = track_ids[song_idx]
 		if dataset_name in ['cqt', 'stft']:
 			tf_stereo = file_manager.load(ind=song_idx, data_type=dataset_name) # height, width, 2
+			if dataset_name == 'stft':
+				tf_stereo = np.abs(tf_stereo)
+			elif dataset_name=='cqt':
+				tf_stereo = my_utils.inv_log_amplitude(tf_stereo) # decibel to linear
 		else:
 			print 'not ready for other types of data.'
 			return
@@ -69,7 +71,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 				frame_from = frame_to - tf_width
 			tf_selection = tf_downmix[:, frame_from:frame_to, :]
 		# put this cqt selection into hdf dataset.
-			data_cqt[song_idx + clip_idx*num_songs, :, :, :] = tf_selection.transpose((2, 0, 1)) # 1, height, width
+			data_cqt[song_idx + clip_idx*num_songs, :, :, :] = my_utils.log_amplitude(tf_selection.transpose((2, 0, 1))) # 1, height, width
 		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 
 	file_write.close()
