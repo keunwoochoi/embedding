@@ -22,8 +22,10 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	# create hdf file.
 	if os.path.exists(PATH_HDF + filename):
 		file_write = h5py.File(PATH_HDF + filename, 'r')
+		print 'loading hdf file that exists already there.'
 	else:
 		file_write = h5py.File(PATH_HDF + filename, 'w')
+		print 'creating new hdf file.'
 	if dataset_name == 'cqt':
 		tf_representation = file_manager.load_cqt(0) # change to more general name than 'tf_represnetation'
 
