@@ -41,7 +41,8 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	# tf_downmix = np.zeros((tf_height, tf_width, 1))
 	# fill the dataset.
 	for song_idx, track_id in enumerate(song_file_inds):
-		if data_cqt[song_idx + (clips_per_song-1)*num_songs, :, :, :] != np.zeros((1, 1, tf_height, tf_width)):
+		pdb.set_trace()
+		if not np.all(data_cqt[song_idx + (clips_per_song-1)*num_songs, :, :, :], np.zeros((1, 1, tf_height, tf_width))):
 			print 'idx %d is already done, so skipp this.' % song_idx
 			continue
 		track_id = track_ids[song_idx]
