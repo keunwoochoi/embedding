@@ -79,6 +79,9 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 
 if __name__=="__main__":
 
+	datatype = sys.argv[1] #'cqt, stft' 
+	print 'datatype: %s' % datatype
+
 	file_manager = my_utils.File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
 	#train_inds = train_inds[:10] # for test
@@ -86,13 +89,13 @@ if __name__=="__main__":
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	
 	create_hdf_dataset(filename='data_train.h5', 
-						dataset_name='cqt',
+						dataset_name=datatype,
 						file_manager=file_manager,
 						song_file_inds=train_inds)
 	#	num_valid = len(valid_inds)
 	#	num_test  = len(test_inds)
 
-	file_train = h5py.File(PATH_HDF + 'data_train.h5')
+	#file_train = h5py.File(PATH_HDF + 'data_train.h5')
 	# file_valid = h5py.File(PATH_HDF + 'data_valid.h5')
 	# file_test  = h5py.File(PATH_HDF + 'data_test.h5')
 	
