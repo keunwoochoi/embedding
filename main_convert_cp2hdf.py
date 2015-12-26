@@ -20,7 +20,10 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	num_songs = len(song_file_inds)
 	num_clips = clips_per_song*num_songs
 	# create hdf file.
-	file_write = h5py.File(PATH_HDF + filename)
+	if os.path.exists(PATH_HDF + filename):
+		file_write = h5py.File(PATH_HDF + filename, 'r')
+	else:
+		file_write = h5py.File(PATH_HDF + filename, 'w')
 	if dataset_name == 'cqt':
 		tf_representation = file_manager.load_cqt(0) # change to more general name than 'tf_represnetation'
 
@@ -32,7 +35,10 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	tf_stereo = np.zeros((tf_height, tf_width, 2))
 	# tf_downmix = np.zeros((tf_height, tf_width, 1))
 	# fill the dataset.
-	for song_idx, track_id in enumerate(song_file_inds): 
+	for song_idx, track_id in enumerate(song_file_inds):
+		if data_cqt[song_idx + (clip_per_song-1)*num_songs, :, :, :] != np.zeros((1, 1, tf_height, tf_width)):
+			print 'idx %d is already done, so skipp this.' % song_idx
+			continue
 		track_id = track_ids[song_idx]
 		if dataset_name in ['cqt', 'stft']:
 			tf_stereo = file_manager.load(ind=song_idx, data_type=dataset_name) # height, width, 2
@@ -45,7 +51,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		boundaries = segment_selection[track_id]
 		if len(boundaries) < clips_per_song:
 			boundaries = []
-			num_frames = tf_downmix.shape()[1]
+			num_frames = tf_downmix.shape[1]
 			for i in xrange(clips_per_song):
 				frame_from = (i+1)*num_frames/(clips_per_song+1)
 				boundaries.append((frame_from,frame_from+tf_width))
@@ -58,7 +64,6 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 				frame_from = frame_to - tf_width
 			tf_selection = tf_downmix[:, frame_from:frame_to, :]
 		# put this cqt selection into hdf dataset.
-			print tf_selection.transpose((2, 0, 1)).shape
 			data_cqt[song_idx + clip_idx*num_songs, :, :, :] = tf_selection.transpose((2, 0, 1)) # 1, height, width
 		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 
