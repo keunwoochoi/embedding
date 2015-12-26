@@ -159,6 +159,10 @@ if __name__=="__main__":
 	datatype = sys.argv[1] #'cqt, stft' 
 	print 'datatype: %s' % datatype
 
+	select_and_save(datatype)
+	sys.exit(0)
+
+	# after create all file for cqt and stft with selected segments, then add them on hdf.
 	file_manager = my_utils.File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
 	#train_inds = train_inds[:10] # for test
