@@ -14,13 +14,16 @@ from environments import *
 from constants import *
 import pdb
 
-def select_and_save_each(track_id, idx, boundaries, path, file_manager, tf_type):
+FILE_MANAGER = my_utils.File_Manager()
+
+def select_and_save_each(args):
+	track_id, idx, boundaries, path, tf_type = args
 	if os.path.exists(path+str(track_id)+'.npy'):
 		print 'track_id %d: already done.' % track_id
 		return
 	clips_per_song = 3
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
-	tf_stereo = file_manager.load(ind=idx, data_type=tf_type) # height, width, 2
+	tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
 	
 	if len(boundaries) < clips_per_song:
 		boundaries = []
@@ -45,9 +48,6 @@ def select_and_save_each(track_id, idx, boundaries, path, file_manager, tf_type)
 	print 'track_id %d: done.' % track_id
 	return
 
-def select_and_save_each_star(a_b_c_d_e_f):
-	return select_and_save_each_star(*a_b_c_d_e_f)
-
 def select_and_save(tf_type):
 	'''select and save cqt and stft using multiprocessing
 	for CQT and STFT.'''
@@ -57,20 +57,15 @@ def select_and_save(tf_type):
 	segment_selection_list = [segment_selection[key] for key in track_ids]
 
 	path = PATH_HDF + 'temp_' + tf_type + '/'
+	path_list = [path]*len(track_ids)
+	tf_type_list = [tf_type]*len(track_ids)
+
+	args = zip(track_ids, idx, segment_selection_list, path_list, tf_type_list)
 	if os.path.exists(path):
 		os.mkdir(path)
 
-	file_manager = my_utils.File_Manager()
-
 	p = Pool(24)
-	p.map(select_and_save_each_star, itertools.izip(track_ids,
-												idx,
-												segment_selection_list, 
-												itertools.repeat(path), 
-												itertools.repeat(file_manager),
-												itertools.repeat(tf_type) 
-												))
-
+	p.map(select_and_save_each, args)
 
 
 def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
