@@ -39,10 +39,15 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	else:
 		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
+	# create or load 'log' file for this work. -- to resume easily.
+	if os.path.exists(PATH_HDF + 'log_for_' + filename):
+		idx_until = np.load(PATH_HDF + 'log_for_' + filename)
+	else:
+		idx_until = 0
 	
 	# fill the dataset.
 	for song_idx, track_id in enumerate(song_file_inds):
-		if not np.sum(data_cqt[song_idx + (clips_per_song-1)*num_songs, :, :, :]) == 0.0:
+		if song_idx < idx_until
 			print 'idx %d is already done, so skipp this.' % song_idx
 			continue
 		track_id = track_ids[song_idx]
@@ -72,10 +77,16 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			if frame_to > tf_downmix.shape[1]:
 				frame_to = tf_downmix.shape[1]
 				frame_from = frame_to - tf_width
-			tf_selection = tf_downmix[:, frame_from:frame_to, :]
+			tf_selection = tf_downmix[:, frame_from:frame_to]
 		# put this cqt selection into hdf dataset.
 			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = my_utils.log_amplitude(tf_selection) # 1, height, width
+		
+		idx_until = song_idx
+		np.save(PATH_HDF + 'log_for_' + filename, log)
 		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
+
+		
+
 
 	file_write.close()
 	return
