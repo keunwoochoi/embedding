@@ -59,8 +59,6 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			tf_selection = tf_downmix[:, frame_from:frame_to, :]
 		# put this cqt selection into hdf dataset.
 			print tf_selection.transpose((2, 0, 1)).shape
-			if tf_selection.transpose((2, 0, 1)).shape[2] != 258:
-				pdb.set_trace()
 			data_cqt[song_idx + clip_idx*num_songs, :, :, :] = tf_selection.transpose((2, 0, 1)) # 1, height, width
 		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 
@@ -71,7 +69,7 @@ if __name__=="__main__":
 
 	file_manager = my_utils.File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
-	train_inds = train_inds[:10] # for test
+	#train_inds = train_inds[:10] # for test
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	
