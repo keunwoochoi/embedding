@@ -14,11 +14,37 @@ from environments import *
 from constants import *
 import pdb
 
-def select_and_save_each(track_id, idx, selection, path, file_manager, tf_type):
+def select_and_save_each(track_id, idx, boundaries, path, file_manager, tf_type):
+	if os.path.exists(path+str(track_id)+'.npy'):
+		print 'track_id %d: already done.' % track_id
+		return
 	clips_per_song = 3
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	tf_stereo = file_manager.load(ind=idx, data_type=tf_type) # height, width, 2
 	
+	if len(boundaries) < clips_per_song:
+		boundaries = []
+		num_frames = tf_stereo.shape[1]
+		for i in xrange(clips_per_song):
+			frame_from = (i+1)*num_frames/(clips_per_song+1)
+			boundaries.append((frame_from,frame_from+tf_width))
+	for clip_idx in xrange(clips_per_song):
+		#for segment_idx in [0]:
+		frame_from, frame_to = boundaries[clip_idx] # TODO : ?? [0]? all 3 segments? ??? how??
+		frame_to = frame_from + tf_width
+		if frame_to > tf_stereo.shape[1]:
+			frame_to = tf_stereo.shape[1]
+			frame_from = frame_to - tf_width
+		if dataset_name=='cqt':
+			tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
+							my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
+		elif dataset_name =='stft':
+			tf_selection = np.abs(tf_stereo[:, frame_from:frame_to, 0]) + \
+							np.abs(tf_stereo[:, frame_from:frame_to, 1])
+	np.save(path+str(track_id)+'.npy' , my_utils.log_amplitude(tf_selection))
+	print 'track_id %d: done.' % track_id
+	return
+
 def select_and_save(tf_type):
 	'''select and save cqt and stft using multiprocessing
 	for CQT and STFT.'''
@@ -92,13 +118,12 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		else:
 			print 'not ready for other types of data.'
 			return
-		tf_downmix = np.zeros((tf_height, tf_stereo.shape[1], 1))
-		tf_downmix = tf_stereo[:,:,0] + tf_stereo[:,:,1] # height, width (2-d array, not 3-d!)
+
 		#tf_downmix = np.expand_dims(tf_downmix, axis=2)
 		boundaries = segment_selection[track_id]
 		if len(boundaries) < clips_per_song:
 			boundaries = []
-			num_frames = tf_downmix.shape[1]
+			num_frames = tf_stereo.shape[1]
 			for i in xrange(clips_per_song):
 				frame_from = (i+1)*num_frames/(clips_per_song+1)
 				boundaries.append((frame_from,frame_from+tf_width))
@@ -106,8 +131,8 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			#for segment_idx in [0]:
 			frame_from, frame_to = boundaries[clip_idx] # TODO : ?? [0]? all 3 segments? ??? how??
 			frame_to = frame_from + tf_width
-			if frame_to > tf_downmix.shape[1]:
-				frame_to = tf_downmix.shape[1]
+			if frame_to > tf_stereo.shape[1]:
+				frame_to = tf_stereo.shape[1]
 				frame_from = frame_to - tf_width
 			if dataset_name=='cqt':
 				tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
