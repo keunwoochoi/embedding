@@ -15,6 +15,7 @@ from constants import *
 import pdb
 
 FILE_MANAGER = my_utils.File_Manager()
+HEIGHT = {}
 HEIGHT['cqt'] = FILE_MANAGER.load_cqt(0).shape[0]
 HEIGHT['stft']= FILE_MANAGER.load_stft(0).shape[0]
 print 'cqt and stft height: %d and %d' % (HEIGHT['cqt'], HEIGHT['stft'])
