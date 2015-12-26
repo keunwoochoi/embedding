@@ -22,7 +22,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 
 	# create or load dataset
 	if os.path.exists(PATH_HDF + filename):
-		file_write = h5py.File(PATH_HDF + filename, 'r')
+		file_write = h5py.File(PATH_HDF + filename, 'r+')
 
 		print 'loading hdf file that exists already there.'
 	else:
