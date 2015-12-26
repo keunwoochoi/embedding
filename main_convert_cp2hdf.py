@@ -45,6 +45,9 @@ def select_and_save_each(track_id, idx, boundaries, path, file_manager, tf_type)
 	print 'track_id %d: done.' % track_id
 	return
 
+def select_and_save_each_star(a_b_c_d_e_f):
+	return select_and_save_each_star(*a_b_c_d_e_f)
+
 def select_and_save(tf_type):
 	'''select and save cqt and stft using multiprocessing
 	for CQT and STFT.'''
