@@ -48,7 +48,8 @@ def select_and_save_each(args):
 		elif tf_type =='stft':
 			tf_selection = np.abs(tf_stereo[:, frame_from:frame_to, 0]) + \
 							np.abs(tf_stereo[:, frame_from:frame_to, 1])
-	np.save(path+str(track_id)+'.npy' , my_utils.log_amplitude(tf_selection))
+		ret[:,:,clip_idx] = my_utils.log_amplitude(tf_selection)
+	np.save(path+str(track_id)+'.npy' , ret)
 	print 'track_id %d: done.' % track_id
 	return
 
