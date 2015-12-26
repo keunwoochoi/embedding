@@ -25,7 +25,7 @@ def select_and_save(tf_type):
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	idx = range(len(track_ids))
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
-	segment_selection_list = [for segment_selection[key] for key in track_ids]
+	segment_selection_list = [segment_selection[key] for key in track_ids]
 
 	path = PATH_HDF + 'temp_' + tf_type + '/'
 	if os.path.exists(path):
