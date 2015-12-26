@@ -30,19 +30,18 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
 	tf_stereo = np.zeros((tf_height, tf_width, 2))
-	tf_downmix = np.zeros((tf_height, tf_width, 1))
+	# tf_downmix = np.zeros((tf_height, tf_width, 1))
 	# fill the dataset.
-	for song_idx in song_file_inds: 
+	for song_idx, track_id in enumerate(song_file_inds): 
 		track_id = track_ids[song_idx]
 		if dataset_name in ['cqt', 'stft']:
 			tf_stereo = file_manager.load(ind=song_idx, data_type=dataset_name) # height, width, 2
 		else:
 			print 'not ready for other types of data.'
 			return
-		pdb.set_trace()
-		tf_downmix = np.zeros(tf_height, tf_stereo.shape[1], 1)
-		tf_downmix = tf_stereo[:,:,0] + tf_stereo[:,:,1] # height, width
-
+		tf_downmix = np.zeros((tf_height, tf_stereo.shape[1], 1))
+		tf_downmix = tf_stereo[:,:,0] + tf_stereo[:,:,1] # height, width (2-d array, not 3-d!)
+		tf_downmix = np.expand_dims(tf_downmix, axis=2)
 		boundaries = segment_selection[track_id]
 		if len(boundaries) < clips_per_song:
 			boundaries = []
@@ -53,9 +52,10 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		for clip_idx in xrange(clips_per_song):
 			#for segment_idx in [0]:
 			frame_from, frame_to = boundaries[clip_idx] # TODO : ?? [0]? all 3 segments? ??? how??
-			tf_selection = tf_downmix[:, frame_from:frame:to, :]
+			frame_to = frame_from + tf_width
+			tf_selection = tf_downmix[:, frame_from:frame_to, :]
 		# put this cqt selection into hdf dataset.
-			data_cqt[song_idx + clip_idx*num_train_songs, :, :, :] = tf_selection.transpose((2, 0, 1)) # 1, height, width
+			data_cqt[song_idx + clip_idx*num_songs, :, :, :] = tf_selection.transpose((2, 0, 1)) # 1, height, width
 
 	file_write.close()
 	return
