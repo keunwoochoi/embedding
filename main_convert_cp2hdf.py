@@ -38,10 +38,10 @@ def select_and_save_each(args):
 		if frame_to > tf_stereo.shape[1]:
 			frame_to = tf_stereo.shape[1]
 			frame_from = frame_to - tf_width
-		if dataset_name=='cqt':
+		if tf_type =='cqt':
 			tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
 							my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
-		elif dataset_name =='stft':
+		elif tf_type =='stft':
 			tf_selection = np.abs(tf_stereo[:, frame_from:frame_to, 0]) + \
 							np.abs(tf_stereo[:, frame_from:frame_to, 1])
 	np.save(path+str(track_id)+'.npy' , my_utils.log_amplitude(tf_selection))
@@ -61,7 +61,7 @@ def select_and_save(tf_type):
 	tf_type_list = [tf_type]*len(track_ids)
 
 	args = zip(track_ids, idx, segment_selection_list, path_list, tf_type_list)
-	if os.path.exists(path):
+	if not os.path.exists(path):
 		os.mkdir(path)
 
 	p = Pool(24)
