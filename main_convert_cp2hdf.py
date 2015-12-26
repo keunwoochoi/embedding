@@ -82,9 +82,8 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		# put this cqt selection into hdf dataset.
 			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = my_utils.log_amplitude(tf_selection) # 1, height, width
 		
-		idx_until = song_idx
-		if idx_until % 10 == 0:
-			np.save(PATH_HDF + 'log_for_' + filename, idx_until)
+		if song_idx % 10 == 0:
+			np.save(PATH_HDF + 'log_for_' + filename, song_idx)
 		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 
 		
