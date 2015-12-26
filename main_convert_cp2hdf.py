@@ -29,7 +29,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		file_write = h5py.File(PATH_HDF + filename, 'w')
 		print 'creating new hdf file.'
 	if dataset_name in file_write:
-		data_cqt = file_write['dataset_name']
+		data_cqt = file_write[dataset_name]
 	else:
 		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	if dataset_name in ['cqt', 'stft']:
