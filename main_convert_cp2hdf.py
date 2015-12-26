@@ -55,7 +55,9 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			frame_to = frame_from + tf_width
 			tf_selection = tf_downmix[:, frame_from:frame_to, :]
 		# put this cqt selection into hdf dataset.
+			print tf_selection.transpose((2, 0, 1)).shape
 			data_cqt[song_idx + clip_idx*num_songs, :, :, :] = tf_selection.transpose((2, 0, 1)) # 1, height, width
+		print 'Done: cp2hdf, song_idx:%d, track_id: %d', (song_idx, track_id)
 
 	file_write.close()
 	return
