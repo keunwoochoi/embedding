@@ -57,7 +57,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			return
 		tf_downmix = np.zeros((tf_height, tf_stereo.shape[1], 1))
 		tf_downmix = tf_stereo[:,:,0] + tf_stereo[:,:,1] # height, width (2-d array, not 3-d!)
-		tf_downmix = np.expand_dims(tf_downmix, axis=2)
+		#tf_downmix = np.expand_dims(tf_downmix, axis=2)
 		boundaries = segment_selection[track_id]
 		if len(boundaries) < clips_per_song:
 			boundaries = []
@@ -74,7 +74,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 				frame_from = frame_to - tf_width
 			tf_selection = tf_downmix[:, frame_from:frame_to, :]
 		# put this cqt selection into hdf dataset.
-			data_cqt[song_idx + clip_idx*num_songs, :, :, :] = my_utils.log_amplitude(tf_selection.transpose((2, 0, 1))) # 1, height, width
+			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = my_utils.log_amplitude(tf_selection) # 1, height, width
 		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 
 	file_write.close()
