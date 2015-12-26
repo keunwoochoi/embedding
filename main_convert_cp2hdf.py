@@ -26,7 +26,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	tf_height, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds
 	# create dataset
-	data_cqt = file_train.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
+	data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
 	tf_stereo = np.zeros((tf_height, tf_width, 2))
 	tf_downmix = np.zeros((tf_height, tf_width, 1))
