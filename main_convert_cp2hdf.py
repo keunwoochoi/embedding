@@ -14,7 +14,7 @@ from constants import *
 def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
-	segment_selection = cP.load(PATH_DATA + FILE_DICT["segment_selection"]) # track_id : (boundaries, labels)
+	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
 	clips_per_song = 3
 	num_songs = len(song_file_inds)
 	num_clips = clips_per_song*num_songs
@@ -35,7 +35,9 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		track_id = track_ids[song_idx]
 		if dataset_name in ['cqt', 'stft']:
 			tf_stereo = file_manager.load(ind=song_idx, data_type='dataset_name') # height, width, 2
-		#elif 
+		else:
+			print 'not ready for other types of data.'
+			return
 		tf_downmix = np.zeros(tf_height, tf_stereo.shape[1], 1)
 		tf_downmix = tf_stereo[:,:,0] + tf_stereo[:,:,1] # height, width
 
