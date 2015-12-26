@@ -23,12 +23,15 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	# create or load dataset
 	if os.path.exists(PATH_HDF + filename):
 		file_write = h5py.File(PATH_HDF + filename, 'r')
+
 		print 'loading hdf file that exists already there.'
 	else:
 		file_write = h5py.File(PATH_HDF + filename, 'w')
-		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 		print 'creating new hdf file.'
-
+	if dataset_name in file_write:
+		data_cqt = file_write['dataset_name']
+	else:
+		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	if dataset_name in ['cqt', 'stft']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
 
