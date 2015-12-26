@@ -264,8 +264,6 @@ def log_amplitude(S):
 	log_spec = 10.0 * np.log10(np.maximum(amin, magnitude))
 	return np.maximum(log_spec, log_spec.max() - top_db)
 
-	return log_spec
-
 def inv_log_amplitude(tf_representation):
 	return 10**(0.05*tf_representation)
 

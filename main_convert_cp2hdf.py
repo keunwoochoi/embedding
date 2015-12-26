@@ -77,7 +77,8 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			if frame_to > tf_downmix.shape[1]:
 				frame_to = tf_downmix.shape[1]
 				frame_from = frame_to - tf_width
-			tf_selection = tf_downmix[:, frame_from:frame_to]
+			tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
+							my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
 		# put this cqt selection into hdf dataset.
 			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = my_utils.log_amplitude(tf_selection) # 1, height, width
 		
