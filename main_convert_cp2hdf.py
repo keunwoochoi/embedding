@@ -47,7 +47,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	
 	# fill the dataset.
 	for song_idx, track_id in enumerate(song_file_inds):
-		if song_idx < idx_until
+		if song_idx < idx_until:
 			print 'idx %d is already done, so skipp this.' % song_idx
 			continue
 		track_id = track_ids[song_idx]
