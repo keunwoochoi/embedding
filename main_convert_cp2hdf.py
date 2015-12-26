@@ -63,7 +63,7 @@ def select_and_save(tf_type):
 	file_manager = my_utils.File_Manager()
 
 	p = Pool(24)
-	p.map(select_and_save_each, itertools.izip(track_ids,
+	p.map(select_and_save_each_star, itertools.izip(track_ids,
 												idx,
 												segment_selection_list, 
 												itertools.repeat(path), 
