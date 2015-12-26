@@ -75,9 +75,9 @@ class File_Manager():
 	'''
 	def load(self, ind, data_type):
 		if data_type == 'cqt':
-			return load_cqt(ind)
+			return self.load_cqt(ind)
 		elif data_type == 'stft':
-			return load_stft(ind)
+			return self.load_stft(ind)
 		else:
 			print 'wrong data type input in file_manager.load()'
 			raise ValueError
