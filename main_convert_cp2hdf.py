@@ -7,10 +7,42 @@ import sys
 import h5py
 import numpy as np
 import cPickle as cP
+import itertools
+from multiprocessing import Pool
 import my_utils	
 from environments import *
 from constants import *
 import pdb
+
+def select_and_save_each(track_id, idx, selection, path, file_manager, tf_type):
+	clips_per_song = 3
+	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
+	tf_stereo = file_manager.load(ind=idx, data_type=tf_type) # height, width, 2
+	
+def select_and_save(tf_type):
+	'''select and save cqt and stft using multiprocessing
+	for CQT and STFT.'''
+	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	idx = range(len(track_ids))
+	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
+	segment_selection_list = [for segment_selection[key] for key in track_ids]
+
+	path = PATH_HDF + 'temp_' + tf_type + '/'
+	if os.path.exists(path):
+		os.mkdir(path)
+
+	file_manager = my_utils.File_Manager()
+
+	p = Pool(24)
+	p.map(select_and_save_each, itertools.izip(track_ids,
+												idx,
+												segment_selection_list, 
+												itertools.repeat(path), 
+												itertools.repeat(file_manager),
+												itertools.repeat(tf_type) 
+												))
+
+
 
 def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	
@@ -77,8 +109,13 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			if frame_to > tf_downmix.shape[1]:
 				frame_to = tf_downmix.shape[1]
 				frame_from = frame_to - tf_width
-			tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
-							my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
+			if dataset_name=='cqt':
+				tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
+								my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
+			elif dataset_name =='stft':
+				tf_selection = np.abs(tf_stereo[:, frame_from:frame_to, 0]) + \
+								np.abs(tf_stereo[:, frame_from:frame_to, 1])
+
 		# put this cqt selection into hdf dataset.
 			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = my_utils.log_amplitude(tf_selection) # 1, height, width
 		
