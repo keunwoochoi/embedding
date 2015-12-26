@@ -53,6 +53,9 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			#for segment_idx in [0]:
 			frame_from, frame_to = boundaries[clip_idx] # TODO : ?? [0]? all 3 segments? ??? how??
 			frame_to = frame_from + tf_width
+			if frame_to > tf_selection.shape[1]:
+				frame_to = tf_selection.shape[1]
+				frame_from = frame_to - tf_width
 			tf_selection = tf_downmix[:, frame_from:frame_to, :]
 		# put this cqt selection into hdf dataset.
 			print tf_selection.transpose((2, 0, 1)).shape
