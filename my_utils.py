@@ -78,6 +78,9 @@ class File_Manager():
 			return load_cqt(ind)
 		elif data_type == 'stft':
 			return load_stft(ind)
+		else:
+			print 'wrong data type input in file_manager.load()'
+			raise ValueError
 		# make more for mfcc, chroma, ... 
 
 	def load_mfcc(self, ind):
