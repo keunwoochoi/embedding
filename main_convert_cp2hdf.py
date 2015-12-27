@@ -127,7 +127,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 
 	#review.
 	while song_file_not_ready != []:
-		# 이게 개 오래걸림! 대체 왜???게다가 용량도 엄청 큼! 이런 썅 근데 처음에 확 커지고 그담엔 괜찮은가?
+		#??
 		print '=== another loop for %d songs ===' % len(song_file_not_ready)
 		for song_idx in song_file_not_ready:
 			track_id = track_ids[song_idx]
