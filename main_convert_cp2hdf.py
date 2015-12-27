@@ -79,6 +79,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	dataset_name: e.g. 'cqt', 'stft', i.e. key of the h5 file.
 	song_file_inds: index <= 9320.
 	'''
+	print 'create_hdf_dataset begins.'
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
@@ -89,7 +90,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	# get the size of dataset.
 	if dataset_name in ['cqt', 'stft']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
-		tf_height = HEUGHT[dataset_name]
+		tf_height = HEIGHT[dataset_name]
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	
 	path = PATH_HDF + 'temp_' + dataset_name + '/'
