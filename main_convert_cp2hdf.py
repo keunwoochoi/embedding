@@ -26,7 +26,7 @@ def select_and_save_each(args):
 	if os.path.exists(path+str(track_id)+'.npy'):
 		print '%d, track_id %d: already done.' % (idx, track_id)
 		return
-	pdb.set_trace()
+	# pdb.set_trace()
 	clips_per_song = 3
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
