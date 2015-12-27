@@ -150,19 +150,21 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 if __name__=="__main__":
 
 	datatype = sys.argv[1] #'cqt, stft' 
+	worktype = sys.argv[2] #a, b
+
 	print 'datatype: %s' % datatype
-
-	select_and_save(datatype)
-	sys.exit(0)
-
+	if worktype == 'a':
+		select_and_save(datatype)
+		sys.exit(0)
+	elif worktype == 'b'
 	# after create all file for cqt and stft with selected segments, then add them on hdf.
-	file_manager = my_utils.File_Manager()
-	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
+		file_manager = my_utils.File_Manager()
+		train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
 	
-	create_hdf_dataset(filename='data_train.h5', 
-						dataset_name=datatype,
-						file_manager=file_manager,
-						song_file_inds=train_inds)
+		create_hdf_dataset(filename='data_train.h5', 
+							dataset_name=datatype,
+							file_manager=file_manager,
+							song_file_inds=train_inds)
 	
 	
 	
