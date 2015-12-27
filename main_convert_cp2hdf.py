@@ -13,6 +13,7 @@ import my_utils
 from environments import *
 from constants import *
 import pdb
+import time
 
 FILE_MANAGER = my_utils.File_Manager()
 HEIGHT = {}
@@ -119,10 +120,14 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
 		if os.path.exists(path + str(track_id) + '.npy'):
-			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = np.load(path + str(track_id) + '.npy')
+			tf_selections = np.load(path + str(track_id) + '.npy')
+			for clip_idx in range(clips_per_song):
+				data_cqt[song_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
+			print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 		else:
 			song_file_not_ready.append(song_idx)
-		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
+			print 'Skip, not ready yet for this: %d' % song_idx
+		
 
 	print ' === first loop done for : %s ===' % dataset_name
 
@@ -136,7 +141,8 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 				song_file_not_ready.remove(song_idx)
 			else:
 				continue
-			print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
+			print 'Done: cp2hdf, song_idx:%d, track_id: %d, and will wait for 60 seconds.' % (song_idx, track_id)
+			time.sleep(60)
 	print ' ======== it is all done for %s! ========' % dataset_name
 	file_write.close()
 	return
