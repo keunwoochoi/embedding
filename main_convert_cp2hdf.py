@@ -94,7 +94,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		tf_height = HEIGHT[dataset_name]
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	
-	path = PATH_HDF + 'temp_' + dataset_name + '/'
+	path = PATH_HDF + 'temp_' + dataset_name + '/' # path to read numpy files
 
 	# create or load dataset
 	if os.path.exists(PATH_HDF + filename):
@@ -108,12 +108,6 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	else:
 		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
-	# create or load 'log' file for this work. -- to resume easily.
-	if os.path.exists(PATH_HDF + 'log_for_' + filename):
-		idx_until = np.load(PATH_HDF + 'log_for_' + filename)
-	else:
-		idx_until = 0
-	
 	# fill the dataset.
 	song_file_not_ready = []
 	for song_idx in song_file_inds:
@@ -126,13 +120,14 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 		else:
 			song_file_not_ready.append(song_idx)
-			print 'Skip, not ready yet for this: %d' % song_idx
+			print 'Skip, not ready yet for this: %d, %d' % song_idx, track_id
 		
 
 	print ' === first loop done for : %s ===' % dataset_name
 
 	#review.
 	while song_file_not_ready != []:
+		이게 개 오래걸림! 대체 왜???게다가 용량도 엄청 큼! 이런 썅 근데 처음에 확 커지고 그담엔 괜찮은가?
 		print '=== another loop for %d songs ===' % len(song_file_not_ready)
 		for song_idx in song_file_not_ready:
 			track_id = track_ids[song_idx]
@@ -152,8 +147,8 @@ if __name__=="__main__":
 	datatype = sys.argv[1] #'cqt, stft' 
 	print 'datatype: %s' % datatype
 
-	# select_and_save(datatype)
-	# sys.exit(0)
+	select_and_save(datatype)
+	sys.exit(0)
 
 	# after create all file for cqt and stft with selected segments, then add them on hdf.
 	file_manager = my_utils.File_Manager()
