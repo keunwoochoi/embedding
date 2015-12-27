@@ -24,8 +24,9 @@ print 'cqt and stft height: %d and %d' % (HEIGHT['cqt'], HEIGHT['stft'])
 def select_and_save_each(args):
 	track_id, idx, boundaries, path, tf_type = args
 	if os.path.exists(path+str(track_id)+'.npy'):
-		print 'track_id %d: already done.' % track_id
+		print '%d, track_id %d: already done.' % (idx, track_id)
 		return
+	pdb.set_trace()
 	clips_per_song = 3
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
@@ -51,7 +52,7 @@ def select_and_save_each(args):
 							np.abs(tf_stereo[:, frame_from:frame_to, 1])
 		ret[:,:,clip_idx] = my_utils.log_amplitude(tf_selection)
 	np.save(path+str(track_id)+'.npy' , ret)
-	print 'track_id %d: done.' % track_id
+	print '%d, track_id %d: done.' % (idx, track_id)
 	return
 
 def select_and_save(tf_type):
@@ -71,6 +72,9 @@ def select_and_save(tf_type):
 	if not os.path.exists(path):
 		os.mkdir(path)
 
+	print 'DEBUGGING'
+	for arg in args:
+		select_and_save_each(arg)
 	p = Pool(24)
 	p.map(select_and_save_each, args)
 
