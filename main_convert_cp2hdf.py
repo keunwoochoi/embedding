@@ -76,7 +76,7 @@ def select_and_save(tf_type):
 	# print 'DEBUGGING'
 	# for arg in args:
 	# 	select_and_save_each(arg)
-	p = Pool(24)
+	p = Pool(48)
 	p.map(select_and_save_each, args)
 
 
