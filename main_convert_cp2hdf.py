@@ -55,7 +55,8 @@ def select_and_save_each(args):
 
 def select_and_save(tf_type):
 	'''select and save cqt and stft using multiprocessing
-	for CQT and STFT.'''
+	for CQT and STFT.
+	Do this, and then execute create_hdf_dataset()'''
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	idx = range(len(track_ids))
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
@@ -74,6 +75,10 @@ def select_and_save(tf_type):
 
 
 def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
+	'''filename: .h5 filename to store.
+	dataset_name: e.g. 'cqt', 'stft', i.e. key of the h5 file.
+	song_file_inds: index <= 9320.
+	'''
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
@@ -84,9 +89,10 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	# get the size of dataset.
 	if dataset_name in ['cqt', 'stft']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
-	tf_height, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
+		tf_height = HEUGHT[dataset_name]
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
-	tf_stereo = np.zeros((tf_height, tf_width, 2))
+	
+	path = PATH_HDF + 'temp_' + dataset_name + '/'
 
 	# create or load dataset
 	if os.path.exists(PATH_HDF + filename):
@@ -107,53 +113,30 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		idx_until = 0
 	
 	# fill the dataset.
-	for song_idx, track_id in enumerate(song_file_inds):
-		if song_idx < idx_until:
-			print 'idx %d is already done, so skipp this.' % song_idx
-			continue
+	song_file_not_ready = []
+	for song_idx in song_file_inds:
 		track_id = track_ids[song_idx]
-		if dataset_name in ['cqt', 'stft']:
-			tf_stereo = file_manager.load(ind=song_idx, data_type=dataset_name) # height, width, 2
-			if dataset_name == 'stft':
-				tf_stereo = np.abs(tf_stereo)
-			elif dataset_name=='cqt':
-				tf_stereo = my_utils.inv_log_amplitude(tf_stereo) # decibel to linear
-		else:
-			print 'not ready for other types of data.'
-			return
-
-		#tf_downmix = np.expand_dims(tf_downmix, axis=2)
-		boundaries = segment_selection[track_id]
-		if len(boundaries) < clips_per_song:
-			boundaries = []
-			num_frames = tf_stereo.shape[1]
-			for i in xrange(clips_per_song):
-				frame_from = (i+1)*num_frames/(clips_per_song+1)
-				boundaries.append((frame_from,frame_from+tf_width))
-		for clip_idx in xrange(clips_per_song):
-			#for segment_idx in [0]:
-			frame_from, frame_to = boundaries[clip_idx] # TODO : ?? [0]? all 3 segments? ??? how??
-			frame_to = frame_from + tf_width
-			if frame_to > tf_stereo.shape[1]:
-				frame_to = tf_stereo.shape[1]
-				frame_from = frame_to - tf_width
-			if dataset_name=='cqt':
-				tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
-								my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
-			elif dataset_name =='stft':
-				tf_selection = np.abs(tf_stereo[:, frame_from:frame_to, 0]) + \
-								np.abs(tf_stereo[:, frame_from:frame_to, 1])
-
 		# put this cqt selection into hdf dataset.
-			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = my_utils.log_amplitude(tf_selection) # 1, height, width
-		
-		if song_idx % 10 == 0:
-			np.save(PATH_HDF + 'log_for_' + filename, song_idx)
+		if os.path.exists(path + str(track_id) + '.npy'):
+			data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = np.load(path + str(track_id) + '.npy')
+		else:
+			song_file_not_ready.append(song_idx)
 		print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
 
-		
+	print ' === first loop done for : %s ===' % dataset_name
 
-
+	#review.
+	while song_file_not_ready != []:
+		print '=== another loop for %d songs ===' % len(song_file_not_ready)
+		for song_idx in song_file_not_ready:
+			track_id = track_ids[song_idx]
+			if os.path.exists(path + str(track_id) + '.npy'):
+				data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = np.load(path + str(track_id) + '.npy')
+				song_file_not_ready.remove(song_idx)
+			else:
+				continue
+			print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
+	print ' ======== it is all done for %s! ========' % dataset_name
 	file_write.close()
 	return
 
@@ -162,28 +145,17 @@ if __name__=="__main__":
 	datatype = sys.argv[1] #'cqt, stft' 
 	print 'datatype: %s' % datatype
 
-	select_and_save(datatype)
-	sys.exit(0)
+	# select_and_save(datatype)
+	# sys.exit(0)
 
 	# after create all file for cqt and stft with selected segments, then add them on hdf.
 	file_manager = my_utils.File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
-	#train_inds = train_inds[:10] # for test
-	
-	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	
 	create_hdf_dataset(filename='data_train.h5', 
 						dataset_name=datatype,
 						file_manager=file_manager,
 						song_file_inds=train_inds)
-	#	num_valid = len(valid_inds)
-	#	num_test  = len(test_inds)
-
-	#file_train = h5py.File(PATH_HDF + 'data_train.h5')
-	# file_valid = h5py.File(PATH_HDF + 'data_valid.h5')
-	# file_test  = h5py.File(PATH_HDF + 'data_test.h5')
 	
-	#for each file,
-	# and if train, for each features.
 	
 	

@@ -3,7 +3,7 @@ SR = 22050
 N_FFT = 1024
 WIN_LEN = 1024
 HOP_LEN = 512 # 11 sec --> 512 frames
-FRAMES_PER_SEC = SR / HOP_LEN
+FRAMES_PER_SEC = float(SR) / HOP_LEN
 
 FILE_DICT = {}
 FILE_DICT["id_path"] = "id_path_dict_w_audio.cP" #dict
