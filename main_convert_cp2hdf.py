@@ -156,7 +156,7 @@ if __name__=="__main__":
 	if worktype == 'a':
 		select_and_save(datatype)
 		sys.exit(0)
-	elif worktype == 'b'
+	elif worktype == 'b':
 	# after create all file for cqt and stft with selected segments, then add them on hdf.
 		file_manager = my_utils.File_Manager()
 		train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
