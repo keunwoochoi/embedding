@@ -72,6 +72,9 @@ def select_and_save(tf_type):
 	if not os.path.exists(path):
 		os.mkdir(path)
 
+	print 'DEBUGGING'
+	for arg in args:
+		select_and_save_each(arg)
 	p = Pool(24)
 	p.map(select_and_save_each, args)
 
