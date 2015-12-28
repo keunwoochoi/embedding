@@ -116,20 +116,15 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	# fill the dataset.
 	song_file_not_ready = []
 	for dataset_idx in xrange(len(song_file_inds)):
-		print '1'
 		song_idx = song_file_inds[dataset_idx]
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
-		print '2'
 		if os.path.exists(path + str(track_id) + '.npy'):
-			print '3'
 			tf_selections = np.load(path + str(track_id) + '.npy')
-			print '4'
 			for clip_idx in range(clips_per_song):
-				print '5'
 				data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
 			print 'Done: cp2hdf, dataset_idx:%d, track_id: %d' % (dataset_idx, track_id)
-			print '6'
+
 		else:
 			song_file_not_ready.append(song_idx)
 			print 'Skip, not ready yet for this: %d, %d' % dataset_idx, track_id
