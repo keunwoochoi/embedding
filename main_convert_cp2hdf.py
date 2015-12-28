@@ -81,22 +81,14 @@ def select_and_save(tf_type):
 	Do this, and then execute create_hdf_dataset()'''
 	if tf_type not in ['stft','cqt','mfcc','chroma','label']:
 		raise RuntimeError('Wrong data type, %s.' % tf_type)
+		if tf_type == 'label':
+			raise RuntimeError('Dont do this for labels. just use FILE_DICT["latent_matrix_w_blahblah.."]')
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	idx = range(len(track_ids))
 
 	path = PATH_HDF + 'temp_' + tf_type + '/'
 	if not os.path.exists(path):
 		os.mkdir(path)
-
-	if tf_type == 'label':
-		label_matrices = []
-		for dim_labels in range(2,20):
-			label_matrix_filename = (FILE_DICT["mood_latent_tfidf_matrix"] % dim_labels) # tfidf is better!
-			label_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
-			label_matrices.append(label_matrix)
-			cP.dump(path+'labels_%d.npy'%dim_labels, label_matrices)
-		print 'labels range(2,20) are saved at %s' % (path+'labels.npy')
-		return
 
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
 	segment_selection_list = [segment_selection[key] for key in track_ids]
@@ -118,7 +110,8 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	dataset_name: e.g. 'cqt', 'stft', 'mfcc', 'chroma', i.e. key of the h5 file.
 	song_file_inds: index <= 9320.
 	'''
-	print 'create_hdf_dataset begins.'
+	print 'create_hdf_dataset begins - for filename:%s, dataset_name:%s, %d files' % \
+										(filename, dataset_name, len(song_file_inds))
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
@@ -130,14 +123,13 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	if dataset_name in ['cqt', 'stft', 'mfcc', 'chroma']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
 		tf_height = HEIGHT[dataset_name]
+		tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	elif dataset_name in ['label']:
-		print 'for labels, just use numpy array.'
-		return
+		pass
 	else:
 		print '??? dataset name wrong.'
-	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	
-	path = PATH_HDF + 'temp_' + dataset_name + '/' # path to read numpy files
+	path_in = PATH_HDF + 'temp_' + dataset_name + '/' # path to read numpy files
 
 	# create or load dataset
 	if os.path.exists(PATH_HDF_TEMP + filename):
@@ -146,10 +138,27 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	else:
 		file_write = h5py.File(PATH_HDF_TEMP + filename, 'w')
 		print 'creating new hdf file.'
-	if dataset_name in file_write:
-		data_cqt = file_write[dataset_name]
+
+	if dataset_name == 'label':
+		for dim_label in xrange(2, 21):
+			dataset_name_num = dataset_name + str(dim_label)
+			if dataset_name_num in file_write:
+				data_to_store = file_write[dataset_name_num]
+			else:
+				data_to_store = file_write.create_dataset(dataset_name_num, (num_clips, dim_label))
+			labels = np.load(PATH_DATA + (FILE_DICT["mood_latent_tfidf_matrix"] % dim_latent_feature))
+			for data_idx, song_idx in enumerate(song_file_inds):
+				for clip_idx in clips_per_song:
+					data_to_store[data_idx + clip_idx*num_songs, :] = labels[song_idx, :]
+		file_write.close()
+		print 'Writing labels in hdfs: done for label in range(2, 20'
+		return
 	else:
-		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
+		if dataset_name in file_write:
+			data_to_store = file_write[dataset_name]
+		else:
+			data_to_store = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), 
+													maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
 	# fill the dataset.
 	done_idx_file_path = PATH_HDF_TEMP + filename + '_' +dataset_name + '_done_idx.npy'
@@ -163,9 +172,9 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		song_idx = song_file_inds[dataset_idx]
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
-		tf_selections = np.load(path + str(track_id) + '.npy')
+		tf_selections = np.load(path_in + str(track_id) + '.npy')
 		for clip_idx in range(clips_per_song):
-			data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
+			data_to_store[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
 		print 'Done: cp2hdf, dataset_idx:%d, track_id: %d' % (dataset_idx, track_id)
 		np.save(done_idx_file_path, dataset_idx)
 
