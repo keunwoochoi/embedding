@@ -81,7 +81,7 @@ class File_Manager():
 		elif data_type =='mfcc':
 			return self.load_mfcc(ind)
 		elif data_type == 'chroma':
-			return self_load_chroma(ind)
+			return self.load_chroma(ind)
 		else:
 			print 'wrong data type input in file_manager.load()'
 			raise ValueError
