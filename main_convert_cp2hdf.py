@@ -19,6 +19,8 @@ FILE_MANAGER = my_utils.File_Manager()
 HEIGHT = {}
 HEIGHT['cqt'] = FILE_MANAGER.load_cqt(0).shape[0]
 HEIGHT['stft']= FILE_MANAGER.load_stft(0).shape[0]
+HEIGHT['mfcc']= 19*3
+HEIGHT['chroma']=12*3
 print 'cqt and stft height: %d and %d' % (HEIGHT['cqt'], HEIGHT['stft'])
 
 def select_and_save_each(args):
@@ -29,12 +31,23 @@ def select_and_save_each(args):
 		return
 	# pdb.set_trace()
 	clips_per_song = 3
-	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
-	tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
+	if tf_type in ['cqt', 'stft', 'chroma']:
+		tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
+	elif tf_type in ['mfcc']:
+		tf_width = int(6 * MFCC_CONST["frames_per_sec"])
+
+	#load data for whole signal
+	if tf_type in ['cqt', 'stft']:
+		tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
+		num_frames = tf_stereo.shape[1]
+	elif tf_type in ['mfcc', 'chroma']:
+		tf_triple = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 3 (for l, r, downmix)
+		num_frames = tf_triple.shape[1]
+
 	ret = np.zeros((HEIGHT[tf_type], tf_width, clips_per_song))
+	
 	if len(boundaries) < clips_per_song:
 		boundaries = []
-		num_frames = tf_stereo.shape[1]
 		for i in xrange(clips_per_song):
 			frame_from = (i+1)*num_frames/(clips_per_song+1)
 			boundaries.append((frame_from,frame_from+tf_width))
@@ -42,24 +55,32 @@ def select_and_save_each(args):
 		#for segment_idx in [0]:
 		frame_from, frame_to = boundaries[clip_idx] # TODO : ?? [0]? all 3 segments? ??? how??
 		frame_to = frame_from + tf_width
-		if frame_to > tf_stereo.shape[1]:
-			frame_to = tf_stereo.shape[1]
+		if frame_to > num_frames:
+			frame_to = num_frames
 			frame_from = frame_to - tf_width
-		if tf_type =='cqt':
-			tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
-							my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
-		elif tf_type =='stft':
-			tf_selection = np.abs(tf_stereo[:, frame_from:frame_to, 0]) + \
-							np.abs(tf_stereo[:, frame_from:frame_to, 1])
-		ret[:,:,clip_idx] = my_utils.log_amplitude(tf_selection)
+		
+		if tf_type in ['mfcc', 'chroma']:
+			tf_selection = tf_triple[:, frame_from:frame_to, 2]
+			ret[:,:,clip_idx] = tf_selection # mfcc/chroma --> put directly
+		else:
+			elif tf_type =='cqt': # cqt: inv_log_amp for sum, then log_amp 
+				tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
+								my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
+			elif tf_type =='stft':
+				tf_selection = np.abs(tf_stereo[:, frame_from:frame_to, 0]) + \
+								np.abs(tf_stereo[:, frame_from:frame_to, 1])
+			ret[:,:,clip_idx] = my_utils.log_amplitude(tf_selection)
+
 	np.save(path+str(track_id)+'.npy' , ret)
 	print '%d, track_id %d: done.' % (idx, track_id)
 	return
 
 def select_and_save(tf_type):
 	'''select and save cqt and stft using multiprocessing
-	for CQT and STFT.
+	for CQT and STFT...and MFCC and chroma
 	Do this, and then execute create_hdf_dataset()'''
+	if tf_type not in ['stft','cqt','mfcc','chroma']:
+		raise RuntimeError('Wrong data type.')
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	idx = range(len(track_ids))
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)

@@ -78,16 +78,20 @@ class File_Manager():
 			return self.load_cqt(ind)
 		elif data_type == 'stft':
 			return self.load_stft(ind)
+		elif data_type =='mfcc':
+			return self.load_mfcc(ind)
+		elif data_type == 'chroma':
+			return self_load_chroma(ind)
 		else:
 			print 'wrong data type input in file_manager.load()'
 			raise ValueError
 		# make more for mfcc, chroma, ... 
 
 	def load_mfcc(self, ind):
-		return
+		return np.load(PATH_MFCC + str(self.track_ids[ind]) + '.npy')
 
 	def load_chroma(self, ind):
-		return
+		return np.load(PATH_CHROMA + str(self.track_ids[ind]) + '.npy')
 
 	def load_stft(self, ind):
 		return np.load( PATH_STFT + str(self.track_ids[ind]) + '.npy')
