@@ -129,7 +129,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		for clip_idx in range(clips_per_song):
 			data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
 		print 'Done: cp2hdf, dataset_idx:%d, track_id: %d' % (dataset_idx, track_id)
-		np.save(PATH_HDF_TEMP + filename + dataset_name + '_done_idx.npy', dataset_idx)
+		np.save(done_idx_file_path, dataset_idx)
 
 	print ' ======== it is all done for %s! ========' % dataset_name
 	file_write.close()
