@@ -172,6 +172,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		song_idx = song_file_inds[dataset_idx]
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
+		print path_in + str(track_id) + '.npy'
 		tf_selections = np.load(path_in + str(track_id) + '.npy')
 		for clip_idx in range(clips_per_song):
 			data_to_store[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
