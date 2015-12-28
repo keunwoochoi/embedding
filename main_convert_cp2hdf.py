@@ -103,7 +103,7 @@ def select_and_save(tf_type):
 
 def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	'''filename: .h5 filename to store.
-	dataset_name: e.g. 'cqt', 'stft', i.e. key of the h5 file.
+	dataset_name: e.g. 'cqt', 'stft', 'mfcc', 'chroma', i.e. key of the h5 file.
 	song_file_inds: index <= 9320.
 	'''
 	print 'create_hdf_dataset begins.'
@@ -115,9 +115,11 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	num_clips = clips_per_song*num_songs
 	print 'num_songs:%d, num_clips:%d' % (num_songs, num_clips)
 	# get the size of dataset.
-	if dataset_name in ['cqt', 'stft']:
+	if dataset_name in ['cqt', 'stft', 'mfcc', 'chroma']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
 		tf_height = HEIGHT[dataset_name]
+	else:
+		print '??? dataset name wrong.'
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	
 	path = PATH_HDF + 'temp_' + dataset_name + '/' # path to read numpy files
