@@ -63,7 +63,7 @@ def select_and_save_each(args):
 			tf_selection = tf_triple[:, frame_from:frame_to, 2]
 			ret[:,:,clip_idx] = tf_selection # mfcc/chroma --> put directly
 		else:
-			elif tf_type =='cqt': # cqt: inv_log_amp for sum, then log_amp 
+			if tf_type =='cqt': # cqt: inv_log_amp for sum, then log_amp 
 				tf_selection = my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 0]) + \
 								my_utils.inv_log_amplitude(tf_stereo[:, frame_from:frame_to, 1])
 			elif tf_type =='stft':
