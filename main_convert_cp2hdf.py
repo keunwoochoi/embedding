@@ -92,7 +92,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	clips_per_song = 3
 	num_songs = len(song_file_inds)
 	num_clips = clips_per_song*num_songs
-
+	print 'num_songs:%d, num_clips:%d' % (num_songs, num_clips)
 	# get the size of dataset.
 	if dataset_name in ['cqt', 'stft']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
@@ -115,33 +115,34 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	
 	# fill the dataset.
 	song_file_not_ready = []
-	for song_idx in song_file_inds:
+	for dataset_idx in xrange(len(song_file_inds)):
+		song_idx = song_file_inds[dataset_idx]
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
 		if os.path.exists(path + str(track_id) + '.npy'):
 			tf_selections = np.load(path + str(track_id) + '.npy')
 			for clip_idx in range(clips_per_song):
-				data_cqt[song_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
-			print 'Done: cp2hdf, song_idx:%d, track_id: %d' % (song_idx, track_id)
+				data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
+			print 'Done: cp2hdf, dataset_idx:%d, track_id: %d' % (dataset_idx, track_id)
 		else:
 			song_file_not_ready.append(song_idx)
-			print 'Skip, not ready yet for this: %d, %d' % song_idx, track_id
+			print 'Skip, not ready yet for this: %d, %d' % dataset_idx, track_id
 		
 
 	print ' === first loop done for : %s ===' % dataset_name
 
 	#review.
 	while song_file_not_ready != []:
-		#??
 		print '=== another loop for %d songs ===' % len(song_file_not_ready)
-		for song_idx in song_file_not_ready:
+		for dataset_idx in song_file_not_ready:
+			song_idx = song_file_not_ready[dataset_idx]
 			track_id = track_ids[song_idx]
 			if os.path.exists(path + str(track_id) + '.npy'):
-				data_cqt[song_idx + clip_idx*num_songs, 0, :, :] = np.load(path + str(track_id) + '.npy')
+				data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] = np.load(path + str(track_id) + '.npy')
 				song_file_not_ready.remove(song_idx)
 			else:
 				continue
-			print 'Done: cp2hdf, song_idx:%d, track_id: %d, and will wait for 60 seconds.' % (song_idx, track_id)
+			print 'Done: cp2hdf, dataset_idx:%d, track_id: %d, and will wait for 60 seconds.' % (dataset_idx, track_id)
 			time.sleep(60)
 	print ' ======== it is all done for %s! ========' % dataset_name
 	file_write.close()
