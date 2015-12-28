@@ -80,12 +80,14 @@ def select_and_save(tf_type):
 	for CQT and STFT...and MFCC and chroma
 	Do this, and then execute create_hdf_dataset()'''
 	if tf_type not in ['stft','cqt','mfcc','chroma','label']:
-		raise RuntimeError('Wrong data type.')
+		raise RuntimeError('Wrong data type, %s.' % tf_type)
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	idx = range(len(track_ids))
 
 	path = PATH_HDF + 'temp_' + tf_type + '/'
-	
+	if not os.path.exists(path):
+		os.mkdir(path)
+
 	if tf_type == 'label':
 		label_matrices = []
 		for dim_labels in range(2,20):
@@ -103,9 +105,7 @@ def select_and_save(tf_type):
 	tf_type_list = [tf_type]*len(track_ids)
 
 	args = zip(track_ids, idx, segment_selection_list, path_list, tf_type_list)
-	if not os.path.exists(path):
-		os.mkdir(path)
-
+	
 	# print 'DEBUGGING'
 	# for arg in args:
 	# 	select_and_save_each(arg)
