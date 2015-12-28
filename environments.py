@@ -58,13 +58,15 @@ elif isMacbook:
 	PATH_HOME   = '/Users/gnu/GoogleDrive/phdCodes/'
 
 
-PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/'
-PATH_CQT  = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/'
+PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/' # stft for whole file(left, right)
+PATH_CQT  = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'CQT/' # cqt for whole file (left, right)
 
 PATH_WIKI = PATH_IMPORT + "c4dm-datasets/Wikipedia_dump/"
 PATH_ILM = PATH_IMPORT + 'c4dm-01/ilm10k-dataset/'
 
 PATH_HDF = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_hdf/'
+if isMacPro:
+	PATH_HDF = '/Users/keunwoo/data/hdf_temp/'
 
 PATH_ILM_ACT = PATH_ILM + 'act-coordinates/'
 #PATH_ILM_AUDIO = PATH_ILM + 'ilmaudio/'

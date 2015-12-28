@@ -102,11 +102,11 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	path = PATH_HDF + 'temp_' + dataset_name + '/' # path to read numpy files
 
 	# create or load dataset
-	if os.path.exists(PATH_HDF + filename):
-		file_write = h5py.File(PATH_HDF + filename, 'r+')
+	if os.path.exists(PATH_HDF_TEMP + filename):
+		file_write = h5py.File(PATH_HDF_TEMP + filename, 'r+')
 		print 'loading hdf file that exists already there.'
 	else:
-		file_write = h5py.File(PATH_HDF + filename, 'w')
+		file_write = h5py.File(PATH_HDF_TEMP + filename, 'w')
 		print 'creating new hdf file.'
 	if dataset_name in file_write:
 		data_cqt = file_write[dataset_name]
