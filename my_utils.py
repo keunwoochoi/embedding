@@ -199,7 +199,8 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 	return ret_x, ret_y
 
 def load_all_sets_from_hdf():
-	DO THIS!
+	# TODO
+	return
 
 def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=None):
 	if not tf_type:
