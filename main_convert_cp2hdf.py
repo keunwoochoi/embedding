@@ -94,7 +94,7 @@ def select_and_save(tf_type):
 			label_matrix_filename = (FILE_DICT["mood_latent_tfidf_matrix"] % dim_labels) # tfidf is better!
 			label_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
 			label_matrices.append(label_matrix)
-		np.save(path+'labels.npy', label_matrices)
+			cP.dump(path+'labels_%d.npy'%dim_labels, label_matrices)
 		print 'labels range(2,20) are saved at %s' % (path+'labels.npy')
 		return
 
