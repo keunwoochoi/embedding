@@ -79,14 +79,26 @@ def select_and_save(tf_type):
 	'''select and save cqt and stft using multiprocessing
 	for CQT and STFT...and MFCC and chroma
 	Do this, and then execute create_hdf_dataset()'''
-	if tf_type not in ['stft','cqt','mfcc','chroma']:
+	if tf_type not in ['stft','cqt','mfcc','chroma','label']:
 		raise RuntimeError('Wrong data type.')
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
 	idx = range(len(track_ids))
+
+	path = PATH_HDF + 'temp_' + tf_type + '/'
+	
+	if tf_type == 'label':
+		label_matrices = []
+		for dim_labels in range(2,20):
+			label_matrix_filename = (FILE_DICT["mood_latent_tfidf_matrix"] % dim_labels) # tfidf is better!
+			label_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
+			label_matrices.append(label_matrix)
+		np.save(path+'labels.npy', label_matrices)
+		print 'labels range(2,20) are saved at %s' % (path+'labels.npy')
+		return
+
 	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
 	segment_selection_list = [segment_selection[key] for key in track_ids]
 
-	path = PATH_HDF + 'temp_' + tf_type + '/'
 	path_list = [path]*len(track_ids)
 	tf_type_list = [tf_type]*len(track_ids)
 
@@ -118,6 +130,9 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	if dataset_name in ['cqt', 'stft', 'mfcc', 'chroma']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
 		tf_height = HEIGHT[dataset_name]
+	elif dataset_name in ['label']:
+		print 'for labels, just use numpy array.'
+		return
 	else:
 		print '??? dataset name wrong.'
 	tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
