@@ -114,37 +114,19 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
 	# fill the dataset.
-	song_file_not_ready = []
+	done_idx = np.load(PATH_HDF_TEMP + filename + dataset_name + '_done_idx.npy')
 	for dataset_idx in xrange(len(song_file_inds)):
+		if dataset_idx <= done_idx:
+			continue			
 		song_idx = song_file_inds[dataset_idx]
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
-		if os.path.exists(path + str(track_id) + '.npy'):
-			tf_selections = np.load(path + str(track_id) + '.npy')
-			for clip_idx in range(clips_per_song):
-				data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
-			print 'Done: cp2hdf, dataset_idx:%d, track_id: %d' % (dataset_idx, track_id)
+		tf_selections = np.load(path + str(track_id) + '.npy')
+		for clip_idx in range(clips_per_song):
+			data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
+		print 'Done: cp2hdf, dataset_idx:%d, track_id: %d' % (dataset_idx, track_id)
+		np.save(PATH_HDF_TEMP + filename + dataset_name + '_done_idx.npy', dataset_idx)
 
-		else:
-			song_file_not_ready.append(song_idx)
-			print 'Skip, not ready yet for this: %d, %d' % dataset_idx, track_id
-		
-
-	print ' === first loop done for : %s ===' % dataset_name
-
-	#review.
-	while song_file_not_ready != []:
-		print '=== another loop for %d songs ===' % len(song_file_not_ready)
-		for dataset_idx in song_file_not_ready:
-			song_idx = song_file_not_ready[dataset_idx]
-			track_id = track_ids[song_idx]
-			if os.path.exists(path + str(track_id) + '.npy'):
-				data_cqt[dataset_idx + clip_idx*num_songs, 0, :, :] = np.load(path + str(track_id) + '.npy')
-				song_file_not_ready.remove(song_idx)
-			else:
-				continue
-			print 'Done: cp2hdf, dataset_idx:%d, track_id: %d, and will wait for 60 seconds.' % (dataset_idx, track_id)
-			time.sleep(60)
 	print ' ======== it is all done for %s! ========' % dataset_name
 	file_write.close()
 	return
