@@ -114,7 +114,11 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
 	# fill the dataset.
-	done_idx = np.load(PATH_HDF_TEMP + filename + dataset_name + '_done_idx.npy')
+	done_idx_file_path = PATH_HDF_TEMP + filename + '[' +dataset_name + ']_done_idx.npy'
+	if os.path.exists(done_idx_file_path):
+		done_idx = np.load(PATH_HDF_TEMP + filename + '[' +dataset_name + ']_done_idx.npy')
+	else:
+		done_idx = -1
 	for dataset_idx in xrange(len(song_file_inds)):
 		if dataset_idx <= done_idx:
 			continue			
