@@ -133,12 +133,15 @@ def do_chroma_cqt(CQT, track_id):
 	CQT = 10**(0.05*CQT) # log_am --> linear (with ref_power=1.0)
 	chroma_left = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0], 
 		                                     hop_length=CQT_CONST["hop_len"], 
+		                                     n_chroma=CQT_CONST["bins_per_octave"],
 		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
 	chroma_right= librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,1], 
 		                                     hop_length=CQT_CONST["hop_len"], 
+		                                     n_chroma=CQT_CONST["bins_per_octave"],
 		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
 	chroma_mono = librosa.feature.chroma_cqt(y=None, sr=CQT_CONST["sr"], C=CQT[:,:,0]+CQT[:,:,1], 
 		                                     hop_length=CQT_CONST["hop_len"], 
+		                                     n_chroma=CQT_CONST["bins_per_octave"],
 		                                     bins_per_octave=CQT_CONST["bins_per_octave"])
 
 	np.save(PATH_CHROMA+str(track_id)+'.npy', 
@@ -488,7 +491,7 @@ if __name__=="__main__":
 	# preproess() # read text file and generate dictionaries.
 	
 	if False or "if in a case I'd like to convert more songs or other transformations ":
-		
+
 		prepare_transforms(sys.argv)
 		sys.exit(0)
 
