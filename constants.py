@@ -37,7 +37,7 @@ CQT_CONST["n_bins"] = CQT_CONST["bins_per_octave"]*CQT_CONST["num_octaves"]
 CQT_CONST["frames_per_sec"] = float(CQT_CONST["sr"]) / CQT_CONST["hop_len"]
 
 MFCC_CONST = {}
-MFCC_CONST["SR"] = SR
+MFCC_CONST["sr"] = SR
 MFCC_CONST["n_fft"] = 2048 # mistakenly - by default. but doesn't affect hop length.
 MFCC_CONST["hop_len"] = 512
 MFCC_CONST["frames_per_sec"] = float(MFCC_CONST["sr"]) / MFCC_CONST["hop_len"]
