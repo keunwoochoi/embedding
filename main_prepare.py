@@ -206,8 +206,13 @@ def load_src(track_id):
 	src, sr = librosa.load(PATH_ILM_AUDIO + dict_id_path[track_id], sr=SR, mono=False)
 	return src, sr
 
-def load_cqt(track_id):
-	return np.load(PATH_CQT + str(track_id) + '.npy')
+def load_cqt(track_id, option=None):
+	if option is None:
+		return np.load(PATH_CQT + str(track_id) + '.npy')
+	elif option == 'h':
+		return np.load(PATH_CQT_H + str(track_id) + '.npy')
+	else:
+		raise RuntimeError('wrong option for load_cqt')
 
 def load_stft(track_id):
 	return np.load(PATH_STFT + str(track_id) + '.npy')
@@ -241,11 +246,15 @@ def process_mfcc(track_id):
 		do_mfcc(src, track_id)	
 
 def process_chroma(track_id):
-	''''''
+	'''
+	option: none: do chroma based on normal CQT
+			h: based on harmonic.
+
+	'''
 	if os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
 		print "chroma:skip this id: %d, it's already there!" % track_id
 	else:
-		CQT = load_cqt(track_id)
+		CQT = load_cqt(track_id, option='h')
 		do_chroma_cqt(CQT, track_id)	
 
 
@@ -478,8 +487,10 @@ if __name__=="__main__":
 
 	# preproess() # read text file and generate dictionaries.
 	
-	if False and "if in a case I'd like to convert more songs or other transformations ":
+	if False or "if in a case I'd like to convert more songs or other transformations ":
+		
 		prepare_transforms(sys.argv)
+		sys.exit(0)
 
 	# tf-idf
 	print '## tf-idf?'
