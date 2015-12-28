@@ -114,9 +114,9 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		data_cqt = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
 	# fill the dataset.
-	done_idx_file_path = PATH_HDF_TEMP + filename + '[' +dataset_name + ']_done_idx.npy'
+	done_idx_file_path = PATH_HDF_TEMP + filename + '_' +dataset_name + '_done_idx.npy'
 	if os.path.exists(done_idx_file_path):
-		done_idx = np.load(PATH_HDF_TEMP + filename + '[' +dataset_name + ']_done_idx.npy')
+		done_idx = np.load(done_idx_file_path)
 	else:
 		done_idx = -1
 	for dataset_idx in xrange(len(song_file_inds)):
@@ -146,6 +146,7 @@ if __name__=="__main__":
 		sys.exit(0)
 	elif worktype == 'b':
 	# after create all file for cqt and stft with selected segments, then add them on hdf.
+	# example: $ python main_convert_cp2hdf.py b stft test
 		file_manager = my_utils.File_Manager()
 		train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
 		if sys.argv[3] == 'train':
