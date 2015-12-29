@@ -154,7 +154,7 @@ if __name__ == "__main__":
 				os.mkdir(PATH_RESULTS + model_name_dir + 'models/')
 			my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
 			start = time.time()
-			pdb.set_trace()
+
 			print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" \
 									% (train_x.shape[2], train_x.shape[3], train_y.shape[1])
 		 	if TR_CONST["isRegre"]:
@@ -163,14 +163,16 @@ if __name__ == "__main__":
 		 																width=train_x.shape[3], 
 		 																num_labels=train_y.shape[1], 
 		 																num_layers=TR_CONST["num_layers"], 
-		 																model_type=TR_CONST["model_type"])
+		 																model_type=TR_CONST["model_type"], 
+		 																num_channels=1)
 			else:
 				print '--- ps. this is a classification task. ---'
 				model = my_keras_models.build_classification_convnet_model(height=train_x.shape[2], 
 																			width=train_x.shape[3], 
 																			num_labels=train_y.shape[1], 
 																			num_layers=TR_CONST["num_layers"], 
-																			model_type=TR_CONST["model_type"])		
+																			model_type=TR_CONST["model_type"],
+																			num_channels=1)		
 		 	until = time.time()
 		 	print "--- keras model was built, took %d seconds ---" % (until-start)
 			#prepare callbacks

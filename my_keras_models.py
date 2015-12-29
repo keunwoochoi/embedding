@@ -62,7 +62,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	print '--- complie fin. ---'
 	return model
 
-def build_classification_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg'):
+def build_classification_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg', num_channels=2):
 	''' should add BN'''
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
@@ -74,11 +74,14 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	for i in xrange(num_layers):
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
-								border_mode='same', input_shape=(2, height, width), activation='relu' ))
+								border_mode='same', 
+								input_shape=(num_channels, height, width), 
+								activation='relu' ))
 		else:
 			model.add(BatchNormalization())
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
-								border_mode='same', activation='relu'))
+								border_mode='same', 
+								activation='relu'))
 		final_height = final_height / pool_sizes[i][0]
 		final_width  = final_width  / pool_sizes[i][1]
 
@@ -107,7 +110,7 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	return model
 
 
-def build_regression_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg'):
+def build_regression_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg', num_channels=2):
 	
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
@@ -116,7 +119,10 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 	num_stacks = [64]*1 + [64]*(num_layers-1)
 	for i in xrange(num_layers):
 		if i == 0:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', input_shape=(2, height, width), activation='tanh' ))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+									border_mode='same', 
+									input_shape=(num_channels, height, width), 
+									activation='tanh' ))
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='tanh'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
