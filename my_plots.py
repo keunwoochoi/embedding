@@ -130,7 +130,7 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 		W = W[:,ind,:,:]
 		filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
 		mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
-		mosaic = int(mosaic * 2**8)
+		mosaic = np.array((mosaic * 2**8), dtype=np.int8)
 		write_png(save_path + filename, mosaic)
 
 	else:
