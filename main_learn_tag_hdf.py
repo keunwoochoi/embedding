@@ -154,6 +154,7 @@ if __name__ == "__main__":
 				os.mkdir(PATH_RESULTS + model_name_dir + 'models/')
 			my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
 			start = time.time()
+			pdb.set_trace()
 			print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" \
 									% (train_x.shape[2], train_x.shape[3], train_y.shape[1])
 		 	if TR_CONST["isRegre"]:
