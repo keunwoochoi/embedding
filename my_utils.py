@@ -14,9 +14,7 @@ import h5py
 from collections import defaultdict
 
 class HDF5Matrix():
-	def __init__(self):
-		self.refs = defaultdict(int)
-
+	
 	def __init__(self, datapath, dataset, start, end, normalizer=None):
 		self.refs = defaultdict(int) # MODI
 		if datapath not in list(self.refs.keys()):
@@ -55,9 +53,9 @@ class HDF5Matrix():
 			else:
 				raise IndexError
 		if self.normalizer is not None:
-			return self.normalizer(self.data[idx])
+			return self.normalizer(self.data[idx, :])
 		else:
-			return self.data[idx]
+			return self.data[idx, :]
 
 	@property
 	def shape(self):
