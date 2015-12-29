@@ -200,7 +200,8 @@ if __name__ == "__main__":
 												mono=True)
 
 			predicted = model.predict(train_x, batch_size=16)
-			np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
+			pdb.set_trace()
+			#np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 											batch_size=32, 
