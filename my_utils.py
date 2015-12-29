@@ -61,9 +61,10 @@ class HDF5Matrix():
 
 	@property
 	def shape(self):
-		ret = self.shape
-		ret[0] = self.end - self.start
-		return ret # MODI
+		ret = []
+		ret.append(self.end - self.start)
+		ret = ret + [dim for dim in list(self.data.shape[1:])]
+		return tuple(ret) # MODI
 
 
 class Hyperparams_Manager():
