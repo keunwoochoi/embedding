@@ -12,6 +12,8 @@ import adjspecies
 import pprint	
 import h5py
 from collections import defaultdict
+from keras.utils import np_utils
+
 import pdb
 
 class HDF5Matrix():
