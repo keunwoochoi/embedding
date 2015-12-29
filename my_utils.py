@@ -270,6 +270,7 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None):
 		tf_type = 'stft'
 	if n_dim is None:
 		n_dim == 4
+	label_num = 'label'+str(n_dim)
 
 	if tf_type is 'stft':
 		normalizer = normalizer_stft
@@ -282,10 +283,13 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None):
 	file_valid = h5py.File(PATH_HDF_LOCAL + 'data_valid.h5', 'r')
 	file_test  = h5py.File(PATH_HDF_LOCAL + 'data_test.h5', 'r')
 
+	return file_train[tf_type], file_train[label_num], \
+			file_valid[tf_type], file_valid[label_num], \
+			file_test[tf_type],  file_test[label_num]
+	'''
 	n_train_examples = file_train[tf_type].shape[0]
 	n_valid_examples = file_valid[tf_type].shape[0]
 	n_test_examples	 = file_test[tf_type].shape[0]
-
 
 	train_x = HDF5Matrix(file_train, tf_type,			 0, n_train_examples, normalizer=normalizer)
 	train_y = HDF5Matrix(file_train, 'label'+str(n_dim), 0, n_train_examples, normalizer=normalizer)
@@ -297,7 +301,7 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None):
 	test_y  = HDF5Matrix(file_test,  'label'+str(n_dim), 0, n_test_examples, normalizer=normalizer)
 
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
-
+'''
 def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=None):
 	if not tf_type:
 		print '--- tf_type not specified, so stft is assumed. ---'
