@@ -275,9 +275,9 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None):
 		n_dim == 4
 	label_num = 'label'+str(n_dim)
 
-	if tf_type is 'stft':
+	if tf_type == 'stft':
 		normalizer = normalizer_stft
-	elif tf_type is 'cqt':
+	elif tf_type == 'cqt':
 		normalizer = normalizer_cqt
 	else:
 		normalizer = none
