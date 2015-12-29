@@ -148,7 +148,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 				data_to_store = file_write.create_dataset(dataset_name_num, (num_clips, dim_label))
 			labels = np.load(PATH_DATA + (FILE_DICT["mood_latent_tfidf_matrix"] % dim_label))
 			for data_idx, song_idx in enumerate(song_file_inds):
-				for clip_idx in clips_per_song:
+				for clip_idx in xrange(clips_per_song):
 					data_to_store[data_idx + clip_idx*num_songs, :] = labels[song_idx, :]
 		file_write.close()
 		print 'Writing labels in hdfs: done for label in range(2, 20'
