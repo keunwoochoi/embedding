@@ -66,7 +66,12 @@ PATH_ILM = PATH_IMPORT + 'c4dm-01/ilm10k-dataset/'
 
 PATH_HDF = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_hdf/'
 
-PATH_HDF_TEMP = '/Users/keunwoo/data/hdf_temp/'
+if isMacPro:
+	PATH_HDF_LOCAL = '/Users/keunwoo/data/hdf_temp/'
+elif isDT1:
+	PATH_HDF_LOCAL = '/home/keunwoo/data/'
+elif isServer:
+	PATH_HDF_LOCAL = '/import/c4dm-04/keunwoo/ilm10k_hdf/hdf/'
 
 PATH_ILM_ACT = PATH_ILM + 'act-coordinates/'
 #PATH_ILM_AUDIO = PATH_ILM + 'ilmaudio/'

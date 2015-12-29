@@ -132,16 +132,16 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	path_in = PATH_HDF + 'temp_' + dataset_name + '/' # path to read numpy files
 
 	# create or load dataset
-	if os.path.exists(PATH_HDF_TEMP + filename):
-		file_write = h5py.File(PATH_HDF_TEMP + filename, 'r+')
+	if os.path.exists(PATH_HDF_LOCAL + filename):
+		file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
 		print 'loading hdf file that exists already there.'
 	else:
-		file_write = h5py.File(PATH_HDF_TEMP + filename, 'w')
+		file_write = h5py.File(PATH_HDF_LOCAL + filename, 'w')
 		print 'creating new hdf file.'
 
 	if dataset_name == 'label':
 		for dim_label in xrange(2, 21):
-			dataset_name_num = dataset_name + str(dim_label)
+			dataset_name_num = dataset_name + str(dim_label) #name: 'label2, label3, .. label20'
 			if dataset_name_num in file_write:
 				data_to_store = file_write[dataset_name_num]
 			else:
@@ -151,7 +151,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 				for clip_idx in xrange(clips_per_song):
 					data_to_store[data_idx + clip_idx*num_songs, :] = labels[song_idx, :]
 		file_write.close()
-		print 'Writing labels in hdfs: done for label in range(2, 20'
+		print 'Writing labels in hdfs: done for label in range(2, 20)'
 		return
 	else:
 		if dataset_name in file_write:
@@ -161,7 +161,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 													maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
 	
 	# fill the dataset.
-	done_idx_file_path = PATH_HDF_TEMP + filename + '_' +dataset_name + '_done_idx.npy'
+	done_idx_file_path = PATH_HDF_LOCAL + filename + '_' +dataset_name + '_done_idx.npy'
 	if os.path.exists(done_idx_file_path):
 		done_idx = np.load(done_idx_file_path)
 	else:

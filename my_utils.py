@@ -10,6 +10,58 @@ import sys
 import numpy as np
 import adjspecies
 import pprint	
+import h5py
+from collections import defaultdict
+
+
+class HDF5Matrix():
+    def __init__(self):
+        self.refs = defaultdict(int)
+
+    def __init__(self, datapath, dataset, start, end, normalizer=None):
+        if datapath not in list(self.refs.keys()):
+            f = h5py.File(datapath)
+            self.refs[datapath] = f
+        else:
+            f = self.refs[datapath]
+        self.start = start
+        self.end = end
+        self.data = f[dataset]
+        self.normalizer = normalizer
+
+    def __len__(self):
+        return self.end - self.start
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            if key.stop + self.start <= self.end:
+                idx = slice(key.start+self.start, key.stop + self.start)
+            else:
+                raise IndexError
+        elif isinstance(key, int):
+            if key + self.start < self.end:
+                idx = key+self.start
+            else:
+                raise IndexError
+        elif isinstance(key, np.ndarray):
+            if np.max(key) + self.start < self.end:
+                idx = (self.start + key).tolist()
+            else:
+                raise IndexError
+        elif isinstance(key, list):
+            if max(key) + self.start < self.end:
+                idx = [x + self.start for x in key]
+            else:
+                raise IndexError
+        if self.normalizer is not None:
+            return self.normalizer(self.data[idx])
+        else:
+            return self.data[idx]
+
+    @property
+    def shape(self):
+        return tuple([self.end - self.start, self.data.shape[1:]])
+
 
 class Hyperparams_Manager():
 	def __init__(self):
@@ -198,9 +250,52 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 				data_ind += 1
 	return ret_x, ret_y
 
-def load_all_sets_from_hdf():
-	# TODO
-	return
+def load_all_sets_from_hdf(tf_type=None, n_dim=None):
+	'''using hdf. perhaps you should set PATH_HDF_LOCAL for the machine you're using.
+	tf_type: cqt, stft, mfcc, chroma. ''
+	for any tf_type, any post-processing is not required except standardization.
+	'''
+	def normalizer_cqt(input_data):
+		global_mean = -61.25 # computed from the whole data for cqt
+		global_std  = 14.36
+		return (input_data - global_mean) / global_std
+
+	def normalizer_stft(input_data):	
+		global_mean = -61.25 # should be mended with STFT values
+		global_std  = 14.36
+		return (input_data - global_mean) / global_std
+
+	if tf_type is None:
+		tf_type = 'stft'
+	if n_dim is None:
+		n_dim == 4
+
+	if tf_type is 'stft':
+		normalizer = normalizer_stft
+	elif tf_type is 'cqt':
+		normalizer = normalizer_cqt
+	else:
+		normalizer = none
+
+	file_train = h5py.File(PATH_HDF_LOCAL + 'data_train.h5', 'r')
+	file_valid = h5py.File(PATH_HDF_LOCAL + 'data_valid.h5', 'r')
+	file_test  = h5py.File(PATH_HDF_LOCAL + 'data_test.h5', 'r')
+
+	n_train_examples = file_train[tf_type].shape[0]
+	n_valid_examples = file_valid[tf_type].shape[0]
+	n_test_examples	 = file_test[tf_type].shape[0]
+
+
+	train_x = HDF5Matrix(file_train, tf_type,			 0, n_train_examples, normalizer=normalizer)
+	train_y = HDF5Matrix(file_train, 'label'+str(n_dim), 0, n_train_examples, normalizer=normalizer)
+	
+	valid_x = HDF5Matrix(file_valid, tf_type,			 0, n_valid_examples, normalizer=normalizer)
+	valid_y = HDF5Matrix(file_valid, 'label'+str(n_dim), 0, n_valid_examples, normalizer=normalizer)
+	
+	test_x  = HDF5Matrix(file_test,  tf_type, 			 0, n_test_examples, normalizer=normalizer)
+	test_y  = HDF5Matrix(file_test,  'label'+str(n_dim), 0, n_test_examples, normalizer=normalizer)
+
+	return train_x, train_y, valid_x, valid_y, test_x, test_y
 
 def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=None):
 	if not tf_type:
