@@ -146,7 +146,7 @@ if __name__ == "__main__":
 			print '-'*60
 			model_name_dir = model_name + '/'
 			fileout = model_name + '_results'
-
+			pdb.set_trace()
 			if not os.path.exists(PATH_RESULTS + model_name_dir):
 				os.mkdir(PATH_RESULTS + model_name_dir)
 				os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
@@ -188,6 +188,7 @@ if __name__ == "__main__":
 												filename_prefix='INIT_', 
 												normalize='local', 
 												mono=False)
+			
 			predicted = model.predict(train_x, batch_size=16)
 			np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 			if TR_CONST["isRegre"]:
