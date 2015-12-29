@@ -102,7 +102,9 @@ if __name__ == "__main__":
 		"print let's cook the mood-latent feature matrix"
 		import main_prepare
 		mood_tags_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
-		label_matrix = main_prepare.get_LDA(X=mood_tags_matrix, num_components=k, show_topics=False)
+		label_matrix = main_prepare.get_LDA(X=mood_tags_matrix, 
+											num_components=k, 
+											show_topics=False)
 		np.save(PATH_DATA + label_matrix_filename, W)
 	print 'size of mood tag matrix:'
 	print label_matrix.shape
@@ -177,20 +179,25 @@ if __name__ == "__main__":
 		 	print "--- keras model was built, took %d seconds ---" % (until-start)
 			#prepare callbacks
 			checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS + model_name_dir+ "models/weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
-															verbose=1, save_best_only=False)
+															verbose=1, 
+															save_best_only=False)
 			weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 			
 			if TR_CONST["isRegre"]:
 				history = my_keras_utils.History_Regression_Val()
-				early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=25, verbose=0)
+				early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
+																patience=25, 
+																verbose=0)
 			else:
 				history = my_keras_utils.History_Classification_Val()
-				early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', patience=25, verbose=0)
+				early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
+																patience=25, 
+																verbose=0)
 			#train!
 			my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 												filename_prefix='INIT_', 
 												normalize='local', 
-												mono=False)
+												mono=True)
 
 			predicted = model.predict(train_x, batch_size=16)
 			np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
@@ -221,10 +228,18 @@ if __name__ == "__main__":
 			np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
 			np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
 			if TR_CONST["isRegre"]:
-				my_plots.export_history(history.losses, history.val_losses, acc=None, val_acc=None, out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
+				my_plots.export_history(history.losses, history.val_losses, 
+														acc=None, 
+														val_acc=None, 
+														out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 			else:
-				my_plots.export_history(history.losses, history.val_losses, acc=history.accs, val_acc=history.val_accs, out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
-			my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', filename_prefix='', 
-										normalize='local', mono=False)
+				my_plots.export_history(history.losses, history.val_losses, 
+														acc=history.accs, 
+														val_acc=history.val_accs, 
+														out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
+			my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
+												filename_prefix='', 
+												normalize='local', 
+												mono=True)
 			
 	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
