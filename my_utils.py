@@ -61,7 +61,9 @@ class HDF5Matrix():
 
 	@property
 	def shape(self):
-		return tuple([self.end - self.start, self.data.shape[1:]]) # MODI
+		ret = self.shape
+		ret[0] = self.end - self.start
+		return ret # MODI
 
 
 class Hyperparams_Manager():
