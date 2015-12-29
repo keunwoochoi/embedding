@@ -126,6 +126,7 @@ if __name__ == "__main__":
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 		# train_x : (num_samples, num_channel, height, width)
 		# learning_id =  str(np.random.randint(999999))
+		pdb.set_trace()
 		if TR_CONST["isClass"]:
 			train_y = my_keras_utils.continuous_to_categorical(train_y)
 			valid_y = my_keras_utils.continuous_to_categorical(valid_y)
