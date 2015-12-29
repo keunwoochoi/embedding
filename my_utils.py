@@ -52,7 +52,7 @@ class HDF5Matrix():
 				idx = [x + self.start for x in key]
 			else:
 				raise IndexError
-		pdb.set_trace()
+		
 		if self.normalizer is not None:
 			return self.normalizer(self.data[idx])
 		else:
