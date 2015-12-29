@@ -188,7 +188,7 @@ if __name__ == "__main__":
 												filename_prefix='INIT_', 
 												normalize='local', 
 												mono=False)
-			
+
 			predicted = model.predict(train_x, batch_size=16)
 			np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 			if TR_CONST["isRegre"]:
@@ -197,7 +197,8 @@ if __name__ == "__main__":
 											nb_epoch=TR_CONST["num_epoch"], 
 											show_accuracy=False, 
 											verbose=1, 
-											callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+											callbacks=[history, early_stopping, weight_image_saver, checkpointer],
+											shuffle=False)
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 			else:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -205,7 +206,8 @@ if __name__ == "__main__":
 											nb_epoch=TR_CONST["num_epoch"], 
 											show_accuracy=True, 
 											verbose=1, 
-											callbacks=[history, early_stopping, weight_image_saver, checkpointer])
+											callbacks=[history, early_stopping, weight_image_saver, checkpointer],
+											shuffle=False)
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True)
 			
 			predicted = model.predict(test_x, batch_size=16)
