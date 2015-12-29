@@ -13,12 +13,12 @@ import pprint
 import h5py
 from collections import defaultdict
 
-
 class HDF5Matrix():
     def __init__(self):
         self.refs = defaultdict(int)
 
     def __init__(self, datapath, dataset, start, end, normalizer=None):
+        self.refs = defaultdict(int) # MODI
         if datapath not in list(self.refs.keys()):
             f = h5py.File(datapath)
             self.refs[datapath] = f
@@ -60,7 +60,7 @@ class HDF5Matrix():
 
     @property
     def shape(self):
-        return tuple([self.end - self.start, self.data.shape[1:]])
+        return tuple([self.end - self.start, self.data.shape[1:]]) # MODI
 
 
 class Hyperparams_Manager():
