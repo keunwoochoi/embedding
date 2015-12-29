@@ -118,7 +118,7 @@ if __name__ == "__main__":
 		#																	clips_per_song=TR_CONST["clips_per_song"], 
 		#																	num_train_songs=TR_CONST["num_songs"], 
 		#																	tf_type=TR_CONST["tf_type"])
-		train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(tf_type=TR_CONST["tf_type"],
+		train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets_from_hdf(tf_type=TR_CONST["tf_type"],
 																					n_dim=dim_latent_feature)
 		
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
