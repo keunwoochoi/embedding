@@ -383,3 +383,11 @@ def log_amplitude(S):
 def inv_log_amplitude(tf_representation):
 	return 10**(0.05*tf_representation)
 
+def continuous_to_categorical(y):
+	'''input y: continuous label, (N,M) array.
+	return: (N,M) array.
+	'''
+	maxind = np.argmax(y, axis=1)
+	return np_utils.to_categorical(maxind, y.shape[1])
+
+
