@@ -13,7 +13,6 @@ import pprint
 import h5py
 from collections import defaultdict
 import pdb
-import my_keras_utils
 
 class HDF5Matrix():
 	
