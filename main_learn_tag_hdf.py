@@ -146,7 +146,7 @@ if __name__ == "__main__":
 			print '-'*60
 			model_name_dir = model_name + '/'
 			fileout = model_name + '_results'
-			pdb.set_trace()
+			
 			if not os.path.exists(PATH_RESULTS + model_name_dir):
 				os.mkdir(PATH_RESULTS + model_name_dir)
 				os.mkdir(PATH_RESULTS + model_name_dir + 'images/')

@@ -288,9 +288,9 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None):
 			file_test[tf_type],  file_test[label_num]
 	'''
 	
-	n_train_examples = file_train[tf_type].shape[0]
-	n_valid_examples = file_valid[tf_type].shape[0]
-	n_test_examples	 = file_test[tf_type].shape[0]
+	n_train_examples = 22368
+	n_valid_examples = 2796
+	n_test_examples	 = 2796
 
 	train_x = HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', tf_type,			 0, n_train_examples, normalizer=normalizer)
 	train_y = HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', 'label'+str(n_dim), 0, n_train_examples, normalizer=normalizer)
