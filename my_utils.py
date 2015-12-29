@@ -14,54 +14,54 @@ import h5py
 from collections import defaultdict
 
 class HDF5Matrix():
-    def __init__(self):
-        self.refs = defaultdict(int)
+	def __init__(self):
+		self.refs = defaultdict(int)
 
-    def __init__(self, datapath, dataset, start, end, normalizer=None):
-        self.refs = defaultdict(int) # MODI
-        if datapath not in list(self.refs.keys()):
-        	print 'Init with hdf path: %s'%datapath
-            f = h5py.File(datapath)
-            self.refs[datapath] = f
-        else:
-            f = self.refs[datapath]
-        self.start = start
-        self.end = end
-        self.data = f[dataset]
-        self.normalizer = normalizer
+	def __init__(self, datapath, dataset, start, end, normalizer=None):
+		self.refs = defaultdict(int) # MODI
+		if datapath not in list(self.refs.keys()):
+			print 'Init with hdf path: %s'%datapath
+			f = h5py.File(datapath)
+			self.refs[datapath] = f
+		else:
+			f = self.refs[datapath]
+		self.start = start
+		self.end = end
+		self.data = f[dataset]
+		self.normalizer = normalizer
 
-    def __len__(self):
-        return self.end - self.start
+	def __len__(self):
+		return self.end - self.start
 
-    def __getitem__(self, key):
-        if isinstance(key, slice):
-            if key.stop + self.start <= self.end:
-                idx = slice(key.start+self.start, key.stop + self.start)
-            else:
-                raise IndexError
-        elif isinstance(key, int):
-            if key + self.start < self.end:
-                idx = key+self.start
-            else:
-                raise IndexError
-        elif isinstance(key, np.ndarray):
-            if np.max(key) + self.start < self.end:
-                idx = (self.start + key).tolist()
-            else:
-                raise IndexError
-        elif isinstance(key, list):
-            if max(key) + self.start < self.end:
-                idx = [x + self.start for x in key]
-            else:
-                raise IndexError
-        if self.normalizer is not None:
-            return self.normalizer(self.data[idx])
-        else:
-            return self.data[idx]
+	def __getitem__(self, key):
+		if isinstance(key, slice):
+			if key.stop + self.start <= self.end:
+				idx = slice(key.start+self.start, key.stop + self.start)
+			else:
+				raise IndexError
+		elif isinstance(key, int):
+			if key + self.start < self.end:
+				idx = key+self.start
+			else:
+				raise IndexError
+		elif isinstance(key, np.ndarray):
+			if np.max(key) + self.start < self.end:
+				idx = (self.start + key).tolist()
+			else:
+				raise IndexError
+		elif isinstance(key, list):
+			if max(key) + self.start < self.end:
+				idx = [x + self.start for x in key]
+			else:
+				raise IndexError
+		if self.normalizer is not None:
+			return self.normalizer(self.data[idx])
+		else:
+			return self.data[idx]
 
-    @property
-    def shape(self):
-        return tuple([self.end - self.start, self.data.shape[1:]]) # MODI
+	@property
+	def shape(self):
+		return tuple([self.end - self.start, self.data.shape[1:]]) # MODI
 
 
 class Hyperparams_Manager():
@@ -317,10 +317,10 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	print "--- Lets go! ---"
 	start = time.time()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix,
-	 										tf_type=tf_type, 
-	 										max_len_freq=TR_CONST["height_image"], 
-	 										width_image=TR_CONST["width_image"], 
-	 										clips_per_song=TR_CONST["clips_per_song"])
+											tf_type=tf_type, 
+											max_len_freq=TR_CONST["height_image"], 
+											width_image=TR_CONST["width_image"], 
+											clips_per_song=TR_CONST["clips_per_song"])
 	until = time.time()
 	print "--- train data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(train_x), len(train_inds), (until-start) )
