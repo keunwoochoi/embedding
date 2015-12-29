@@ -12,7 +12,7 @@ import adjspecies
 import pprint	
 import h5py
 from collections import defaultdict
-
+import pdb
 class HDF5Matrix():
 	
 	def __init__(self, datapath, dataset, start, end, normalizer=None):
@@ -52,10 +52,11 @@ class HDF5Matrix():
 				idx = [x + self.start for x in key]
 			else:
 				raise IndexError
+		pdb.set_trace()
 		if self.normalizer is not None:
-			return self.normalizer(self.data[idx, :])
+			return self.normalizer(self.data[idx])
 		else:
-			return self.data[idx, :]
+			return self.data[idx]
 
 	@property
 	def shape(self):
@@ -63,7 +64,6 @@ class HDF5Matrix():
 		ret.append(self.end - self.start)
 		ret = ret + [dim for dim in list(self.data.shape[1:])]
 		return tuple(ret) # MODI
-
 
 class Hyperparams_Manager():
 	def __init__(self):
