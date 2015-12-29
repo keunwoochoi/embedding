@@ -90,14 +90,14 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
 												filename_prefix=seconds+'_INIT_', 
 												normalize='local', 
-												mono=False)
+												mono=True)
 
 	def on_epoch_end(self, batch, logs={}):
 		seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
 												filename_prefix=seconds+'_', 
 												normalize='local', 
-												mono=False)
+												mono=True)
 
 def continuous_to_categorical(y):
 	'''input y: continuous label, (N,M) array.

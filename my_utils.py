@@ -13,6 +13,8 @@ import pprint
 import h5py
 from collections import defaultdict
 import pdb
+import my_keras_utils
+
 class HDF5Matrix():
 	
 	def __init__(self, datapath, dataset, start, end, normalizer=None):
@@ -252,9 +254,10 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 				data_ind += 1
 	return ret_x, ret_y
 
-def load_all_sets_from_hdf(tf_type=None, n_dim=None):
+def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 	'''using hdf. perhaps you should set PATH_HDF_LOCAL for the machine you're using.
 	tf_type: cqt, stft, mfcc, chroma. ''
+	task = 'reg', 'cla'
 	for any tf_type, any post-processing is not required except standardization.
 	'''
 	def normalizer_cqt(input_data):
@@ -272,6 +275,10 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None):
 	if n_dim is None:
 		n_dim == 4
 	label_num = 'label'+str(n_dim)
+	if task_cla == True:
+		suffix = '_cla'
+	else:
+		suffix = ''
 
 	if tf_type == 'stft':
 		normalizer = normalizer_stft
@@ -293,14 +300,14 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None):
 	n_valid_examples = 2796
 	n_test_examples	 = 2796
 
-	train_x = HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', tf_type,			 0, n_train_examples, normalizer=normalizer)
-	train_y = HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', 'label'+str(n_dim), 0, n_train_examples, normalizer=normalizer)
+	train_x = HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', tf_type,					 0, n_train_examples, normalizer=normalizer)
+	train_y = HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', 'label'+str(n_dim)+suffix, 0, n_train_examples, normalizer=normalizer)
 	
-	valid_x = HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', tf_type,			 0, n_valid_examples, normalizer=normalizer)
-	valid_y = HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', 'label'+str(n_dim), 0, n_valid_examples, normalizer=normalizer)
+	valid_x = HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', tf_type,					 0, n_valid_examples, normalizer=normalizer)
+	valid_y = HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', 'label'+str(n_dim)+suffix, 0, n_valid_examples, normalizer=normalizer)
 	
-	test_x  = HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  tf_type, 			 0, n_test_examples, normalizer=normalizer)
-	test_y  = HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  'label'+str(n_dim), 0, n_test_examples, normalizer=normalizer)
+	test_x  = HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  tf_type, 				 0, n_test_examples, normalizer=normalizer)
+	test_y  = HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  'label'+str(n_dim)+suffix, 0, n_test_examples, normalizer=normalizer)
 
 	return train_x, train_y, valid_x, valid_y, test_x, test_y
 

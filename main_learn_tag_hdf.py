@@ -121,17 +121,14 @@ if __name__ == "__main__":
 		#																	num_train_songs=TR_CONST["num_songs"], 
 		#																	tf_type=TR_CONST["tf_type"])
 		train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets_from_hdf(tf_type=TR_CONST["tf_type"],
-																					n_dim=dim_latent_feature)
+																					n_dim=dim_latent_feature,
+																					task_cla=TR_CONST['isClass'])
 		
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 		# train_x : (num_samples, num_channel, height, width)
 		# learning_id =  str(np.random.randint(999999))
 		
 		if TR_CONST["isClass"]:
-			train_y = my_keras_utils.continuous_to_categorical(train_y)
-			valid_y = my_keras_utils.continuous_to_categorical(valid_y)
-			test_y  = my_keras_utils.continuous_to_categorical(test_y)
-		
 			print 'labels of train_y ratio: ' + '%4.2f, '*TR_CONST["dim_labels"] % \
 					tuple(np.asarray(np.sum(train_y, axis=0) / float(np.sum(train_y))))
 			print 'labels of valid_y ratio: '+ '%4.2f, '*TR_CONST["dim_labels"] % \
@@ -201,7 +198,7 @@ if __name__ == "__main__":
 												mono=True)
 
 			predicted = model.predict(train_x, batch_size=16)
-			pdb.set_trace()
+			
 			#np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
