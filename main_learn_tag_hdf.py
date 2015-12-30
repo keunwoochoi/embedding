@@ -60,6 +60,12 @@ if __name__ == "__main__":
 												help='set dimension of label, \ndefault=3',
 												required=False,
 												default=3)
+	
+	parser.add_argument('-it', '--is_test', type=int,
+												help='say if it is test \ndefault=1 (False)',
+												required=False,
+												default=1)
+
 
 	args = parser.parse_args()
 
@@ -84,7 +90,13 @@ if __name__ == "__main__":
 		TR_CONST["clips_per_song"] = args.clips_per_song
 	if args.dim_labels:
 		TR_CONST["dim_labels"] = args.dim_labels
+	if args.is_test:
+		is_test = bool(args.is_test)
+	else:
+		is_test = False
 
+	if is_test:
+		print '==== This is a test, to quickly check the code. ===='
 	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
 			(TR_CONST["num_epoch"], TR_CONST["num_songs"], TR_CONST["model_type"])
 	print 'tf types:', tf_types
@@ -124,6 +136,9 @@ if __name__ == "__main__":
 																					n_dim=dim_latent_feature,
 																					task_cla=TR_CONST['isClass'])
 		
+		if is_test:
+			pdb.set_trace()
+
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 		# train_x : (num_samples, num_channel, height, width)
 		# learning_id =  str(np.random.randint(999999))
@@ -198,7 +213,8 @@ if __name__ == "__main__":
 												mono=True)
 
 			predicted = model.predict(train_x, batch_size=16)
-			
+			if is_test:
+				pdb.set_trace()
 			#np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 			if TR_CONST["tf_type"] == 'cqt':
 				batch_size = 32
@@ -232,7 +248,7 @@ if __name__ == "__main__":
 			
 			np.save(PATH_RESULTS + fileout + '_history.npy', history.val_losses)
 			np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
-			np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
+			# np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
 			if TR_CONST["isRegre"]:
 				my_plots.export_history(history.losses, history.val_losses, 
 														acc=None, 
