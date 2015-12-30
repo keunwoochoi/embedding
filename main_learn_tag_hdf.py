@@ -155,6 +155,8 @@ if __name__ == "__main__":
 			TR_CONST["num_layers"] = num_layers
 			hyperparams_manager = my_utils.Hyperparams_Manager()
 			model_name = hyperparams_manager.get_name(TR_CONST)
+			if is_test:
+				mode_name = 'test_' + model_name
 			hyperparams_manager.save_new_setting(TR_CONST)
 			print '-'*60
 			print 'model name: %s' % model_name
