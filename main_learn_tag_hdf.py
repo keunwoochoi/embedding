@@ -200,9 +200,15 @@ if __name__ == "__main__":
 			predicted = model.predict(train_x, batch_size=16)
 			
 			#np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
+			if TR_CONST["tf_type"] == 'cqt':
+					batch_size = 32
+				elif TR_CONST["tf_type"] == 'stft':
+					batch_size = 12
+				else:
+					raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-											batch_size=32, 
+											batch_size=batch_size, 
 											nb_epoch=TR_CONST["num_epoch"], 
 											show_accuracy=False, 
 											verbose=1, 
@@ -210,8 +216,9 @@ if __name__ == "__main__":
 											shuffle=False)
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
 			else:
+				batch_size = batch_size / 2
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-											batch_size=16, 
+											batch_size=batch_size, 
 											nb_epoch=TR_CONST["num_epoch"], 
 											show_accuracy=True, 
 											verbose=1, 
