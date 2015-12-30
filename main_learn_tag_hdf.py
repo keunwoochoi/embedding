@@ -62,9 +62,9 @@ if __name__ == "__main__":
 												default=3)
 	
 	parser.add_argument('-it', '--is_test', type=int,
-												help='say if it is test \ndefault=1 (False)',
+												help='say if it is test \ndefault=0 (False)',
 												required=False,
-												default=1)
+												default=0)
 
 
 	args = parser.parse_args()
@@ -95,7 +95,6 @@ if __name__ == "__main__":
 		is_test = bool(args.is_test)
 	else:
 		is_test = False
-	pdb.set_trace()
 	if is_test:
 		print '==== This is a test, to quickly check the code. ===='
 	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
