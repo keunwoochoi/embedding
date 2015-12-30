@@ -91,10 +91,11 @@ if __name__ == "__main__":
 	if args.dim_labels:
 		TR_CONST["dim_labels"] = args.dim_labels
 	if args.is_test:
+		pdb.set_trace()
 		is_test = bool(args.is_test)
 	else:
 		is_test = False
-
+	pdb.set_trace()
 	if is_test:
 		print '==== This is a test, to quickly check the code. ===='
 	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
