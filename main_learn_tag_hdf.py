@@ -137,6 +137,13 @@ if __name__ == "__main__":
 																					task_cla=TR_CONST['isClass'])
 		
 		if is_test:
+			train_x = train_x[0:64]
+			train_y = train_y[0:64]
+			valid_x = valid_x[0:64]
+			valid_y = valid_y[0:64]
+			test_x = test_x[0:64]
+			test_y = test_y[0:64]
+			
 			pdb.set_trace()
 
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
@@ -217,7 +224,7 @@ if __name__ == "__main__":
 			predicted = model.predict(train_x, batch_size=16)
 			if is_test:
 				pdb.set_trace()
-			#np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
+			np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted[:len(train_y)], train_y])
 			if TR_CONST["tf_type"] == 'cqt':
 				batch_size = 32
 			elif TR_CONST["tf_type"] == 'stft':
@@ -250,7 +257,7 @@ if __name__ == "__main__":
 			
 			np.save(PATH_RESULTS + fileout + '_history.npy', history.val_losses)
 			np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
-			# np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted, test_y])
+			np.save(PATH_RESULTS + fileout + '_predicted_and_truths_final.npy', [predicted[:len(train_y)], test_y])
 			if TR_CONST["isRegre"]:
 				my_plots.export_history(history.losses, history.val_losses, 
 														acc=None, 
