@@ -201,11 +201,11 @@ if __name__ == "__main__":
 			
 			#np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 			if TR_CONST["tf_type"] == 'cqt':
-					batch_size = 32
-				elif TR_CONST["tf_type"] == 'stft':
-					batch_size = 12
-				else:
-					raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
+				batch_size = 32
+			elif TR_CONST["tf_type"] == 'stft':
+				batch_size = 12
+			else:
+				raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 											batch_size=batch_size, 
