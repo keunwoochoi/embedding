@@ -220,8 +220,6 @@ if __name__ == "__main__":
 												mono=True)
 
 			predicted = model.predict(train_x, batch_size=16)
-			if is_test:
-				pdb.set_trace()
 			
 			np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(train_y)], train_y[:len(train_y)]])
 
@@ -231,7 +229,7 @@ if __name__ == "__main__":
 				batch_size = 12
 			else:
 				raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
-			pdb.set_trace()
+			
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 											batch_size=batch_size, 
