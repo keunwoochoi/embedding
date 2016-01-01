@@ -269,7 +269,9 @@ def load_all_labels(n_dim=None, num_fold=10, clips_per_song=3):
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
-	return load_y(train_inds), load_y(valid_inds), load(test_inds)
+	return load_y(train_inds, n_dim, clips_per_song), \
+			load_y(valid_inds, n_dim, clips_per_song), \
+			load(test_inds, n_dim, clips_per_song)
 
 def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 	'''using hdf. perhaps you should set PATH_HDF_LOCAL for the machine you're using.
