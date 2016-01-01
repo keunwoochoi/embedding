@@ -78,7 +78,7 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 								input_shape=(num_channels, height, width), 
 								activation='relu' ))
 		else:
-			model.add(BatchNormalization())
+			# model.add(BatchNormalization())
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 								border_mode='same', 
 								activation='relu'))
@@ -92,11 +92,11 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	print ', so the flatten layer has %d units' % (final_height*final_width*num_stacks[-1])
 	model.add(Flatten())
 	
-	model.add(BatchNormalization())
+	# model.add(BatchNormalization())
 	model.add(Dense(1024, init='normal', activation='relu'))
 	model.add(Dropout(0.25))
 	
-	model.add(BatchNormalization())
+	# model.add(BatchNormalization())
 	model.add(Dense(1024, init='normal', activation='relu'))
 	model.add(Dropout(0.25))
 

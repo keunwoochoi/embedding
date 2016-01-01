@@ -162,7 +162,6 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			for data_idx, song_idx in enumerate(song_file_inds):
 				for clip_idx in xrange(clips_per_song):
 					data_to_store[data_idx + clip_idx*num_songs, :] = labels[song_idx, :]
-			
 		file_write.close()
 		print 'Writing labels in hdfs: done for label in range(2, 20)'
 		return

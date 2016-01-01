@@ -6,8 +6,6 @@ import pdb
 import time
 import numpy as np
 from keras.utils import np_utils
-from keras.utils.visualize_util import plot
-
 
 '''
 class Keras_Results():
@@ -37,8 +35,6 @@ class Keras_Results():
 	def load_model(self):
 		"""return the corresponding keras model"""
 '''
-
-
 
 class History_Classification(keras.callbacks.Callback):
 	"""history, not validation. use History_Val to include both training and validation data"""
@@ -87,16 +83,13 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 		self.path_to_save = path_to_save
 		
 	def on_train_begin(self, logs={}):
-		pdb.set_trace()
-		plot(self.model, to_file=self.path_to_save+'model_0_init.png')
-		# seconds = str(int(time.time()))
-		# my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
-		# 										filename_prefix=seconds+'_INIT_', 
-		# 										normalize='local', 
-		# 										mono=True)
+		seconds = str(int(time.time()))
+		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
+												filename_prefix=seconds+'_INIT_', 
+												normalize='local', 
+												mono=True)
 
 	def on_epoch_end(self, batch, logs={}):
-		plot(self.model, to_file=self.path_to_save+'model_' + str(batch)+'.png')
 		# seconds = str(int(time.time()))
 		# my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
 		# 										filename_prefix=seconds+'_', 

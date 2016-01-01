@@ -3,7 +3,7 @@ matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
-# from scipy.misc import imsave
+from scipy.misc import imsave
 from numpngw import write_png
 import numpy.ma as ma
 
@@ -125,28 +125,25 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 	'''W:weights
 	save_path: path to save the images
 	normlize: weather or not they would be normalised '''
-	if mono:
-		ind = 0
-		W = W[:,ind,:,:]
-		filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-		mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
-		#write_png(save_path + filename, mosaic)
+	# if mono is True:
+	ind = 0
+	W = W[:,ind,:,:]
+	filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
+	mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
+	imsave(save_path + filename, mosaic)
 
-	else:
-		ind = 0
-		W_left = W[:,ind,:,:]
-		filename = 'weights_left_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-		mosaic = make_mosaic(imgs=W_left, normalize=normalize, border=2)
+	# else:
+		# ind = 0
+		# W_left = W[:,ind,:,:]
+		# filename = 'weights_left_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
+		# mosaic = make_mosaic(imgs=W_left, normalize=normalize, border=2)
 #        mosaic = int(mosaic * 2**8) -- not working.
 #        write_png(save_path + filename, mosaic)
 
-		ind = 1
-		W_right = W[:,ind,:,:]
-		filename = 'weights_righ_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
-		mosaic = make_mosaic(imgs=W_right, normalize=normalize, border=2)
+		# ind = 1
+		# W_right = W[:,ind,:,:]
+		# filename = 'weights_righ_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
+		# mosaic = make_mosaic(imgs=W_right, normalize=normalize, border=2)
 #        mosaic = int(mosaic * 2**8)
 #		write_png(save_path + filename, mosaic)
-
-
-
 

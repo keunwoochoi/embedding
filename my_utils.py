@@ -255,6 +255,22 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 				data_ind += 1
 	return ret_x, ret_y
 
+def load_all_labels(n_dim=None, num_fold=10, clips_per_song=3):
+	'''return numpy lasbel of all labels'''
+	def load_y(inds, n_dim, clips_per_song):
+		num_songs = len(inds)
+		labels = np.load(PATH_DATA + (FILE_DICT["mood_latent_tfidf_matrix"] % n_dim))
+		ret = np.zeros((num_songs*clips_per_song, n_dim))
+		for data_idx, song_idx in enumerate(inds):
+			for clip_idx in xrange(clips_per_song):
+				ret[data_idx + clip_idx*num_songs, :] = labels[song_idx, :]
+		return ret
+
+	file_manager = File_Manager()
+
+	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
+	return load_y(train_inds), load_y(valid_inds), load(test_inds)
+
 def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 	'''using hdf. perhaps you should set PATH_HDF_LOCAL for the machine you're using.
 	tf_type: cqt, stft, mfcc, chroma. ''

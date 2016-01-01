@@ -134,7 +134,15 @@ if __name__ == "__main__":
 		train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets_from_hdf(tf_type=TR_CONST["tf_type"],
 																					n_dim=dim_latent_feature,
 																					task_cla=TR_CONST['isClass'])
+
+
 		
+		hdf_train_y = train_y
+		hdf_valid_y = valid_y
+		hdf_test_y = test_y
+
+		train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, num_fold=10, clips_per_song=3)
+		pdb.set_trace()
 		if is_test:
 			train_x = train_x[0:64]
 			train_y = train_y[0:64]
@@ -229,7 +237,8 @@ if __name__ == "__main__":
 				batch_size = 12
 			else:
 				raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
-			
+			keras.utils.visualize_util.plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
+		
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 											batch_size=batch_size, 
