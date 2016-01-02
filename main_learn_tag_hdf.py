@@ -91,7 +91,7 @@ if __name__ == "__main__":
 	if args.dim_labels:
 		TR_CONST["dim_labels"] = args.dim_labels
 	if args.is_test:
-		is_test = bool(args.is_test)
+		is_test = bool(int(args.is_test))
 	else:
 		is_test = False
 	if is_test:
