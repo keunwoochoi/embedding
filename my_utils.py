@@ -294,7 +294,7 @@ def load_all_labels(n_dim=None, num_fold=10, clips_per_song=3, usage_ratio=1.0):
 		return ret
 
 	def trim_list(lst, ratio):
-		retun lst[:int(len(lst)*ratio)]
+		return lst[:int(len(lst)*ratio)]
 
 	file_manager = File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
