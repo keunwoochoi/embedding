@@ -134,12 +134,7 @@ if __name__ == "__main__":
 		train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets_from_hdf(tf_type=TR_CONST["tf_type"],
 																					n_dim=dim_latent_feature,
 																					task_cla=TR_CONST['isClass'])
-
-
-		
-		hdf_train_y = train_y
-		hdf_valid_y = valid_y
-		hdf_test_y = test_y
+		# *_y is not correct - 01 Jan 2016. Use nympy files directly.
 
 		train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, num_fold=10, clips_per_song=3)
 		pdb.set_trace()
