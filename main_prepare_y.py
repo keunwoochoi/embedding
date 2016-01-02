@@ -197,7 +197,7 @@ if __name__=='__main__':
 	
 	print '## LDA?'
 	# analysis - LDA 
-	if False and "it is already done.":
+	if True and "it is already done.":
 		mood_tags_tfidf_matrix = get_tfidf()
 		for k in xrange(2,21):
 			filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k

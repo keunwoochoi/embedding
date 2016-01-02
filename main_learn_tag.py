@@ -142,6 +142,14 @@ if __name__ == "__main__":
 															clips_per_song=3,
 															tf_type=tf_type,
 															usage_ratio=usage_ratio)
+
+		global_mean = np.mean(train_x)
+		global_std = np.std(train_x)
+		
+		train_x = (train_x - global_mean)/global_std
+		valid_x = (valid_x - global_mean)/global_std
+		test_x = (test_x - global_mean)/global_std
+
 		if is_test:
 			pdb.set_trace()
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
