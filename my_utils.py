@@ -255,7 +255,7 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 				data_ind += 1
 	return ret_x, ret_y
 
-def load_all_inputs(num_fold=10, clips_per_song=3, tf_type):
+def load_all_inputs(num_fold=10, clips_per_song=3, tf_type=None):
 	''''''
 	def load_x(inds, clips_per_song, tf_type):
 		file_manager = my_utils.File_Manager()
