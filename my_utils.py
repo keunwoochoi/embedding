@@ -272,7 +272,7 @@ def load_all_inputs(num_fold=10, clips_per_song=3, tf_type=None, usage_ratio=1.0
 
 	file_manager = File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
-	
+	pdb.set_trace()
 	train_inds = trim_list(train_inds, usage_ratio)
 	valid_inds = trim_list(valid_inds, usage_ratio)
 	test_inds = trim_list(test_inds, usage_ratio)
