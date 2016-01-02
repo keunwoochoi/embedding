@@ -255,6 +255,25 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 				data_ind += 1
 	return ret_x, ret_y
 
+def load_all_inputs(num_fold=10, clips_per_song=3, tf_type):
+	''''''
+	def load_x(inds, clips_per_song, tf_type):
+		file_manager = my_utils.File_Manager()
+		num_songs = len(inds)
+		data_example = file_manager.load(0, tf_type)
+		ret = np.zeros((num_songs*clips_per_song, 1, data_example.shape[0], data_example.shape[1]))
+		for data_idx, song_idx in enumerate(inds):
+			for clip_idx in xrange(clips_per_song):
+				ret[data_idx + clip_idx*num_songs, 0,:,:] = file_manager.load(song_idx, tf_type)
+		return ret
+
+	file_manager = my_utils.File_Manager()
+	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
+	return load_x(train_inds, clips_per_song, tf_type), \
+			load_x(valid_inds, clips_per_song, tf_type), \
+			load_x(test_inds, clips_per_song, tf_type)
+
+
 def load_all_labels(n_dim=None, num_fold=10, clips_per_song=3):
 	'''return numpy lasbel of all labels'''
 	def load_y(inds, n_dim, clips_per_song):
@@ -268,7 +287,7 @@ def load_all_labels(n_dim=None, num_fold=10, clips_per_song=3):
 
 	file_manager = File_Manager()
 
-	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
+	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
 	return load_y(train_inds, n_dim, clips_per_song), \
 			load_y(valid_inds, n_dim, clips_per_song), \
 			load_y(test_inds, n_dim, clips_per_song)

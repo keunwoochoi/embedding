@@ -113,10 +113,17 @@ if __name__ == "__main__":
 		print 'tf type: %s' % tf_type
 		print '='*60
 		print "I'll take %d clips for each song." % TR_CONST["clips_per_song"]
-		train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix=label_matrix, 
-																			clips_per_song=TR_CONST["clips_per_song"], 
-																			num_train_songs=TR_CONST["num_songs"], 
-																			tf_type=TR_CONST["tf_type"])
+		# train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix=label_matrix, 
+		# 																	clips_per_song=TR_CONST["clips_per_song"], 
+		# 																	num_train_songs=TR_CONST["num_songs"], 
+		# 																	tf_type=TR_CONST["tf_type"])
+		train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
+															num_fold=10, 
+															clips_per_song=3)
+		train_x, valid_x, test_x = my_utils.load_all_inputs(num_fold=10,  
+															clips_per_song=3,
+															tf_type=tf_type)
+
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 		# train_x : (num_samples, num_channel, height, width)
 		# learning_id =  str(np.random.randint(999999))

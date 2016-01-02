@@ -203,34 +203,29 @@ if __name__ == "__main__":
 		 	until = time.time()
 		 	print "--- keras model was built, took %d seconds ---" % (until-start)
 			#prepare callbacks
-			print '1'
 			checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS + model_weight_name_dir + "weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
 															verbose=1, 
 															save_best_only=False)
-			print '2'
 			weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
-			print '3'
+			
 			if TR_CONST["isRegre"]:
 				history = my_keras_utils.History_Regression_Val()
-				print '4'
 				early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
 																patience=25, 
 																verbose=0)
 			else:
 				history = my_keras_utils.History_Classification_Val()
-				print '4'
 				early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 																patience=25, 
 																verbose=0)
 			#train!
-			print '5'
 			my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 												filename_prefix='INIT_', 
 												normalize='local', 
 												mono=True)
-			print '6'
+
 			predicted = model.predict(train_x, batch_size=16)
-			print '7'
+			
 			np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(train_y)], train_y[:len(train_y)]])
 
 			if TR_CONST["tf_type"] == 'cqt':

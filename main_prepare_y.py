@@ -205,9 +205,10 @@ if __name__=='__main__':
 				W = np.load(PATH_DATA + filename_out)
 			else:
 				W = get_LDA(X=mood_tags_tfidf_matrix, num_components=k, show_topics=True)
-				# for ind, row in enumerate(W): # normaliseeh2nfqpfg
+				for ind, row in enumerate(W): # normaliseeh2nfqpfg
 
 					# W[ind,:] = W[ind,:]/np.linalg.norm(W[ind,:])
+					W[ind,:] = W[ind,:]/np.max(W[ind,:])
 
 				np.save(PATH_DATA + filename_out, W)
 
