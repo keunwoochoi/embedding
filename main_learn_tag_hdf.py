@@ -15,6 +15,7 @@ import numpy as np
 import keras
 import my_keras_models
 import my_keras_utils
+from keras.utils.visualize_util import plot as keras_plot
 import my_utils
 import cPickle as cP
 import time
@@ -232,7 +233,7 @@ if __name__ == "__main__":
 				batch_size = 12
 			else:
 				raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
-			keras.utils.visualize_util.plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
+			keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
 		
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
