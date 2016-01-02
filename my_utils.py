@@ -263,7 +263,7 @@ def load_all_inputs(num_fold=10, clips_per_song=3, tf_type=None, usage_ratio=1.0
 		data_example = np.load(PATH_HDF + 'temp_' + tf_type + '/' + str(file_manager.track_ids[0]) +'.npy')
 		ret = np.zeros((num_songs*clips_per_song, 1, data_example.shape[1], data_example.shape[2]))
 		for data_idx, song_idx in enumerate(inds):
-			data_here = np.load(PATH_HDF + 'temp_' + tf_type + '/' + str(song_idx) +'.npy')
+			data_here = np.load(PATH_HDF + 'temp_' + tf_type + '/' + str(file_manager.track_ids[song_idx]) +'.npy')
 			for clip_idx in xrange(clips_per_song):
 				ret[data_idx + clip_idx*num_songs, 0,:,:] = data_here[clip_idx, :, :]
 		return ret
