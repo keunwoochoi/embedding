@@ -178,6 +178,7 @@ if __name__ == "__main__":
 				os.mkdir(PATH_RESULTS + model_name_dir)
 				os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 				os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
+				os.mkdir(PATH_RESULTS + model_weight_name_dir)
 			my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
 			start = time.time()
 
@@ -234,7 +235,7 @@ if __name__ == "__main__":
 			else:
 				raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 			keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
-		
+			print '--- train starts ---'
 			if TR_CONST["isRegre"]:
 				model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 											batch_size=batch_size, 
