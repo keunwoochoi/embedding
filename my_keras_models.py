@@ -62,7 +62,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	print '--- complie fin. ---'
 	return model
 
-def build_classification_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg', num_channels=2):
+def build_classification_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg', num_channels=1):
 	''' should add BN'''
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
@@ -110,7 +110,7 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	return model
 
 
-def build_regression_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg', num_channels=2):
+def build_regression_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg', num_channels=1):
 	
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
