@@ -174,7 +174,7 @@ if __name__=='__main__':
 	# preproess() # read text file and generate dictionaries.
 	# tf-idf
 	print '## tf-idf?'
-	if True and "it is done.":
+	if False and "it is done.":
 		mood_tags_tfidf_matrix = get_tfidf()
 
 	# [0] analysis.
@@ -197,7 +197,8 @@ if __name__=='__main__':
 	
 	print '## LDA?'
 	# analysis - LDA 
-	if True and "it is already done.":
+	if False and "it is already done.":
+		mood_tags_tfidf_matrix = get_tfidf()
 		for k in xrange(2,21):
 			filename_out = FILE_DICT["mood_latent_tfidf_matrix"] % k
 			if os.path.exists(PATH_DATA + filename_out):

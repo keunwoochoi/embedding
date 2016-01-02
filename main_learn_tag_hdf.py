@@ -137,7 +137,7 @@ if __name__ == "__main__":
 		# *_y is not correct - 01 Jan 2016. Use nympy files directly.
 
 		train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, num_fold=10, clips_per_song=3)
-		pdb.set_trace()
+		
 		if is_test:
 			train_x = train_x[0:64]
 			train_y = train_y[0:64]
@@ -170,13 +170,13 @@ if __name__ == "__main__":
 			print 'model name: %s' % model_name
 			print '-'*60
 			model_name_dir = model_name + '/'
+			model_weight_name_dir = model_name + '_weights/'
 			fileout = model_name + '_results'
 			
 			if not os.path.exists(PATH_RESULTS + model_name_dir):
 				os.mkdir(PATH_RESULTS + model_name_dir)
 				os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 				os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
-				os.mkdir(PATH_RESULTS + model_name_dir + 'models/')
 			my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
 			start = time.time()
 
@@ -201,7 +201,7 @@ if __name__ == "__main__":
 		 	until = time.time()
 		 	print "--- keras model was built, took %d seconds ---" % (until-start)
 			#prepare callbacks
-			checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS + model_name_dir+ "models/weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
+			checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS + model_weight_name_dir + "weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
 															verbose=1, 
 															save_best_only=False)
 			weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
@@ -256,7 +256,7 @@ if __name__ == "__main__":
 			
 			predicted = model.predict(test_x, batch_size=16)
 			#save results
-			model.save_weights(PATH_RESULTS + model_name_dir + 'models/' + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
+			model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 			
 			np.save(PATH_RESULTS + fileout + '_history.npy', history.val_losses)
 			np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
