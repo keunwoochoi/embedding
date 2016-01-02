@@ -8,7 +8,6 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import RMSprop, SGD
-from keras.layers.normalization import LRN2D
 from keras.layers.normalization import BatchNormalization
 
 import keras.regularizers
@@ -22,8 +21,7 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 	from keras.layers.core import Dense, Dropout, Activation, Flatten
 	from keras.layers.convolutional import Convolution2D, MaxPooling2D
 	from keras.optimizers import RMSprop
-	from keras.layers.normalization import LRN2D
-
+	
 	model = Sequential()
 
 	image_patch_sizes = [[3,3]]*num_layers
@@ -48,8 +46,8 @@ def build_convnet_model(height, width, num_labels, num_layers=4):
 		# final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
 			model.add(Dropout(dropouts[i]))
-		if i != 0:
-			model.add(LRN2D())
+		# if i != 0:
+		# 	model.add(LRN2D())
 
 	model.add(Flatten())
 	model.add(Dense(1024, init='normal', activation='relu'))
@@ -156,8 +154,7 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_ty
 	from keras.layers.core import Dense, Dropout, Activation, Flatten
 	from keras.layers.convolutional import Convolution2D, MaxPooling2D
 	from keras.optimizers import RMSprop, SGD
-	from keras.layers.normalization import LRN2D
-
+	
 	model = Sequential()
 	if model_type == 'vgg':
 		image_patch_sizes = [[3,3]]*num_layers
@@ -188,8 +185,8 @@ def build_strict_convnet_model(height, width, num_labels, num_layers=5, model_ty
 		# final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
 			model.add(Dropout(dropouts[i]))
-		if i != 0:
-			model.add(LRN2D())
+		# if i != 0:
+		# 	model.add(LRN2D())
 
 	model.add(Flatten())
 	model.add(Dense(1024, init='normal', activation='relu'))
@@ -219,7 +216,6 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 	from keras.layers.core import Dense, Dropout, Activation, Flatten
 	from keras.layers.convolutional import Convolution2D, MaxPooling2D
 	from keras.optimizers import RMSprop, SGD
-	from keras.layers.normalization import LRN2D
 	print "==== INTERNTIONALLY OVERFITTING MODEL! ===="
 	model = Sequential()
 	if num_layers == 5:
@@ -248,8 +244,8 @@ def build_overfitting_convnet_model(height, width, num_labels, num_layers=5):
 		# final_width  = final_width  / pool_sizes[i][1]
 		if dropouts[i] != 0:
 			model.add(Dropout(dropouts[i]))
-		if i != 0:
-			model.add(LRN2D())
+		# if i != 0:
+		# 	model.add(LRN2D())
 
 	model.add(Flatten())
 	model.add(Dense(512, init='normal', activation='relu'))
