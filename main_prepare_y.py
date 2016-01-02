@@ -174,7 +174,7 @@ if __name__=='__main__':
 	# preproess() # read text file and generate dictionaries.
 	# tf-idf
 	print '## tf-idf?'
-	if False and "it is done.":
+	if True and "it is done.":
 		mood_tags_tfidf_matrix = get_tfidf()
 
 	# [0] analysis.
