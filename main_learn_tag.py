@@ -233,9 +233,9 @@ if __name__ == "__main__":
 			np.save(PATH_RESULTS + model_name_dir+ 'predicted_and_truths_init.npy', [predicted, train_y])
 			
 			if TR_CONST["tf_type"] == 'cqt':
-				batch_size = 32
+				batch_size = 24
 			elif TR_CONST["tf_type"] == 'stft':
-				batch_size = 12
+				batch_size = 16
 			else:
 				raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 			print '--- train starts ---'
@@ -256,7 +256,7 @@ if __name__ == "__main__":
 											callbacks=[history, early_stopping, weight_image_saver, checkpointer])
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True)
 			
-			predicted = model.predict(test_x, batch_size=16)
+			predicted = model.predict(test_x, batch_size=batch_size)
 			#save results
 			model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 			
