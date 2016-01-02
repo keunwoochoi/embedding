@@ -63,6 +63,11 @@ if __name__ == "__main__":
 												help='say if it is test \ndefault=0 (False)',
 												required=False,
 												default=0)
+	parser.add_argument('-ur', '--usage_ratio', type=float,
+												help='how much data are you going to use?',
+												required=False,
+												default=1.0)
+	
 	args = parser.parse_args()
 
 	if args.n_epoch:
@@ -86,12 +91,17 @@ if __name__ == "__main__":
 		TR_CONST["clips_per_song"] = args.clips_per_song
 	if args.dim_labels:
 		TR_CONST["dim_labels"] = args.dim_labels
+	if args.usage_ratio:
+		usage_ratio = float(args.usage_ratio)
+	else:
+		usage_ratio = 1.0
 
 	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
 			(TR_CONST["num_epoch"], TR_CONST["num_songs"], TR_CONST["model_type"])
 	print 'tf types:', tf_types
 	print ' --- num_layers: ', TR_CONST["num_layers"]
 	print ' --- task: %s' % args.task
+	print ' --- usage ratio: %f' % usage_ratio
 
 	# label matrix
 	dim_latent_feature = TR_CONST["dim_labels"]
@@ -122,10 +132,12 @@ if __name__ == "__main__":
 		# 																	tf_type=TR_CONST["tf_type"])
 		train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
 															num_fold=10, 
-															clips_per_song=3)
+															clips_per_song=3,
+															usage_ratio=usage_ratio)
 		train_x, valid_x, test_x = my_utils.load_all_inputs(num_fold=10,  
 															clips_per_song=3,
-															tf_type=tf_type)
+															tf_type=tf_type,
+															usage_ratio=usage_ratio)
 
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 		# train_x : (num_samples, num_channel, height, width)
