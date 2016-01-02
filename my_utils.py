@@ -258,7 +258,7 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 def load_all_inputs(num_fold=10, clips_per_song=3, tf_type=None):
 	''''''
 	def load_x(inds, clips_per_song, tf_type):
-		file_manager = my_utils.File_Manager()
+		file_manager = File_Manager()
 		num_songs = len(inds)
 		data_example = file_manager.load(0, tf_type)
 		ret = np.zeros((num_songs*clips_per_song, 1, data_example.shape[0], data_example.shape[1]))
@@ -267,7 +267,7 @@ def load_all_inputs(num_fold=10, clips_per_song=3, tf_type=None):
 				ret[data_idx + clip_idx*num_songs, 0,:,:] = file_manager.load(song_idx, tf_type)
 		return ret
 
-	file_manager = my_utils.File_Manager()
+	file_manager = File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
 	return load_x(train_inds, clips_per_song, tf_type), \
 			load_x(valid_inds, clips_per_song, tf_type), \
