@@ -260,11 +260,12 @@ def load_all_inputs(num_fold=10, clips_per_song=3, tf_type=None, usage_ratio=1.0
 	def load_x(inds, clips_per_song, tf_type):
 		file_manager = File_Manager()
 		num_songs = len(inds)
-		data_example = file_manager.load(0, tf_type)
-		ret = np.zeros((num_songs*clips_per_song, 1, data_example.shape[0], data_example.shape[1]))
+		data_example = np.load(PATH_HDF + 'temp_' + tf_type + '/' + file_manager.track_ids[0] +'.npy')
+		ret = np.zeros((num_songs*clips_per_song, 1, data_example.shape[1], data_example.shape[2]))
 		for data_idx, song_idx in enumerate(inds):
+			data_here = np.load(PATH_HDF + 'temp_' + tf_type + '/' + song_idx +'.npy')
 			for clip_idx in xrange(clips_per_song):
-				ret[data_idx + clip_idx*num_songs, 0,:,:] = file_manager.load(song_idx, tf_type)
+				ret[data_idx + clip_idx*num_songs, 0,:,:] = data_here(clip_idx, :, :)
 		return ret
 
 	def trim_list(lst, ratio):
@@ -272,7 +273,6 @@ def load_all_inputs(num_fold=10, clips_per_song=3, tf_type=None, usage_ratio=1.0
 
 	file_manager = File_Manager()
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
-	pdb.set_trace()
 	train_inds = trim_list(train_inds, usage_ratio)
 	valid_inds = trim_list(valid_inds, usage_ratio)
 	test_inds = trim_list(test_inds, usage_ratio)
