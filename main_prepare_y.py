@@ -169,7 +169,7 @@ def get_tfidf():
 
 	return mood_tags_tfidf_matrix
 
-if __name__='__main__':
+if __name__=='__main__':
 	label_type='mood' # 'mood', 'genre'
 	# preproess() # read text file and generate dictionaries.
 	# tf-idf
