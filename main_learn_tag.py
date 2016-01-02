@@ -91,6 +91,10 @@ if __name__ == "__main__":
 		TR_CONST["clips_per_song"] = args.clips_per_song
 	if args.dim_labels:
 		TR_CONST["dim_labels"] = args.dim_labels
+	if args.is_test:
+		is_test = bool(int(args.is_test))
+	else:
+		is_test = False
 	if args.usage_ratio:
 		usage_ratio = float(args.usage_ratio)
 	else:
@@ -112,7 +116,7 @@ if __name__ == "__main__":
 		label_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
 	else:
 		"print let's cook the mood-latent feature matrix"
-		import main_prepare
+		import main_prepare	
 		mood_tags_matrix = np.load(PATH_DATA + label_matrix_filename) #np matrix, 9320-by-100
 		label_matrix = main_prepare.get_LDA(X=mood_tags_matrix, num_components=k, show_topics=False)
 		np.save(PATH_DATA + label_matrix_filename, W)
@@ -138,7 +142,8 @@ if __name__ == "__main__":
 															clips_per_song=3,
 															tf_type=tf_type,
 															usage_ratio=usage_ratio)
-
+		if is_test:
+			pdb.set_trace()
 		moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 		# train_x : (num_samples, num_channel, height, width)
 		# learning_id =  str(np.random.randint(999999))
