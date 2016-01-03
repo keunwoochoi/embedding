@@ -21,7 +21,7 @@ class HDF5Matrix():
 	def __init__(self, datapath, dataset, start, end, normalizer=None):
 		self.refs = defaultdict(int) # MODI
 		if datapath not in list(self.refs.keys()):
-			print 'Init with hdf path: %s'%datapath
+			# print 'Init with hdf path: %s'%datapath
 			f = h5py.File(datapath)
 			self.refs[datapath] = f
 		else:

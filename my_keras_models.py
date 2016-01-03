@@ -108,9 +108,9 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	return model
 
 
-def build_regression_convnet_model(height, width, training_settings, num_labels, num_layers=5, model_type='vgg', num_channels=1, ):
+def build_regression_convnet_model(height, width, dropouts, num_labels, num_layers=5, model_type='vgg', num_channels=1):
 	
-	dropouts = training_settings["dropouts"]
+	
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers

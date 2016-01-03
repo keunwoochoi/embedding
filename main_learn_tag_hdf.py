@@ -50,9 +50,9 @@ if __name__ == "__main__":
 										nargs='+',
 										default=[5],
 										required=False)
-	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=class', 
+	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=regre', 
 									   required=False, 
-									   default='class')
+									   default='regre')
 	parser.add_argument('-cps', '--clips_per_song', type=int,
 													help='set #clips/song, \ndefault=3',
 													required=False,
@@ -191,6 +191,7 @@ if __name__ == "__main__":
 		 		print '--- ps. this is a regression task. ---'
 		 		model = my_keras_models.build_regression_convnet_model(height=train_x.shape[2], 
 		 																width=train_x.shape[3], 
+		 																dropouts=TR_CONST["dropouts"]
 		 																num_labels=train_y.shape[1], 
 		 																num_layers=TR_CONST["num_layers"], 
 		 																model_type=TR_CONST["model_type"], 
