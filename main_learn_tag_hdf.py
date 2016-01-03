@@ -211,12 +211,12 @@ if __name__ == "__main__":
 			if TR_CONST["isRegre"]:
 				history = my_keras_utils.History_Regression_Val()
 				early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
-																patience=25, 
+																patience=5, 
 																verbose=0)
 			else:
 				history = my_keras_utils.History_Classification_Val()
 				early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
-																patience=25, 
+																patience=5, 
 																verbose=0)
 			#train!
 			my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
@@ -224,7 +224,7 @@ if __name__ == "__main__":
 												normalize='local', 
 												mono=True)
 
-			predicted = model.predict(train_x, batch_size=16)
+			predicted = model.predict(train_x, batch_size=12)
 			
 			np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(train_y)], train_y[:len(train_y)]])
 
@@ -256,7 +256,7 @@ if __name__ == "__main__":
 											shuffle=False)
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True)
 			
-			predicted = model.predict(test_x, batch_size=16)
+			predicted = model.predict(test_x, batch_size=12)
 			#save results
 			model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 			

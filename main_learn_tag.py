@@ -215,12 +215,12 @@ if __name__ == "__main__":
 			if TR_CONST["isRegre"]:
 				history = my_keras_utils.History_Regression_Val()
 				early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
-																patience=25, 
+																patience=8, 
 																verbose=0)
 			else:
 				history = my_keras_utils.History_Classification_Val()
 				early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
-																patience=25, 
+																patience=8, 
 																verbose=0)
 			#train!
 			my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
