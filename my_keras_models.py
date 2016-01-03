@@ -108,8 +108,9 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	return model
 
 
-def build_regression_convnet_model(height, width, num_labels, num_layers=5, model_type='vgg', num_channels=1):
+def build_regression_convnet_model(height, width, training_settings, num_labels, num_layers=5, model_type='vgg', num_channels=1, ):
 	
+	dropouts = training_settings["dropouts"]
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
@@ -124,17 +125,20 @@ def build_regression_convnet_model(height, width, num_labels, num_layers=5, mode
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='tanh'))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
+		model.add(Dropout(dropouts[i]))
 
 	model.add(Flatten())
 	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
-	
+	#model.add(Dropout(0.25))
+
 	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
-	
+	# model.add(Dropout(0.25))
+
 	model.add(Dense(num_labels, init='normal', activation='linear', W_regularizer=keras.regularizers.l1(0.01)))
 	optimiser = SGD(lr=3e-5, momentum=0.9, decay=1e-6, nesterov=True)
 	#rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
-	model.compile(loss='mean_squared_error', optimizer=optimiser) # mean_absolute_error, mean_squared_error, ...
+	model.compile(loss='mean_squared_error', optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	print '--- complie fin. ---'
 	return model
 
