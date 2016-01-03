@@ -137,9 +137,12 @@ if __name__ == "__main__":
 																					task_cla=TR_CONST['isClass'])
 		# *_y is not correct - 01 Jan 2016. Use nympy files directly.
 
-		train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, num_fold=10, clips_per_song=3)
+		train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
+															num_fold=10, 
+															clips_per_song=3)
 		
 		if is_test:
+			pdb.set_trace()
 			train_x = train_x[0:64]
 			train_y = train_y[0:64]
 			valid_x = valid_x[0:64]
