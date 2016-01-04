@@ -12,7 +12,6 @@ from keras.layers.normalization import BatchNormalization
 
 import keras.regularizers
 
-
 def build_regression_convnet_model(setting_dict):
 	
 	height = setting_dict["height_image"]
@@ -50,7 +49,6 @@ def build_regression_convnet_model(setting_dict):
 	else:
 		learning_rate = 1e-6
 	#-------------------------------#
-
 	for i in xrange(num_layers):
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
@@ -66,12 +64,14 @@ def build_regression_convnet_model(setting_dict):
 
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
-		# model.add(Dense(nums_units_fc_layers[j], init='normal', activation=activations_fc_layers[j], W_regularizer=keras.regularizers.l1(0.01)))
-		model.add(Dense(nums_units_fc_layers[j], init='normal', activation=activations_fc_layers[j]))
-		model.add(Dropout(dropouts_fc_layers[j]))
+		
+		if int(dropouts_fc_layers[j]) != 0:
+			model.add(Dense(nums_units_fc_layers[j], init='normal', activation=activations_fc_layers[j]))
+			model.add(Dropout(dropouts_fc_layers[j]))
+		else:
+			model.add(Dense(nums_units_fc_layers[j], init='normal', activation=activations_fc_layers[j], W_regularizer=keras.regularizers.l1(0.01)))
 
 	model.add(Dense(num_labels, init='normal', activation='linear'))
-
 
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
@@ -81,7 +81,6 @@ def build_regression_convnet_model(setting_dict):
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	# print '--- complie fin. ---'
 	return model
-
 
 def build_whole_graph():
 	'''A graph model that takes advantages of
@@ -102,7 +101,7 @@ def build_whole_graph():
 	# graph.add_input(name='mfcc_mono', input_shape=(19*3, ))
 	# graph_add_input(name='chroma_mono', input_shape=(,))
 	# graph.add_input(name='stft_mono', input_shape=(,))
-	
+
 
 
 

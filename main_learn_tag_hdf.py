@@ -207,12 +207,12 @@ if __name__ == "__main__":
 	if TR_CONST["isRegre"]:
 		history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
-														patience=3, 
+														patience=5, 
 														verbose=0)
 	else:
 		history = my_keras_utils.History_Classification_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
-														patience=3, 
+														patience=5, 
 														verbose=0)
 	#train!
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
@@ -229,9 +229,9 @@ if __name__ == "__main__":
 	else:
 		raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 
-	predicted = model.predict(train_x, batch_size=batch_size)
+	predicted = model.predict(test_y, batch_size=batch_size)
 	
-	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(train_y)], train_y[:len(train_y)]])
+	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
 	print '--- train starts ---'
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 	
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', history.val_losses)
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
-	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(train_y)], train_y[:len(train_y)]])
+	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
 	if TR_CONST["isRegre"]:
 		my_plots.export_history(history.losses, history.val_losses, 

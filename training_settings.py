@@ -1,5 +1,5 @@
 TR_CONST = {}
-TR_CONST["dim_labels"] = 3
+TR_CONST["dim_labels"] = 8
 TR_CONST["height_image"] = 252
 TR_CONST["width_image"] = 258
 TR_CONST["clips_per_song"] = 3
@@ -20,7 +20,7 @@ TR_CONST["activations"] = ['relu']*TR_CONST["num_layers"]
 TR_CONST["dropouts"] = [0.5]*TR_CONST["num_layers"]
 
 TR_CONST["num_fc_layers"] = 2
-TR_CONST["dropouts_fc_layers"] = [0.25]*TR_CONST["num_fc_layers"]
+TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
 TR_CONST["nums_units_fc_layers"] = [1024]*TR_CONST["num_fc_layers"]
 TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
 
