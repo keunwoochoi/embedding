@@ -98,10 +98,10 @@ def build_whole_graph():
 	from keras.layers.normalization import LRN2D
 
 	graph = Graph()
-	graph.add_input(name='cqt_mono', input_shape=(blah))
-	graph.add_input(name='mfcc_mono', input_shape=(19*3, ))
-	graph_add_input(name='chroma_mono', input_shape=(,))
-	graph.add_input(name='stft_mono', input_shape=(,))
+	# graph.add_input(name='cqt_mono', input_shape=(blah))
+	# graph.add_input(name='mfcc_mono', input_shape=(19*3, ))
+	# graph_add_input(name='chroma_mono', input_shape=(,))
+	# graph.add_input(name='stft_mono', input_shape=(,))
 	
 
 
