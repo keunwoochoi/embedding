@@ -89,11 +89,10 @@ if __name__ == "__main__":
 		is_test = False
 	if is_test:
 		print '==== This is a test, to quickly check the code. ===='
-	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
-			(TR_CONST["num_epoch"], TR_CONST["num_songs"], TR_CONST["model_type"])
+	print 'Settings are \n --- num_epoch: %d\n --- model_type: %s' % \
+			(TR_CONST["num_epoch"], TR_CONST["model_type"])
 	print 'tf types:', TR_CONST["tf_type"]
 	print ' --- num_layers: ', TR_CONST["num_layers"]
-	print ' --- task: %s' % args.task
 
 	# label matrix
 	dim_latent_feature = TR_CONST["dim_labels"]
