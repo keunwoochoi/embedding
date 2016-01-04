@@ -44,6 +44,12 @@ def build_regression_convnet_model(setting_dict):
 		image_patch_sizes = [[height,1]]*num_layers
 		pool_sizes = [(1,2)]*num_layers
 
+	if setting_dict['tf_type'] == 'mfcc':
+		learning_rate = 1e-7
+	else:
+		learning_rate = 3e-5
+	#-------------------------------#
+
 	for i in xrange(num_layers):
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
@@ -65,10 +71,11 @@ def build_regression_convnet_model(setting_dict):
 
 	model.add(Dense(num_labels, init='normal', activation='linear'))
 
+
 	if optimizer_name == 'sgd':
-		optimiser = SGD(lr=3e-5, momentum=0.9, decay=1e-6, nesterov=True)
+		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
 	elif optimizer_name == 'rmsprop':
-		optimiser = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
+		optimiser = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	print '--- complie fin. ---'
