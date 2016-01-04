@@ -77,6 +77,7 @@ class History_Regression_Val(keras.callbacks.Callback):
 	def on_batch_end(self, batch, logs={}):
 		self.losses.append(logs.get('loss'))
 		self.val_losses.append(logs.get('val_loss'))
+		pdb.set_trace()
 
 class Weight_Image_Saver(keras.callbacks.Callback):
 	def __init__(self, path_to_save):
