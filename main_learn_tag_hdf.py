@@ -64,8 +64,8 @@ if __name__ == "__main__":
 
 	if args.n_epoch:
 		TR_CONST["num_epoch"] = args.n_epoch
-	if args.n_song:
-		TR_CONST["num_songs"] = args.n_song
+	# if args.n_song:
+	# 	TR_CONST["num_songs"] = args.n_song
 	if args.tf:
 		TR_CONST["tf_type"] = args.tf
 	if args.model:
