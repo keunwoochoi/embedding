@@ -83,7 +83,7 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 		self.path_to_save = path_to_save
 		
 	def on_train_begin(self, logs={}):
-		s#econds = str(int(time.time()))
+		# seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
 												filename_prefix='00_INIT_', 
 												normalize='local', 
