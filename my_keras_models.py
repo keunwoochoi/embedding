@@ -46,8 +46,8 @@ def build_regression_convnet_model(setting_dict):
 
 	if setting_dict['tf_type'] == 'mfcc':
 		learning_rate = 1e-7
-	else:
-		learning_rate = 3e-5
+	elif setting_dict['tf_type'] == 'stft':
+		learning_rate = 3e-6
 	#-------------------------------#
 
 	for i in xrange(num_layers):

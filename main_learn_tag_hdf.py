@@ -225,7 +225,7 @@ if __name__ == "__main__":
 	elif TR_CONST["tf_type"] == 'stft':
 		batch_size = 12
 	elif TR_CONST["tf_type"] == 'mfcc':
-		batch_size = 24
+		batch_size = 48
 	else:
 		raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 
