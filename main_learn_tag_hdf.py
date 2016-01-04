@@ -22,13 +22,23 @@ import time
 import sys
 import my_plots
 
+def update_setting_dict(setting_dict):
+
+	setting_dict["num_feat_maps"] = [48]*setting_dict["num_layers"]
+	setting_dict["activations"] = setting_dict["activations"][0]*setting_dict["num_layers"]
+	setting_dict["dropouts"] = setting_dict["dropouts"][0]*setting_dict["num_layers"]
+
+	setting_dict["dropouts_fc_layers"] = setting_dict["dropouts_fc_layers"][0]*setting_dict["num_fc_layers"]
+	setting_dict["nums_units_fc_layers"] = setting_dict["nums_units_fc_layers"][0]*setting_dict["num_fc_layers"]
+	return
+
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description='parser for input arguments')
 	parser.add_argument('-ne', '--n_epoch', type=int, 
-											help='set the number of epoch, \ndefault=20', 
+											help='set the number of epoch, \ndefault=30', 
 											required=False,
-											default=20)
+											default=30)
 	# parser.add_argument('-ns',  '--n_song', type=int, 
 	# 										help='set the number of songs to train, \ndefault=300', 
 	# 										required=False,
@@ -127,7 +137,7 @@ if __name__ == "__main__":
 														clips_per_song=3)
 	TR_CONST["height_image"] = train_x.shape[2]
 	TR_CONST["width_image"]  = train_x.shape[3]
-	train_x.shape[3]
+	update_setting_dict(TR_CONST) # 
 	if is_test:
 		pdb.set_trace()
 		train_x = train_x[0:64]
@@ -143,6 +153,8 @@ if __name__ == "__main__":
 	model_name = hyperparams_manager.get_name(TR_CONST)
 	if is_test:
 		mode_name = 'test_' + model_name
+	else:
+		model_name = time.strftime('%m-%d-%Hh_') + model_name
 	hyperparams_manager.save_new_setting(TR_CONST)
 	print '-'*60
 	print 'model name: %s' % model_name
@@ -185,12 +197,12 @@ if __name__ == "__main__":
 	if TR_CONST["isRegre"]:
 		history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
-														patience=1, 
+														patience=3, 
 														verbose=0)
 	else:
 		history = my_keras_utils.History_Classification_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
-														patience=1, 
+														patience=3, 
 														verbose=0)
 	#train!
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
@@ -201,7 +213,7 @@ if __name__ == "__main__":
 	if TR_CONST["tf_type"] == 'cqt':
 		batch_size = 24
 	elif TR_CONST["tf_type"] == 'stft':
-		batch_size = 16
+		batch_size = 12
 	else:
 		raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 

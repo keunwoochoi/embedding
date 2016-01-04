@@ -92,7 +92,7 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 	def on_epoch_end(self, epoch, logs={}):
 		#seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
-												filename_prefix='%3.0d_' % epoch, 
+												filename_prefix='%03.0d_' % epoch, 
 												normalize='local', 
 												mono=True)
 
