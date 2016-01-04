@@ -347,7 +347,7 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 	elif tf_type == 'cqt':
 		normalizer = normalizer_cqt
 	else:
-		normalizer = none
+		normalizer = None
 	'''
 	file_train = h5py.File(PATH_HDF_LOCAL + 'data_train.h5', 'r')
 	file_valid = h5py.File(PATH_HDF_LOCAL + 'data_valid.h5', 'r')

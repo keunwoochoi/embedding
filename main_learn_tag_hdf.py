@@ -43,7 +43,7 @@ if __name__ == "__main__":
 	# 										help='set the number of songs to train, \ndefault=300', 
 	# 										required=False,
 	# 										default=300)
-	parser.add_argument('-tf', '--tf', help='whether cqt or stft, \ndefault=cqt.', 
+	parser.add_argument('-tf', '--tf', help='whether cqt, stft, mfcc, \ndefault=cqt.', 
 								required=False,
 								default='cqt')
 	parser.add_argument('-m', '--model', help='set the model, \ndefault=vgg_sequential.', 
