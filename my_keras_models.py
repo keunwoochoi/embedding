@@ -46,7 +46,9 @@ def build_regression_convnet_model(setting_dict):
 
 	if setting_dict['tf_type'] == 'mfcc':
 		learning_rate = 1e-7
-	elif setting_dict['tf_type'] == 'stft':
+	elif setting_dict['tf_type'] in ['stft', 'cqt']:
+		learning_rate = 1e-6
+	else:
 		learning_rate = 1e-6
 	#-------------------------------#
 
