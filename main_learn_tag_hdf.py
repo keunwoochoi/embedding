@@ -169,7 +169,7 @@ if __name__ == "__main__":
 	print 'model name: %s' % model_name
 	print '-'*60
 	model_name_dir = model_name + '/'
-	model_weight_name_dir = model_name + '_weights/'
+	model_weight_name_dir = + 'weights' + model_name + '/'
 	fileout = model_name + '_results'
 	
 	if not os.path.exists(PATH_RESULTS + model_name_dir):
