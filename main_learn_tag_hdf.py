@@ -273,10 +273,11 @@ if __name__ == "__main__":
 												acc=history.accs, 
 												val_acc=history.val_accs, 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
+	
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 										filename_prefix='', 
 										normalize='local', 
 										mono=True)
 	min_loss = np.min(history.val_losses)
-	os.mkdir(PATH_RESULTS + model_name + '_%06.4f' % min_loss)
+	os.mkdir(PATH_RESULTS + model_name + '%s_%06.4f' % (TR_CONST["loss_function"], min_loss))
 	

@@ -11,7 +11,7 @@ TR_CONST["num_epoch"] = 30
 # TR_CONST["num_songs"] = 300
 TR_CONST["model_type"] = 'vgg_sequential' # or vgg_graph, etc.
 
-TR_CONST["loss_function"] = 'mean_squared_error'
+TR_CONST["loss_function"] = 'mse'
 TR_CONST["optimiser"] = 'SGD'
 
 TR_CONST["num_layers"] = 5 # can be overriden
