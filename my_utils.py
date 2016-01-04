@@ -332,6 +332,11 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 		global_std  = 14.36
 		return (input_data - global_mean) / global_std
 
+	def normalizer_mfcc(input_data):
+		global_mean = 2.1356969
+		global_std = 16.260582
+		return (input_data - global_mean) / global_std		
+
 	if tf_type is None:
 		tf_type = 'stft'
 	if n_dim is None:
@@ -346,6 +351,8 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 		normalizer = normalizer_stft
 	elif tf_type == 'cqt':
 		normalizer = normalizer_cqt
+	elif tf_type == 'mfcc':
+		normalizer = normalizer_mfcc
 	else:
 		normalizer = None
 	'''
