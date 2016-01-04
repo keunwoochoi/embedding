@@ -39,7 +39,6 @@ def build_regression_convnet_model(setting_dict):
 	if setting_dict['tf_type'] in ['cqt', 'stft']:
 		image_patch_sizes = [[3,3]]*num_layers
 		pool_sizes = [(2,2)]*num_layers
-
 	elif setting_dict['tf_type'] == 'mfcc':
 		image_patch_sizes = [[height,1]]*num_layers
 		pool_sizes = [(1,2)]*num_layers
@@ -99,12 +98,11 @@ def build_whole_graph():
 	from keras.layers.normalization import LRN2D
 
 	graph = Graph()
-	graph.add_input(name='cqt_all_mono', input_shape=(blah))
-	graph.add_input(name='cqt_har_mono', input_shape=(blah))
-	graph.add_input(name='cqt_per_mono', input_shape=(blah))
+	graph.add_input(name='cqt_mono', input_shape=(blah))
 	graph.add_input(name='mfcc_mono', input_shape=(19*3, ))
-	graph_add_input(name='pitchgram_mono', input_shape=())
-	graph_add_input(name='chroma_mono', input_shape=())
+	graph_add_input(name='chroma_mono', input_shape=(,))
+	graph.add_input(name='stft_mono', input_shape=(,))
+	
 
 
 
