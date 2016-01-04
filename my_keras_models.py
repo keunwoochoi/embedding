@@ -32,6 +32,7 @@ def build_regression_convnet_model(setting_dict):
 	loss_function = setting_dict["loss_function"]
 	optimizer_name = setting_dict["optimiser"].lower() # 'SGD', 'RMSProp', ..
 	#------------------------------------------------------------------#
+	pdb.set_trace()
 	num_channels=1
 
 	model = Sequential()
