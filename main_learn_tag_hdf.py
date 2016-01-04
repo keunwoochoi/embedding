@@ -64,7 +64,12 @@ if __name__ == "__main__":
 												help='set dimension of label, \ndefault=3',
 												required=False,
 												default=3)
-	
+
+	parser.add_argument('-fm', '--feature_maps', type=int,
+												help='set number of feature maps in convnet, \ndefault=48',
+												required=False,
+												default=48)
+
 	parser.add_argument('-it', '--is_test', type=int,
 												help='say if it is test \ndefault=0 (False)',
 												required=False,
@@ -93,6 +98,8 @@ if __name__ == "__main__":
 		TR_CONST["clips_per_song"] = args.clips_per_song
 	if args.dim_labels:
 		TR_CONST["dim_labels"] = args.dim_labels
+	if args.feature_maps:
+		TR_CONST["num_feat_maps"] = [args.feature_maps]*TR_CONST["num_layers"]
 	if args.is_test:
 		is_test = bool(int(args.is_test))
 	else:
@@ -103,6 +110,7 @@ if __name__ == "__main__":
 			(TR_CONST["num_epoch"], TR_CONST["model_type"])
 	print 'tf types:', TR_CONST["tf_type"]
 	print ' --- num_layers: ', TR_CONST["num_layers"]
+	print ' --- num_feat_maps: ', TR_CONST["num_feat_maps"]
 
 	# label matrix
 	dim_latent_feature = TR_CONST["dim_labels"]
@@ -137,6 +145,7 @@ if __name__ == "__main__":
 														clips_per_song=3)
 	TR_CONST["height_image"] = train_x.shape[2]
 	TR_CONST["width_image"]  = train_x.shape[3]
+
 	update_setting_dict(TR_CONST) # 
 	if is_test:
 		pdb.set_trace()
@@ -176,7 +185,8 @@ if __name__ == "__main__":
 	my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
  	if TR_CONST["isRegre"]:
  		print '--- ps. this is a regression task. ---'
- 		model = my_keras_models.build_regression_convnet_model(setting_dict=TR_CONST)
+		model = my_keras_models.build_regression_convnet_model(setting_dict=TR_CONST)
+
 	else:
 		print '--- ps. this is a classification task. ---'
 		print 'Hey, dont classify this.'
@@ -214,6 +224,8 @@ if __name__ == "__main__":
 		batch_size = 24
 	elif TR_CONST["tf_type"] == 'stft':
 		batch_size = 12
+	elif TR_CONST["tf_type"] == 'mfcc':
+		batch_size = 24
 	else:
 		raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 
