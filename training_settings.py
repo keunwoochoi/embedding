@@ -21,5 +21,5 @@ TR_CONST["dropouts"] = [0.5]*TR_CONST["num_layers"]
 
 TR_CONST["num_fc_layers"] = 2
 TR_CONST["dropouts_fc_layers"] = [0.25]*TR_CONST["num_fc_layers"]
-TR_CONST["nums_units_fc_layers"] = [1024]*TR_CONST["num_fc_layers"]
+TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
