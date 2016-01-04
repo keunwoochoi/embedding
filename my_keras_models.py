@@ -115,7 +115,7 @@ def build_regression_convnet_model(setting_dict):
 	dropouts = setting_dict["dropouts"]
 	num_labels = setting_dict["dim_labels"]
 	num_layers = setting_dict["num_layers"]
-	activations = setting_dct["activations"] #
+	activations = setting_dict["activations"] #
 	model_type = setting_dict["model_type"] # not used now.
 	num_stacks = setting_dict["num_feat_maps"]
 
