@@ -76,9 +76,9 @@ def build_regression_convnet_model(setting_dict):
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
 	elif optimizer_name == 'rmsprop':
 		optimiser = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-6)
-	print '--- ready to compile keras model ---'
+	# print '--- ready to compile keras model ---'
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
-	print '--- complie fin. ---'
+	# print '--- complie fin. ---'
 	return model
 
 

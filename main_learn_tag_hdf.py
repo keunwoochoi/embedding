@@ -223,7 +223,7 @@ if __name__ == "__main__":
 	if TR_CONST["tf_type"] == 'cqt':
 		batch_size = 24
 	elif TR_CONST["tf_type"] == 'stft':
-		batch_size = 8
+		batch_size = 12
 	elif TR_CONST["tf_type"] == 'mfcc':
 		batch_size = 48
 	else:
@@ -243,7 +243,7 @@ if __name__ == "__main__":
 									verbose=1, 
 									callbacks=[history, early_stopping, weight_image_saver, checkpointer],
 									shuffle=False)
-		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False)
+		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
 	else:
 		batch_size = batch_size / 2
 		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -253,15 +253,16 @@ if __name__ == "__main__":
 									verbose=1, 
 									callbacks=[history, early_stopping, weight_image_saver, checkpointer],
 									shuffle=False)
-		loss_testset = model.evaluate(test_x, test_y, show_accuracy=True)
+		loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 	
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 	
-	np.save(PATH_RESULTS + fileout + '_history.npy', history.val_losses)
-	np.save(PATH_RESULTS + fileout + '_loss_testset.npy', loss_testset)
+	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', history.val_losses)
+	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(train_y)], train_y[:len(train_y)]])
+
 	if TR_CONST["isRegre"]:
 		my_plots.export_history(history.losses, history.val_losses, 
 												acc=None, 
@@ -276,5 +277,6 @@ if __name__ == "__main__":
 										filename_prefix='', 
 										normalize='local', 
 										mono=True)
-		
-	# figure_filepath = PATH_FIGURE + model_name + '_history.png'
+	min_loss = np.min(history.val_losses)
+	os.mkdir(PATH_RESULTS + model_name + '_%06.4f' % min_loss)
+	
