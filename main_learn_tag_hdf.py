@@ -278,7 +278,8 @@ if __name__ == "__main__":
 										filename_prefix='', 
 										normalize='local', 
 										mono=True)
-	pdb.set_trace()
 	min_loss = np.min(history.val_losses)
-	os.mkdir(PATH_RESULTS + model_name + '%s_%06.4f' % (TR_CONST["loss_function"], min_loss))
+	arg_min = np.argmin(history.val_losses)+1
+	num_run_epoch = len(history.val_losses)
+	os.mkdir(PATH_RESULTS + model_name + '_%s_%06.4f_at_%d_of_%d' % (TR_CONST["loss_function"], min_loss, arg_min, num_run_epoch))
 	
