@@ -122,7 +122,7 @@ def build_regression_convnet_model(setting_dict):
 	num_fc_layers = setting_dict["num_fc_layers"]
 	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
 	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
-	activations_fc_layers = settings_dict["activations_fc_layers"]
+	activations_fc_layers = setting_dict["activations_fc_layers"]
 	
 	loss_function = setting_dict["loss_function"]
 	optimizer_name = setting_dict["optimiser"].lower() # 'SGD', 'RMSProp', ..
