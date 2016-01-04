@@ -108,37 +108,58 @@ def build_classification_convnet_model(height, width, num_labels, num_layers=5, 
 	return model
 
 
-def build_regression_convnet_model(height, width, dropouts, num_labels, num_layers=5, model_type='vgg', num_channels=1):
+def build_regression_convnet_model(setting_dict):
 	
+	height = setting_dict["height_image"]
+	width = setting_dict["width_image"]
+	dropouts = setting_dict["dropouts"]
+	num_labels = setting_dict["dim_labels"]
+	num_layers = setting_dict["num_layers"]
+	activations = setting_dct["activations"] #
+	model_type = setting_dict["model_type"] # not used now.
+	num_stacks = setting_dict["num_feat_maps"]
+
+	num_fc_layers = setting_dict["num_fc_layers"]
+	dropouts_fc_layers = setting_dict["fropouts_fc_layers"]
+	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
+	activations_fc_layers = settings_dict["activations_fc_layers"]
 	
+	loss_function = setting_dict["loss_function"]
+	optimizer_name = setting_dict["optimiser"].lower() # 'SGD', 'RMSProp', ..
+	#------------------------------------------------------------------#
+	num_channels=1
+
 	model = Sequential()
 	image_patch_sizes = [[3,3]]*num_layers
 	pool_sizes = [(2,2)]*num_layers
 
-	num_stacks = [64]*1 + [64]*(num_layers-1)
 	for i in xrange(num_layers):
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
-									activation='tanh' ))
+									activation=activations[i]))
 		else:
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], border_mode='same', activation='tanh'))
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+									border_mode='same', 
+									activation=activations[i]))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		model.add(Dropout(dropouts[i]))
 
 	model.add(Flatten())
-	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
-	#model.add(Dropout(0.25))
+	for j in xrange(num_fc_layers):
+		# model.add(Dense(nums_units_fc_layers[j], init='normal', activation=activations_fc_layers[j], W_regularizer=keras.regularizers.l1(0.01)))
+		model.add(Dense(nums_units_fc_layers[j], init='normal', activation=activations_fc_layers[j]))
+		model.add(Dropout(dropouts_fc_layers[j]))
 
-	model.add(Dense(1024, init='normal', activation='tanh', W_regularizer=keras.regularizers.l1(0.01)))
-	# model.add(Dropout(0.25))
+	model.add(Dense(num_labels, init='normal', activation='linear'))
 
-	model.add(Dense(num_labels, init='normal', activation='linear', W_regularizer=keras.regularizers.l1(0.01)))
-	optimiser = SGD(lr=3e-5, momentum=0.9, decay=1e-6, nesterov=True)
-	#rmsprop = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
+	if optimizer_name == 'sgd':
+		optimiser = SGD(lr=3e-5, momentum=0.9, decay=1e-6, nesterov=True)
+	elif optimizer_name == 'rmsprop':
+		optimiser = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-6)
 	print '--- ready to compile keras model ---'
-	model.compile(loss='mean_squared_error', optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
+	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	print '--- complie fin. ---'
 	return model
 
