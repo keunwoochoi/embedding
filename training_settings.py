@@ -8,7 +8,7 @@ TR_CONST["isClass"] = False # can be overriden
 TR_CONST["isRegre"] = True
 
 TR_CONST["num_epoch"] = 30
-TR_CONST["num_songs"] = 300
+# TR_CONST["num_songs"] = 300
 TR_CONST["model_type"] = 'vgg_sequential' # or vgg_graph, etc.
 
 TR_CONST["loss_function"] = 'mean_squared_error'

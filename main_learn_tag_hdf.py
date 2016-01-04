@@ -22,22 +22,17 @@ import time
 import sys
 import my_plots
 
-def print_usage_and_die():
-	print 'python filename num_of_epoch(int) num_of_train_song(int) tf_type model_type num_of_layers'
-	print 'ex) $ python main_learn_tag.py 200 5000 cqt vgg classification 4 5 6'
-	sys.exit()
-
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description='parser for input arguments')
 	parser.add_argument('-ne', '--n_epoch', type=int, 
-											help='set the number of epoch, \ndefault=50', 
+											help='set the number of epoch, \ndefault=20', 
 											required=False,
-											default=50)
-	parser.add_argument('-ns',  '--n_song', type=int, 
-											help='set the number of songs to train, \ndefault=300', 
-											required=False,
-											default=300)
+											default=20)
+	# parser.add_argument('-ns',  '--n_song', type=int, 
+	# 										help='set the number of songs to train, \ndefault=300', 
+	# 										required=False,
+	# 										default=300)
 	parser.add_argument('-tf', '--tf', help='whether cqt or stft, \ndefault=cqt.', 
 								required=False,
 								default='cqt')
@@ -64,7 +59,6 @@ if __name__ == "__main__":
 												help='say if it is test \ndefault=0 (False)',
 												required=False,
 												default=0)
-
 
 	args = parser.parse_args()
 
@@ -97,7 +91,7 @@ if __name__ == "__main__":
 		print '==== This is a test, to quickly check the code. ===='
 	print 'Settings are \n --- num_epoch: %d\n --- num_songs: %d\n --- model_type: %s' % \
 			(TR_CONST["num_epoch"], TR_CONST["num_songs"], TR_CONST["model_type"])
-	print 'tf types:', tf_types
+	print 'tf types:', TR_CONST["tf_type"]
 	print ' --- num_layers: ', TR_CONST["num_layers"]
 	print ' --- task: %s' % args.task
 
