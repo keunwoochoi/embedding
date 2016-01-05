@@ -63,7 +63,7 @@ if __name__ == "__main__":
 	parser.add_argument('-dl', '--dim_labels', type=int,
 												help='set dimension of label, \ndefault=3',
 												required=False,
-												default=3)
+												default=8)
 
 	parser.add_argument('-fm', '--feature_maps', type=int,
 												help='set number of feature maps in convnet, \ndefault=48',
@@ -229,7 +229,7 @@ if __name__ == "__main__":
 	else:
 		raise RuntimeError('batch size for this? %s' % TF_CONST["tf_type"])
 
-	predicted = model.predict(test_y, batch_size=batch_size)
+	predicted = model.predict(test_x, batch_size=batch_size)
 	
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
