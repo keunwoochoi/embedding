@@ -9,6 +9,8 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import RMSprop, SGD
 from keras.layers.normalization import BatchNormalization
+from keras.constraints import maxnorm, nonneg
+
 
 import keras.regularizers
 
