@@ -204,10 +204,7 @@ if __name__ == "__main__":
 													save_best_only=False)
 	weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	
-	if is_test:
-		patience = 999999999
-	else:
-		patience = 5
+	patience = 5
 
 	if TR_CONST["isRegre"]:
 		history = my_keras_utils.History_Regression_Val()
@@ -241,13 +238,22 @@ if __name__ == "__main__":
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
 	print '--- train starts ---'
 	if TR_CONST["isRegre"]:
-		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-									batch_size=batch_size, 
-									nb_epoch=TR_CONST["num_epoch"], 
-									show_accuracy=False, 
-									verbose=1, 
-									callbacks=[history, early_stopping, weight_image_saver, checkpointer],
-									shuffle=False)
+		if is_test:
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+										batch_size=batch_size, 
+										nb_epoch=TR_CONST["num_epoch"], 
+										show_accuracy=False, 
+										verbose=1, 
+										callbacks=[history, early_stopping, weight_image_saver, checkpointer],
+										shuffle=False)
+		else:
+			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+										batch_size=batch_size, 
+										nb_epoch=TR_CONST["num_epoch"], 
+										show_accuracy=False, 
+										verbose=1, 
+										callbacks=[history, weight_image_saver],
+										shuffle=False)
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
 	else:
 		batch_size = batch_size / 2
