@@ -185,7 +185,7 @@ if __name__ == "__main__":
 	my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
  	if TR_CONST["isRegre"]:
  		print '--- ps. this is a regression task. ---'
-		model = my_keras_models.build_regression_convnet_model(setting_dict=TR_CONST, is_test)
+		model = my_keras_models.build_regression_convnet_model(setting_dict=TR_CONST, is_test=is_test)
 
 	else:
 		print '--- ps. this is a classification task. ---'
