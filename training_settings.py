@@ -24,4 +24,4 @@ TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
 TR_CONST["nums_units_fc_layers"] = [1024]*TR_CONST["num_fc_layers"]
 TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
 
-# TODO: change this to a Class!
+# TODO: change this to a Clas

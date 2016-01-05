@@ -65,15 +65,13 @@ def build_regression_convnet_model(setting_dict):
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
 		if int(dropouts_fc_layers[j]) != 0:
-			model.add(Dense(nums_units_fc_layers[j], init='normal', 
-													activation=activations_fc_layers[j]))
+			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
 			model.add(Dropout(dropouts_fc_layers[j]))
 		else:
-			model.add(Dense(nums_units_fc_layers[j], init='normal', 
-													activation=activations_fc_layers[j], 
+			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
 													W_regularizer=keras.regularizers.l1(0.0001)))
 
-	model.add(Dense(num_labels, init='normal', activation='linear'))
+	model.add(Dense(num_labels, activation='linear'))
 
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)

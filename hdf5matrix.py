@@ -8,8 +8,6 @@ import h5py
 import numpy as np
 
 
-
-
 class HDF5Matrix():
 	def __init__(self, datapath, dataset, start, end, normalizer=None):
 		self.refs = defaultdict(int) # MODI
