@@ -291,8 +291,6 @@ if __name__ == "__main__":
 										mono=True)
 	pdb.set_trace()
 	min_loss = np.min(history.history['val_loss'])
-	arg_min = np.argmin(history.history['val_loss'])+1
-	best_batch = history.history['batch'][arg_min]
-	num_run_epoch = history.history['batch'][-1]
+	num_run_epoch = np.argmin(history.history['val_loss'])+1
 	os.mkdir(PATH_RESULTS + model_name + '_%s_%06.4f_at_%d_of_%d' % (TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch))
-	
+	print '========== DONE: %s ==========' % model_name
