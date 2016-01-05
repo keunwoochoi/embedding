@@ -207,12 +207,12 @@ if __name__ == "__main__":
 	patience = 5
 
 	if TR_CONST["isRegre"]:
-		history = my_keras_utils.History_Regression_Val()
+		#history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
 														patience=patience, 
 														verbose=0)
 	else:
-		history = my_keras_utils.History_Classification_Val()
+		h#istory = my_keras_utils.History_Classification_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
@@ -239,25 +239,25 @@ if __name__ == "__main__":
 	print '--- train starts ---'
 	if TR_CONST["isRegre"]:
 		if is_test:
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-										batch_size=batch_size, 
-										nb_epoch=TR_CONST["num_epoch"], 
-										show_accuracy=False, 
-										verbose=1, 
-										callbacks=[history, weight_image_saver],
-										shuffle=False)
+			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+												batch_size=batch_size, 
+												nb_epoch=TR_CONST["num_epoch"], 
+												show_accuracy=False, 
+												verbose=1, 
+												callbacks=[history, weight_image_saver],
+												shuffle=False)
 		else:
-			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-										batch_size=batch_size, 
-										nb_epoch=TR_CONST["num_epoch"], 
-										show_accuracy=False, 
-										verbose=1, 
-										callbacks=[history, weight_image_saver, early_stopping, checkpointer],
-										shuffle=False)
+			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+												batch_size=batch_size, 
+												nb_epoch=TR_CONST["num_epoch"], 
+												show_accuracy=False, 
+												verbose=1, 
+												callbacks=[history, weight_image_saver, early_stopping, checkpointer],
+												shuffle=False)
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
 	else:
 		batch_size = batch_size / 2
-		model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+		history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 									batch_size=batch_size, 
 									nb_epoch=TR_CONST["num_epoch"], 
 									show_accuracy=True, 
