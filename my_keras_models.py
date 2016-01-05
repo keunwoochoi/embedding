@@ -63,11 +63,14 @@ def build_regression_convnet_model(setting_dict, is_test):
 		if not is_test:
 			if not dropouts[i] == 0.0:
 				model.add(Dropout(dropouts[i]))
+		else:
+			print ' ...no dropout in test'
 
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
 		if is_test:
 			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
+			print ' ...and no reguralisation in test.'
 		else:
 			if not dropouts_fc_layers[j] == 0.0:
 				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))

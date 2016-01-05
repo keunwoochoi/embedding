@@ -244,7 +244,7 @@ if __name__ == "__main__":
 										nb_epoch=TR_CONST["num_epoch"], 
 										show_accuracy=False, 
 										verbose=1, 
-										callbacks=[history,  weight_image_saver],
+										callbacks=[history, weight_image_saver],
 										shuffle=False)
 		else:
 			model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
