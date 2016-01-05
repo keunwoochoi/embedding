@@ -5,6 +5,8 @@ copied/pasted from keras + small modifications
 
 from collections import defaultdict
 import h5py
+import numpy as np
+
 
 
 
