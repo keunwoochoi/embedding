@@ -270,20 +270,20 @@ if __name__ == "__main__":
 	#save results
 	model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 	pdb.set_trace()
-	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', history.val_losses)
+	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [history.history['loss'], history.history['val_loss']])
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
 	if TR_CONST["isRegre"]:
 		
-		my_plots.export_history(history.losses, history.val_losses, 
+		my_plots.export_history(history.history['loss'], history.history['val_loss'],
 												acc=None, 
 												val_acc=None, 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	else:
-		my_plots.export_history(history.losses, history.val_losses, 
-												acc=history.accs, 
-												val_acc=history.val_accs, 
+		my_plots.export_history(history.history['loss'], history.history['val_loss'], 
+												acc=history.history['acc'], 
+												val_acc=history.history['val_acc'], 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
