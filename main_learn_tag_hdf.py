@@ -289,8 +289,9 @@ if __name__ == "__main__":
 										filename_prefix='', 
 										normalize='local', 
 										mono=True)
-	min_loss = np.min(history.val_losses)
-	arg_min = np.argmin(history.val_losses)+1
-	num_run_epoch = len(history.val_losses)
-	os.mkdir(PATH_RESULTS + model_name + '_%s_%06.4f_at_%d_of_%d' % (TR_CONST["loss_function"], min_loss, arg_min, num_run_epoch))
+	min_loss = np.min(history.history['val_loss'])
+	arg_min = np.argmin(history.history['val_loss'])+1
+	best_batch = history.history['batch'][arg_min]
+	num_run_epoch = history.history['batch'][-1]
+	os.mkdir(PATH_RESULTS + model_name + '_%s_%06.4f_at_%d_of_%d' % (TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch))
 	
