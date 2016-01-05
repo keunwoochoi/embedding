@@ -289,6 +289,7 @@ if __name__ == "__main__":
 										filename_prefix='', 
 										normalize='local', 
 										mono=True)
+	pdb.set_trace()
 	min_loss = np.min(history.history['val_loss'])
 	arg_min = np.argmin(history.history['val_loss'])+1
 	best_batch = history.history['batch'][arg_min]
