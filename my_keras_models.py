@@ -49,20 +49,26 @@ def build_regression_convnet_model(setting_dict, is_test):
 	else:
 		learning_rate = 1e-6
 	#-------------------------------#
+	
+	W_regularizer=keras.regularizers.l2(0.001)
 	for i in xrange(num_layers):
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
-									activation=activations[i]))
+									activation=activations[i],
+									W_regularizer=W_regularizer))
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
-									activation=activations[i]))
+									activation=activations[i],
+									W_regularizer=W_regularizer))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		if not is_test:
 			if not dropouts[i] == 0.0:
 				model.add(Dropout(dropouts[i]))
+			else:
+				print ' ...no dropout but I put reguralisation.'
 		else:
 			print ' ...no dropout in test'
 
@@ -77,9 +83,10 @@ def build_regression_convnet_model(setting_dict, is_test):
 				model.add(Dropout(dropouts_fc_layers[j]))
 			else:
 				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
-														W_regularizer=keras.regularizers.l1(0.001)))
+														W_regularizer=keras.regularizers.l2(0.001)))
+				print ' ...no dropout but I put reguralisation.'
 
-	model.add(Dense(num_labels, activation='linear'))
+	model.add(Dense(num_labels, activation='linear', W_constraint = nonneg())) 
 
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
