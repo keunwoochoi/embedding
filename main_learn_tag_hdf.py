@@ -275,6 +275,7 @@ if __name__ == "__main__":
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
 	if TR_CONST["isRegre"]:
+		pdb.set_trace()
 		my_plots.export_history(history.losses, history.val_losses, 
 												acc=None, 
 												val_acc=None, 
