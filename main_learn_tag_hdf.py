@@ -269,7 +269,6 @@ if __name__ == "__main__":
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
-	pdb.set_trace()
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [history.history['loss'], history.history['val_loss']])
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
