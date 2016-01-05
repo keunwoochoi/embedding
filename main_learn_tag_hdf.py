@@ -244,7 +244,7 @@ if __name__ == "__main__":
 												nb_epoch=TR_CONST["num_epoch"], 
 												show_accuracy=False, 
 												verbose=1, 
-												callbacks=[history, weight_image_saver],
+												callbacks=[weight_image_saver],
 												shuffle=False)
 		else:
 			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -252,7 +252,7 @@ if __name__ == "__main__":
 												nb_epoch=TR_CONST["num_epoch"], 
 												show_accuracy=False, 
 												verbose=1, 
-												callbacks=[history, weight_image_saver, early_stopping, checkpointer],
+												callbacks=[weight_image_saver, early_stopping, checkpointer],
 												shuffle=False)
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
 	else:
@@ -262,20 +262,20 @@ if __name__ == "__main__":
 									nb_epoch=TR_CONST["num_epoch"], 
 									show_accuracy=True, 
 									verbose=1, 
-									callbacks=[history, early_stopping, weight_image_saver, checkpointer],
+									callbacks=[early_stopping, weight_image_saver, checkpointer],
 									shuffle=False)
 		loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 	
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
-	
+	pdb.set_trace()
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', history.val_losses)
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
 	if TR_CONST["isRegre"]:
-		pdb.set_trace()
+		
 		my_plots.export_history(history.losses, history.val_losses, 
 												acc=None, 
 												val_acc=None, 
