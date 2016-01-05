@@ -149,12 +149,12 @@ if __name__ == "__main__":
 	update_setting_dict(TR_CONST) # 
 	if is_test:
 		pdb.set_trace()
-		train_x = train_x[0:64]
-		train_y = train_y[0:64]
-		valid_x = valid_x[0:64]
-		valid_y = valid_y[0:64]
-		test_x = test_x[0:64]
-		test_y = test_y[0:64]
+		train_x = train_x[0:24]
+		train_y = train_y[0:24]
+		valid_x = valid_x[0:24]
+		valid_y = valid_y[0:24]
+		test_x = test_x[0:24]
+		test_y = test_y[0:24]
 		
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	# train_x : (num_samples, num_channel, height, width)	

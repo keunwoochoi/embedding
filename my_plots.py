@@ -23,10 +23,19 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 
 		ax2.set_title('Accuracy')
 	else:
-		f = plt.plot(loss)
-		plt.plot(val_loss)
+		f = plt.plot(loss, linewidth=2)
+		plt.plot(val_loss, '--')
 
 	plt.savefig(out_filename)
+	plt.close()
+
+	#
+	f = plt.plot(loss)
+	plt.savefig(out_filename.split('.')[0] + '_loss.png')
+	plt.close()
+	
+	f = plt.plot(val_loss)
+	plt.savefig(out_filename.split('.')[0] + '_val_loss.png')
 	plt.close()
 
 def make_mosaic(imgs, normalize, border=1):
