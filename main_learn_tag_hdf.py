@@ -289,9 +289,9 @@ if __name__ == "__main__":
 										filename_prefix='', 
 										normalize='local', 
 										mono=True)
-	
+
 	min_loss = np.min(history.history['val_loss'])
-	best_match = np.argmin(history.history['val_loss'])+1
+	best_batch = np.argmin(history.history['val_loss'])+1
 	num_run_epoch = len(history.history['val_loss'])
 	os.mkdir(PATH_RESULTS + model_name + '_%s_%06.4f_at_%d_of_%d' % \
 		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch))
