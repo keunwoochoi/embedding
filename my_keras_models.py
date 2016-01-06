@@ -86,13 +86,13 @@ def build_regression_convnet_model(setting_dict, is_test):
 
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
-		if setting_dict['regulariser_fc_layers'][i] is None:
+		if setting_dict['regulariser_fc_layers'][j] is None:
 			W_regularizer = None
 		else:
-			if setting_dict['regulariser_fc_layers'][i][0] == 'l2':
-				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][i][1])
-			elif setting_dict['regulariser_fc_layers'][i][0] == 'l1':
-				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][i][1])
+			if setting_dict['regulariser_fc_layers'][j][0] == 'l2':
+				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][j][1])
+			elif setting_dict['regulariser_fc_layers'][j][0] == 'l1':
+				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][j][1])
 
 		if is_test:
 			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
