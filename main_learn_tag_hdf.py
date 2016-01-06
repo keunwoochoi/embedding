@@ -27,9 +27,13 @@ def update_setting_dict(setting_dict):
 	setting_dict["num_feat_maps"] = [48]*setting_dict["num_layers"]
 	setting_dict["activations"] = [setting_dict["activations"][0]] *setting_dict["num_layers"]
 	setting_dict["dropouts"] = [setting_dict["dropouts"][0]]*setting_dict["num_layers"]
- 
+ 	setting_dict["regulariser"] = [setting_dict["regulariser"][0]]*setting_dict["num_layers"]
+
 	setting_dict["dropouts_fc_layers"] = [setting_dict["dropouts_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
+	setting_dict["activations_fc_layers"] = [setting_dict["activations_fc_layers"][0]]*setting_dict["num_fc_layers"]
+	setting_dict["regulariser_fc_layers"] = [setting_dict["regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
+
 	return
 
 if __name__ == "__main__":
@@ -237,35 +241,47 @@ if __name__ == "__main__":
 
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
 	print '--- train starts ---'
-	if TR_CONST["isRegre"]:
-		if is_test:
-			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-												batch_size=batch_size, 
-												nb_epoch=TR_CONST["num_epoch"], 
-												show_accuracy=False, 
-												verbose=1, 
-												callbacks=[weight_image_saver],
-												shuffle=False)
+	f = open('will_stop.keunwoo', 'w')
+	f.close()
+	while True:
+		num_epoch = TR_CONST["num_epoch"]
+		if TR_CONST["isRegre"]:
+			if is_test:
+				history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+													batch_size=batch_size, 
+													nb_epoch=num_epoch, 
+													show_accuracy=False, 
+													verbose=1, 
+													callbacks=[weight_image_saver],
+													shuffle=False)
+			else:
+				history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+													batch_size=batch_size, 
+													nb_epoch=num_epoch, 
+													show_accuracy=False, 
+													verbose=1, 
+													callbacks=[weight_image_saver, early_stopping, checkpointer],
+													shuffle=False)
+			loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
 		else:
+			batch_size = batch_size / 2
 			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-												batch_size=batch_size, 
-												nb_epoch=TR_CONST["num_epoch"], 
-												show_accuracy=False, 
-												verbose=1, 
-												callbacks=[weight_image_saver, early_stopping, checkpointer],
-												shuffle=False)
-		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
-	else:
-		batch_size = batch_size / 2
-		history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-									batch_size=batch_size, 
-									nb_epoch=TR_CONST["num_epoch"], 
-									show_accuracy=True, 
-									verbose=1, 
-									callbacks=[early_stopping, weight_image_saver, checkpointer],
-									shuffle=False)
-		loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-	
+										batch_size=batch_size, 
+										nb_epoch=num_epoch, 
+										show_accuracy=True, 
+										verbose=1, 
+										callbacks=[early_stopping, weight_image_saver, checkpointer],
+										shuffle=False)
+			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+		if os.path.exists('will_stop.keunwoo'):
+			break
+		else:
+			num_epoch = 1
+			print 'will go for another one epoch. '
+			print '$ touch will_stop.keunwoo to stop at the end of this.'
+			print 'otherwise it is endless.'
+
+
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 

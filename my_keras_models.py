@@ -47,13 +47,21 @@ def build_regression_convnet_model(setting_dict, is_test):
 	if setting_dict['tf_type'] == 'mfcc':
 		learning_rate = 1e-7
 	elif setting_dict['tf_type'] in ['stft', 'cqt']:
-		learning_rate = 1e-6
+		learning_rate = 3e-6
 	else:
 		learning_rate = 1e-6
 	#-------------------------------#
 	
-	W_regularizer=keras.regularizers.l2(0.0002)
+	
 	for i in xrange(num_layers):
+		if setting_dict['regulariser'][i] is None:
+			W_regularizer = None
+		else:
+			if setting_dict['regulariser'][i][0] == 'l2':
+				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][i][1])
+			elif setting_dict['regulariser'][i][0] == 'l1':
+				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][i][1])
+
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
@@ -78,6 +86,14 @@ def build_regression_convnet_model(setting_dict, is_test):
 
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
+		if setting_dict['regulariser_fc_layers'][i] is None:
+			W_regularizer = None
+		else:
+			if setting_dict['regulariser_fc_layers'][i][0] == 'l2':
+				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][i][1])
+			elif setting_dict['regulariser_fc_layers'][i][0] == 'l1':
+				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][i][1])
+
 		if is_test:
 			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
 			print ' ...and no reguralisation in test.'
@@ -87,7 +103,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 				model.add(Dropout(dropouts_fc_lsayers[j]))
 			else:
 				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
-														W_regularizer=keras.regularizers.l2(0.0002)))
+														W_regularizer=W_regularizer))
 
 				print ' ...no dropout but I put reguralisation.'
 		model.add(BatchNormalization())
