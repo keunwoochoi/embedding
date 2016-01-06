@@ -52,7 +52,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		learning_rate = 1e-6
 	#-------------------------------#
 	
-	W_regularizer=keras.regularizers.l2(0.001)
+	W_regularizer=keras.regularizers.l2(0.0002)
 	for i in xrange(num_layers):
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
@@ -85,7 +85,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 				model.add(Dropout(dropouts_fc_layers[j]))
 			else:
 				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
-														W_regularizer=keras.regularizers.l2(0.001)))
+														W_regularizer=keras.regularizers.l2(0.0002)))
 				print ' ...no dropout but I put reguralisation.'
 
 	model.add(Dense(num_labels, activation='linear', W_constraint = nonneg())) 
