@@ -66,7 +66,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 									activation=activations[i],
 									W_regularizer=W_regularizer))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
-	    model.add(BatchNormalization())
+		model.add(BatchNormalization())
 
 		if not is_test:
 			if not dropouts[i] == 0.0:
