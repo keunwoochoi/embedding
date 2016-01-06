@@ -66,6 +66,8 @@ def build_regression_convnet_model(setting_dict, is_test):
 									activation=activations[i],
 									W_regularizer=W_regularizer))
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
+	    model.add(BatchNormalization())
+
 		if not is_test:
 			if not dropouts[i] == 0.0:
 				model.add(Dropout(dropouts[i]))
@@ -82,11 +84,13 @@ def build_regression_convnet_model(setting_dict, is_test):
 		else:
 			if not dropouts_fc_layers[j] == 0.0:
 				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
-				model.add(Dropout(dropouts_fc_layers[j]))
+				model.add(Dropout(dropouts_fc_lsayers[j]))
 			else:
 				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
 														W_regularizer=keras.regularizers.l2(0.0002)))
+
 				print ' ...no dropout but I put reguralisation.'
+		model.add(BatchNormalization())
 
 	model.add(Dense(num_labels, activation='linear', W_constraint = nonneg())) 
 
