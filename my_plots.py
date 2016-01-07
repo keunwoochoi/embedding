@@ -131,6 +131,7 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 		elif g['name'] == 'Dense':
 			W = layer.W.get_value(borrow=True) # 
 			save_histogram_as_image(W, save_path, filename_prefix, layerind)
+			pdb.set_trace()
 	pdb.set_trace()
 
 def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind):
