@@ -103,7 +103,7 @@ if __name__ == "__main__":
 		TR_CONST["num_layers"] = args.layers
 	if args.activations:
 		TR_CONST["activations"] = [args.activations] * TR_CONST["num_layers"]
-		TR_CONST["activations_fc_layers"] = [args.activations] * TR_CONST["num_layers_fc_layers"]
+		TR_CONST["activations_fc_layers"] = [args.activations] * TR_CONST["num_fc_layers"]
 	if args.task:
 		if args.task in['class', 'cla', 'c', 'classification']:
 			TR_CONST["isClass"] = True
