@@ -95,11 +95,10 @@ def build_regression_convnet_model(setting_dict, is_test):
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][j][1])
 
 		if not dropouts_fc_layers[j] == 0.0:
-			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
+			model.add(Dense(nums_units_fc_layers[j]))
 			model.add(Dropout(dropouts_fc_lsayers[j]))
 		else:
-			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
-													W_regularizer=W_regularizer))
+			model.add(Dense(nums_units_fc_layers[j], W_regularizer=W_regularizer))
 		
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
