@@ -281,6 +281,8 @@ if __name__ == "__main__":
 			print '$ touch will_stop.keunwoo to stop at the end of this.'
 			print 'otherwise it is endless.'
 
+	pdb.set_trace()
+
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
