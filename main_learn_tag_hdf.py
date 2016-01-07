@@ -263,7 +263,7 @@ if __name__ == "__main__":
 													verbose=1, 
 													callbacks=[weight_image_saver, early_stopping, checkpointer],
 													shuffle=False)
-			loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
+			
 		else:
 			batch_size = batch_size / 2
 			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -273,16 +273,21 @@ if __name__ == "__main__":
 										verbose=1, 
 										callbacks=[early_stopping, weight_image_saver, checkpointer],
 										shuffle=False)
-			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+			
 		my_utils.append_history(total_history, history.history)
 
 		if os.path.exists('will_stop.keunwoo'):
+			if TR_CONST["isRegre"]:
+				loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
+			else:
+				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 			break
 		else:
 			num_epoch = 1
 			print 'will go for another one epoch. '
-			print '$ touch will_stop.keunwoo to stop at the end of this.'
-			print 'otherwise it is endless.'
+			print '$ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
+
+
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
