@@ -34,11 +34,11 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 
 	#
 	f = plt.plot(loss)
-	plt.savefig('%s_loss_%2.4f.png' % (out_filename.split('.')[0], loss[-1]))
+	plt.savefig('%s_loss_%2.4f.png' % (out_filename.split('.')[0], np.min(loss)))
 	plt.close()
 	
 	f = plt.plot(val_loss)
-	plt.savefig('%s_val_loss_%2.4f.png' % (out_filename.split('.')[0], val_loss[-1]))
+	plt.savefig('%s_val_loss_%2.4f.png' % (out_filename.split('.')[0], np.min(val_loss)))
 	plt.savefig(out_filename.split('.')[0] + '_val_loss.png')
 	plt.close()
 
@@ -131,7 +131,7 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 			'''
 			save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind)
 		elif g['name'] == 'Dense':
-			
+
 			W = layer.W.get_value(borrow=True) # 
 			save_histogram_as_image(W, save_path, filename_prefix, layerind)
 	
@@ -142,16 +142,19 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 	# if mono is True:
 	ind = 0
 	W = W[:,ind,:,:]
-
+	mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
+	#save
 	folder_name = 'layer_%02.0d/' % layerind
 	if not os.path.exists(save_path + folder_name):
 		os.makedirs(save_path + folder_name)
 	files_already_there = os.listdir(save_path + folder_name)
 	files_already_there = [filename for filename in files_already_there if filename.endswith('.png')]
-
-	filename = 'weights_' + filename_prefix + '%02.0d_%03.0d.png' % (layerind, len(files_already_there))
 	
-	mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
+	# if len(files_already_there) == 0:
+	# 	filename = 'weights_' + filename_prefix + '%02.0d_%03.0d.png' % (layerind, len(files_already_there))
+	# 	imsave(save_path + folder_name + filename, mosaic)
+	
+	filename = 'weights_' + filename_prefix + '%02.0d_%03.0d.png' % (layerind, len(files_already_there))
 	imsave(save_path + folder_name + filename, mosaic)
 
 	# else:

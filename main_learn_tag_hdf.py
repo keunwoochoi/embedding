@@ -85,9 +85,15 @@ if __name__ == "__main__":
 												help='say if it is test \ndefault=0 (False)',
 												required=False,
 												default=0)
+	parser.add_argument('-memo', '--memo', 	help='short memo \ndefault=""',
+											required=False,
+											default='')
+	
 
 	args = parser.parse_args()
-
+	
+	if args.layers:
+		TR_CONST["num_layers"] = args.layers
 	if args.n_epoch:
 		TR_CONST["num_epoch"] = args.n_epoch
 	# if args.n_song:
@@ -96,11 +102,8 @@ if __name__ == "__main__":
 		TR_CONST["tf_type"] = args.tf
 	if args.optimiser:
 		TR_CONST["optimiser"] = args.optimiser
-
 	if args.model:
 		TR_CONST["model_type"] = args.model
-	if args.layers:
-		TR_CONST["num_layers"] = args.layers
 	if args.activations:
 		TR_CONST["activations"] = [args.activations] * TR_CONST["num_layers"]
 		TR_CONST["activations_fc_layers"] = [args.activations] * TR_CONST["num_fc_layers"]
@@ -121,10 +124,14 @@ if __name__ == "__main__":
 		is_test = bool(int(args.is_test))
 	else:
 		is_test = False
+	if args.memo:
+		TR_CONST["!memo"] = args.memo
+	else:
+		TR_CONST["!memo"] = ''
 	if is_test:
 		print '==== This is a test, to quickly check the code. ===='
-	print 'Settings are \n --- num_epoch: %d\n --- model_type: %s' % \
-			(TR_CONST["num_epoch"], TR_CONST["model_type"])
+	print 'Settings are \n --- num_epoch: %d\n --- model_type: %s --- memo: %s' % \
+			(TR_CONST["num_epoch"], TR_CONST["model_type"], TR_CONST["!memo"])
 	print 'tf types:', TR_CONST["tf_type"]
 	print ' --- num_layers: ', TR_CONST["num_layers"]
 	print ' --- num_feat_maps: ', TR_CONST["num_feat_maps"]
@@ -233,7 +240,7 @@ if __name__ == "__main__":
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
-	#train!
+	#save image of weights
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 										filename_prefix='INIT_', 
 										normalize='local', 
@@ -251,8 +258,8 @@ if __name__ == "__main__":
 	predicted = model.predict(test_x, batch_size=batch_size)
 	
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
-
-	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
+	#train!
+	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+TR_CONST["!memo"]+'.png')
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % TR_CONST["num_epoch"]
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
@@ -296,10 +303,8 @@ if __name__ == "__main__":
 			break
 		else:
 			num_epoch = 1
-			print 'will go for another one epoch. '
-			print '$ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
-
-
+			print ' *** will go for another one epoch. '
+			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
@@ -320,10 +325,10 @@ if __name__ == "__main__":
 												val_acc=total_history['val_acc'], 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	
-	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
-										filename_prefix='', 
-										normalize='local', 
-										mono=True)
+	# my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
+	# 									filename_prefix='', 
+	# 									normalize='local', 
+	# 									mono=True)
 
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
