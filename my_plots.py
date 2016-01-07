@@ -117,10 +117,9 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 	* It save png image of each layer's weights (image patches) visualisation
 	 '''
 			
-	layerind = -1
+	
 	#print model.layers[0].W.get_value(borrow=True)[0,0,:,:]
-	for layer in model.layers:
-		layerind = layerind + 1
+	for layerind, layer in enumerate(model.layers):
 		g = layer.get_config()
 		if g['name'] == 'Convolution2D':
 			# W = layer.get_weights()[0] # tensor. same as layer.W.get_value(borrow=True)
@@ -132,6 +131,7 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 			'''
 			save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind)
 		elif g['name'] == 'Dense':
+			pdb.set_trace()
 			W = layer.W.get_value(borrow=True) # 
 			save_histogram_as_image(W, save_path, filename_prefix, layerind)
 	
@@ -143,13 +143,13 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 	ind = 0
 	W = W[:,ind,:,:]
 
-	folder_name = 'layer_%2.0d/' % layerind
+	folder_name = 'layer_%02.0d/' % layerind
 	if not os.path.exists(save_path + folder_name):
 		os.makedirs(save_path + folder_name)
 	files_already_there = os.listdir(save_path + folder_name)
 	files_already_there = [filename for filename in files_already_there if filename.endswith('.png')]
 
-	filename = 'weights_' + filename_prefix + '%2.0d_%3.0d.png' % (layerind, len(files_already_there))
+	filename = 'weights_' + filename_prefix + '%02.0d_%03.0d.png' % (layerind, len(files_already_there))
 	
 	mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
 	imsave(save_path + folder_name + filename, mosaic)
@@ -176,7 +176,7 @@ def save_histogram_as_image(W, save_path, filename_prefix, layerind):
 	l = plt.plot(bins, y, 'r--', linewidth=1)
 	plt.xlabel('Coeffs')
 
-	folder_name = 'layer_%2.0d/' % layerind
+	folder_name = 'layer_%02.0d/' % layerind
 	if not os.path.exists(save_path + folder_name):
 		os.makedirs(save_path + folder_name)
 	files_already_there = os.listdir(save_path + folder_name)
@@ -184,8 +184,8 @@ def save_histogram_as_image(W, save_path, filename_prefix, layerind):
 
 	filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(len(files_already_there)) + '.png'
 	
-	filename = filename_prefix + 'histogram_fc_layer_%2.0d_%3.0d.png' % (layerind, len(files_already_there))
-	plt.savefig(save_path + filename)
+	filename = filename_prefix + 'histogram_fc_layer_%02.0d_%03.0d.png' % (layerind, len(files_already_there))
+	plt.savefig(save_path + folder_name + filename)
 	plt.close()
 
 
