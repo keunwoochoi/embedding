@@ -122,13 +122,13 @@ def build_regression_convnet_model(setting_dict, is_test):
 	elif optimizer_name == 'rmsprop':
 		optimiser = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-6)
 	elif optimizer_name == 'adagrad':
-		keras.optimizers.Adagrad(lr=0.01, epsilon=1e-06)
+		optimiser = keras.optimizers.Adagrad(lr=0.01, epsilon=1e-06)
 	elif optimizer_name == 'adadelta':
 		optimiser = keras.optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-06)
 	elif optimizer_name == 'adam':
-		keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+		optimiser = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 	else:
-		print 'no optimiser? no!'
+		raise RuntimeError('no optimiser? no! - %s' % optimizer_name )
 	# print '--- ready to compile keras model ---'
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	# print '--- complie fin. ---'
