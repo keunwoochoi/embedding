@@ -275,7 +275,7 @@ if __name__ == "__main__":
 										shuffle=False)
 			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 		my_utils.append_history(total_history, history.history)
-		pdb.set_trace()
+
 		if os.path.exists('will_stop.keunwoo'):
 			break
 		else:
@@ -284,26 +284,23 @@ if __name__ == "__main__":
 			print '$ touch will_stop.keunwoo to stop at the end of this.'
 			print 'otherwise it is endless.'
 
-
-
-
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
-	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [history.history['loss'], history.history['val_loss']])
+	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
 	if TR_CONST["isRegre"]:
 		
-		my_plots.export_history(history.history['loss'], history.history['val_loss'],
+		my_plots.export_history(total_history['loss'], total_history['val_loss'],
 												acc=None, 
 												val_acc=None, 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	else:
-		my_plots.export_history(history.history['loss'], history.history['val_loss'], 
-												acc=history.history['acc'], 
-												val_acc=history.history['val_acc'], 
+		my_plots.export_history(total_history['loss'], total_history['val_loss'], 
+												acc=total_history['acc'], 
+												val_acc=total_history['val_acc'], 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
@@ -311,9 +308,9 @@ if __name__ == "__main__":
 										normalize='local', 
 										mono=True)
 
-	min_loss = np.min(history.history['val_loss'])
-	best_batch = np.argmin(history.history['val_loss'])+1
-	num_run_epoch = len(history.history['val_loss'])
+	min_loss = np.min(total_history['val_loss'])
+	best_batch = np.argmin(total_history['val_loss'])+1
+	num_run_epoch = len(total_history['val_loss'])
 	os.mkdir(PATH_RESULTS + model_name + '_%s_%06.4f_at_%d_of_%d' % \
 		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch))
 	print '========== DONE: %s ==========' % model_name

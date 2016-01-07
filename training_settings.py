@@ -11,7 +11,7 @@ TR_CONST["num_epoch"] = 30
 # TR_CONST["num_songs"] = 300
 TR_CONST["model_type"] = 'vgg_sequential' # or vgg_graph, etc.
 
-TR_CONST["loss_function"] = 'rmse'
+TR_CONST["loss_function"] = 'rmse' # rmse, mse, mae, binary_crossentropy
 TR_CONST["optimiser"] = 'rmsprop'
 
 TR_CONST["num_layers"] = 5 # can be overriden
@@ -22,8 +22,8 @@ TR_CONST["regulariser"] = [('l2', 0.0002)]*TR_CONST["num_layers"] # use [None] n
 
 TR_CONST["num_fc_layers"] = 2
 TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
-TR_CONST["nums_units_fc_layers"] = [1024]*TR_CONST["num_fc_layers"]
+TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
-TR_CONST["regulariser_fc_layers"] = [('l1', 0.0005)]*TR_CONST["num_fc_layers"]
+TR_CONST["regulariser_fc_layers"] = [('l2', 0.0002)]*TR_CONST["num_fc_layers"]
 
 # TODO: change this to a Clas
