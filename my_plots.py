@@ -130,7 +130,8 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 			save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind)
 		elif g['name'] == 'Dense':
 			W = layer.W.get_value(borrow=True) # 
-			pdb.set_trace()
+			save_histogram_as_image(W, save_path, filename_prefix, layerind)
+	pdb.set_trace()
 
 def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind):
 	'''W:weights
@@ -157,4 +158,18 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 		# mosaic = make_mosaic(imgs=W_right, normalize=normalize, border=2)
 #        mosaic = int(mosaic * 2**8)
 #		write_png(save_path + filename, mosaic)
+def save_histogram_as_image(W, save_path, filename_prefix, layerind):
+	''''''
+	n, bins, patches = plt.hist(W.flatten(), 100)
+	
+	y = mlab.normpdf( bins, np.mean(W.flatten()), np.std(W.flatten()))
+	l = plt.plot(bins, y, 'r--', linewidth=1)
+	plt.xlabel('Coeffs')
+	filename = filename_prefix + 'histogram_fc_layer_%d.png' % layerind
+	plt.savefig(save_path + filename)
+	plt.close()
+
+
+
+
 
