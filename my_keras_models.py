@@ -66,24 +66,24 @@ def build_regression_convnet_model(setting_dict, is_test):
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
-									activation=activations[i],
 									W_regularizer=W_regularizer))
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
-									border_mode='same', 
-									activation=activations[i],
+									border_mode='same',
 									W_regularizer=W_regularizer))
+		if activations[i] == 'relu':
+			model.add(Activation('relu'))
+		elif activations[i] == 'lrelu':
+			keras.layers.advanced_activations.LeakyReLU(alpha=0.3)
+		model.add()
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		model.add(BatchNormalization())
-
-		if not is_test:
-			if not dropouts[i] == 0.0:
-				model.add(Dropout(dropouts[i]))
-			else:
-				print ' ...no dropout but I put reguralisation.'
+	
+		if not dropouts[i] == 0.0:
+			model.add(Dropout(dropouts[i]))
 		else:
-			print ' ...no dropout in test'
-
+			print ' ...no dropout but I put reguralisation.'
+	
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
 		if setting_dict['regulariser_fc_layers'][j] is None:
@@ -94,18 +94,18 @@ def build_regression_convnet_model(setting_dict, is_test):
 			elif setting_dict['regulariser_fc_layers'][j][0] == 'l1':
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][j][1])
 
-		if is_test:
+		if not dropouts_fc_layers[j] == 0.0:
 			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
-			print ' ...and no reguralisation in test.'
+			model.add(Dropout(dropouts_fc_lsayers[j]))
 		else:
-			if not dropouts_fc_layers[j] == 0.0:
-				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j]))
-				model.add(Dropout(dropouts_fc_lsayers[j]))
-			else:
-				model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
-														W_regularizer=W_regularizer))
-
-				print ' ...no dropout but I put reguralisation.'
+			model.add(Dense(nums_units_fc_layers[j], activation=activations_fc_layers[j], 
+													W_regularizer=W_regularizer))
+		
+		if activations[i] == 'relu':
+			model.add(Activation('relu'))
+		elif activations[i] == 'lrelu':
+			keras.layers.advanced_activations.LeakyReLU(alpha=0.3)
+		
 		model.add(BatchNormalization())
 
 	model.add(Dense(num_labels, activation='linear', W_constraint = nonneg())) 

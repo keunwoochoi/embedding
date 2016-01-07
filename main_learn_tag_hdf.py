@@ -240,7 +240,7 @@ if __name__ == "__main__":
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model.png')
-	print '--- train starts. Remove will_stop.keunwoo to stop only after %d epochs ---' % TR_CONST["num_epoch"]
+	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % TR_CONST["num_epoch"]
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
 	total_history = {}
