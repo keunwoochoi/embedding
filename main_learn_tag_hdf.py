@@ -91,7 +91,7 @@ if __name__ == "__main__":
 	if args.tf:
 		TR_CONST["tf_type"] = args.tf
 	if args.optimiser:
-		TR_CONST["optimiser"] = args.op
+		TR_CONST["optimiser"] = args.optimiser
 	if args.model:
 		TR_CONST["model_type"] = args.model
 	if args.layers:
