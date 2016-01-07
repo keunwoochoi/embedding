@@ -2,6 +2,8 @@ import matplotlib
 matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+
 import pdb
 from scipy.misc import imsave
 from numpngw import write_png
