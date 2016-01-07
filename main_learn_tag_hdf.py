@@ -90,7 +90,7 @@ if __name__ == "__main__":
 	# 	TR_CONST["num_songs"] = args.n_song
 	if args.tf:
 		TR_CONST["tf_type"] = args.tf
-	if args.op:
+	if args.optimiser:
 		TR_CONST["optimiser"] = args.op
 	if args.model:
 		TR_CONST["model_type"] = args.model
