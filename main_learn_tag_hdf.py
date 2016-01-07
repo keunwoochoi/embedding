@@ -60,6 +60,9 @@ if __name__ == "__main__":
 	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=regre', 
 									   required=False, 
 									   default='regre')
+	parser.add_argument('-op', '--optimiser', help='optimiser - rmsprop, sgd, adagrad, adam, adadelta \ndefault=rmsprop', 
+									   required=False, 
+									   default='rmsprop')
 	parser.add_argument('-cps', '--clips_per_song', type=int,
 													help='set #clips/song, \ndefault=3',
 													required=False,
@@ -87,6 +90,8 @@ if __name__ == "__main__":
 	# 	TR_CONST["num_songs"] = args.n_song
 	if args.tf:
 		TR_CONST["tf_type"] = args.tf
+	if args.op:
+		TR_CONST["optimiser"] = args.op
 	if args.model:
 		TR_CONST["model_type"] = args.model
 	if args.layers:
