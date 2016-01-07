@@ -244,8 +244,8 @@ if __name__ == "__main__":
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
 	total_history = {}
+	num_epoch = TR_CONST["num_epoch"]
 	while True:
-		num_epoch = TR_CONST["num_epoch"]
 		if TR_CONST["isRegre"]:
 			if is_test:
 				history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -263,7 +263,6 @@ if __name__ == "__main__":
 													verbose=1, 
 													callbacks=[weight_image_saver, early_stopping, checkpointer],
 													shuffle=False)
-			
 		else:
 			batch_size = batch_size / 2
 			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -316,6 +315,6 @@ if __name__ == "__main__":
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
 	num_run_epoch = len(total_history['val_loss'])
-	os.mkdir(PATH_RESULTS + model_name + '_%s_%06.4f_at_%d_of_%d' % \
-		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch))
+	os.mkdir(PATH_RESULTS + '_%s_%06.4f_at_%d_of_%d_%s'  % \
+		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch, model_name))
 	print '========== DONE: %s ==========' % model_name

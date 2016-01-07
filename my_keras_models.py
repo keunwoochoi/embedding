@@ -47,9 +47,9 @@ def build_regression_convnet_model(setting_dict, is_test):
 	if setting_dict['tf_type'] == 'mfcc':
 		learning_rate = 1e-7
 	elif setting_dict['tf_type'] in ['stft', 'cqt']:
-		learning_rate = 3e-6
+		learning_rate = 1e-7
 	else:
-		learning_rate = 1e-6
+		learning_rate = 1e-7
 	#-------------------------------#
 	
 	
@@ -74,7 +74,11 @@ def build_regression_convnet_model(setting_dict, is_test):
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
-			keras.layers.advanced_activations.LeakyReLU(alpha=0.3)
+			keras.layers.advanced_activations.LeakyReLU(alpha=0.1)
+		elif activations[i] == 'prelu':
+			keras.layers.advanced_activations.PReLU()
+		else:
+			print 'No activation here? No!'
 		
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		model.add(BatchNormalization())
@@ -103,7 +107,11 @@ def build_regression_convnet_model(setting_dict, is_test):
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
-			keras.layers.advanced_activations.LeakyReLU(alpha=0.3)
+			keras.layers.advanced_activations.LeakyReLU(alpha=0.1)
+		elif activations[i] == 'prelu':
+			keras.layers.advanced_activations.PReLU()
+		else:
+			print 'No activation here? No!'
 		
 		model.add(BatchNormalization())
 
@@ -113,6 +121,14 @@ def build_regression_convnet_model(setting_dict, is_test):
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
 	elif optimizer_name == 'rmsprop':
 		optimiser = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-6)
+	elif optimizer_name == 'adagrad':
+		keras.optimizers.Adagrad(lr=0.01, epsilon=1e-06)
+	elif optimizer_name == 'adadelta':
+		optimiser = keras.optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-06)
+	elif optimizer_name == 'adam':
+		keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+	else:
+		print 'no optimiser? no!'
 	# print '--- ready to compile keras model ---'
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	# print '--- complie fin. ---'
