@@ -33,11 +33,12 @@ class Hyperparams_Manager():
 		'''return new name if it is new.
 		return previously used name if it is the same again.
 		'''
-		if self.has_setting(setting_dict):
-			print 'return once used name:%s' %  self.dict_str2name[dict2str(setting_dict)]
-			return self.dict_str2name[dict2str(setting_dict)]
-		else:
-			return self.pick_new_name()
+		# if self.has_setting(setting_dict):
+		# 	print 'return once used name:%s' %  self.dict_str2name[dict2str(setting_dict)]
+		# 	return self.dict_str2name[dict2str(setting_dict)]
+		# else:
+		# 	return self.pick_new_name()
+		return self.pick_new_name()
 
 	def pick_new_name(self):
 		new_name = adjspecies.random_adjspecies(sep='_', maxlen=10, prevent_stutter=True)
@@ -421,6 +422,6 @@ def append_history(total_history, local_history):
 		if key not in total_history:
 			total_history[key] = []
 		total_history[key] = total_history[key] + local_history[key]
-	
+
 
 
