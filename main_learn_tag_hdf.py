@@ -216,7 +216,7 @@ if __name__ == "__main__":
 														patience=patience, 
 														verbose=0)
 	else:
-		h#istory = my_keras_utils.History_Classification_Val()
+		#history = my_keras_utils.History_Classification_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
