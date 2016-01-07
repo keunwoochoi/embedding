@@ -243,6 +243,7 @@ if __name__ == "__main__":
 	print '--- train starts ---'
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
+	total_history = {}
 	while True:
 		num_epoch = TR_CONST["num_epoch"]
 		if TR_CONST["isRegre"]:
@@ -273,6 +274,7 @@ if __name__ == "__main__":
 										callbacks=[early_stopping, weight_image_saver, checkpointer],
 										shuffle=False)
 			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+		my_utils.append_history(total_history, history.history)
 		pdb.set_trace()
 		if os.path.exists('will_stop.keunwoo'):
 			break

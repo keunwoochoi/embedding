@@ -409,3 +409,18 @@ def continuous_to_categorical(y):
 	maxind = np.argmax(y, axis=1)
 	return np_utils.to_categorical(maxind, y.shape[1])
 
+def append_history(total_history, local_history):
+	'''local history is a dictionary,
+	key:value == string:dictionary.
+
+	key: loss, vall_loss, batch, size
+	Therefore total_history has the same keys and append the values.
+	'''
+
+	for key in local_history:
+		if key not in total_history:
+			total_history[key] = []
+		total_history[key] = total_history[key] + local_history[key]
+	
+
+
