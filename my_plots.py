@@ -119,16 +119,18 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 	for layer in model.layers:
 		layerind = layerind + 1
 		g = layer.get_config()
-		if not g['name'] == 'Convolution2D':
-			continue # conv 2d layer only
-		# W = layer.get_weights()[0] # tensor. same as layer.W.get_value(borrow=True)
-		W = layer.W.get_value(borrow=True)
-		#W = np.squeeze(W)
-		'''
-		for ind in xrange(W.shape[1]):
-			W = W[:,ind,:,:]
-		'''
-		save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind)
+		if g['name'] == 'Convolution2D':
+			# W = layer.get_weights()[0] # tensor. same as layer.W.get_value(borrow=True)
+			W = layer.W.get_value(borrow=True)
+			#W = np.squeeze(W)
+			'''
+			for ind in xrange(W.shape[1]):
+				W = W[:,ind,:,:]
+			'''
+			save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind)
+		elif g['name'] == 'Dense':
+			W = layer.W.get_value(borrow=True) # 
+			pdb.set_trace()
 
 def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind):
 	'''W:weights
