@@ -273,6 +273,7 @@ if __name__ == "__main__":
 										callbacks=[early_stopping, weight_image_saver, checkpointer],
 										shuffle=False)
 			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+			pdb.set_trace()
 		if os.path.exists('will_stop.keunwoo'):
 			break
 		else:
@@ -281,7 +282,7 @@ if __name__ == "__main__":
 			print '$ touch will_stop.keunwoo to stop at the end of this.'
 			print 'otherwise it is endless.'
 
-	pdb.set_trace()
+
 
 
 	predicted = model.predict(test_x, batch_size=batch_size)
