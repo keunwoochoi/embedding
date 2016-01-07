@@ -3,6 +3,7 @@ matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
+import os
 
 import pdb
 from scipy.misc import imsave
@@ -33,10 +34,11 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 
 	#
 	f = plt.plot(loss)
-	plt.savefig(out_filename.split('.')[0] + '_loss.png')
+	plt.savefig('%s_loss_%2.4f.png' % (out_filename.split('.')[0], loss[-1]))
 	plt.close()
 	
 	f = plt.plot(val_loss)
+	plt.savefig('%s_val_loss_%2.4f.png' % (out_filename.split('.')[0], val_loss[-1]))
 	plt.savefig(out_filename.split('.')[0] + '_val_loss.png')
 	plt.close()
 
@@ -115,7 +117,6 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 	* It save png image of each layer's weights (image patches) visualisation
 	 '''
 			
-
 	layerind = -1
 	#print model.layers[0].W.get_value(borrow=True)[0,0,:,:]
 	for layer in model.layers:
@@ -143,9 +144,17 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 	# if mono is True:
 	ind = 0
 	W = W[:,ind,:,:]
-	filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(ind) + '.png'
+
+	folder_name = 'layer_%2.0d/' % layerind
+	if not os.path.exists(save_path + folder_name):
+		os.makedirs(save_path + folder_name)
+	files_already_there = os.listdir(save_path + folder_name)
+	files_already_there = [filename for filename in files_already_there if filename.endswith('.png')]
+
+	filename = 'weights_' + filename_prefix + '%2.0d_%3.0d.png' % (layerind, len(files_already_there))
+	
 	mosaic = make_mosaic(imgs=W, normalize=normalize, border=2)
-	imsave(save_path + filename, mosaic)
+	imsave(save_path + folder_name + filename, mosaic)
 
 	# else:
 		# ind = 0
@@ -168,7 +177,16 @@ def save_histogram_as_image(W, save_path, filename_prefix, layerind):
 	y = mlab.normpdf( bins, np.mean(W.flatten()), np.std(W.flatten()))
 	l = plt.plot(bins, y, 'r--', linewidth=1)
 	plt.xlabel('Coeffs')
-	filename = filename_prefix + 'histogram_fc_layer_%d.png' % layerind
+
+	folder_name = 'layer_%2.0d/' % layerind
+	if not os.path.exists(save_path + folder_name):
+		os.makedirs(save_path + folder_name)
+	files_already_there = os.listdir(save_path + folder_name)
+	files_already_there = [filename for filename in files_already_there if filename.endswith('.png')]
+
+	filename = 'weights_' + repr(layerind) + '_' + filename_prefix + '_' + repr(len(files_already_there)) + '.png'
+	
+	filename = filename_prefix + 'histogram_fc_layer_%2.0d_%3.0d.png' % (layerind, len(files_already_there))
 	plt.savefig(save_path + filename)
 	plt.close()
 
