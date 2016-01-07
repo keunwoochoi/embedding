@@ -273,7 +273,7 @@ if __name__ == "__main__":
 										callbacks=[early_stopping, weight_image_saver, checkpointer],
 										shuffle=False)
 			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-			pdb.set_trace()
+		pdb.set_trace()
 		if os.path.exists('will_stop.keunwoo'):
 			break
 		else:
