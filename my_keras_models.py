@@ -75,7 +75,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
 			keras.layers.advanced_activations.LeakyReLU(alpha=0.3)
-		model.add()
+		
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		model.add(BatchNormalization())
 	
