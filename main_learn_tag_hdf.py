@@ -63,6 +63,10 @@ if __name__ == "__main__":
 	parser.add_argument('-op', '--optimiser', help='optimiser - rmsprop, sgd, adagrad, adam, adadelta \ndefault=rmsprop', 
 									   required=False, 
 									   default='rmsprop')
+	parser.add_argument('-act', '--activations', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
+									   required=False, 
+									   default='relu')
+
 	parser.add_argument('-cps', '--clips_per_song', type=int,
 													help='set #clips/song, \ndefault=3',
 													required=False,
@@ -92,10 +96,14 @@ if __name__ == "__main__":
 		TR_CONST["tf_type"] = args.tf
 	if args.optimiser:
 		TR_CONST["optimiser"] = args.optimiser
+
 	if args.model:
 		TR_CONST["model_type"] = args.model
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
+	if args.activations:
+		TR_CONST["activations"] = [args.activations] * TR_CONST["num_layers"]
+		TR_CONST["activations_fc_layers"] = [args.activations] * TR_CONST["num_layers_fc_layers"]
 	if args.task:
 		if args.task in['class', 'cla', 'c', 'classification']:
 			TR_CONST["isClass"] = True
