@@ -105,8 +105,8 @@ if __name__ == "__main__":
 	
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
-	if args.fc_layers:
-		TR_CONST["num_fc_layers"] = args.fc_layers
+	if args.num_fc_layers:
+		TR_CONST["num_fc_layers"] = args.num_fc_layers
 	if args.n_epoch:
 		TR_CONST["num_epoch"] = args.n_epoch
 	# if args.n_song:
@@ -360,7 +360,7 @@ if __name__ == "__main__":
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
 	num_run_epoch = len(total_history['val_loss'])
-	f = open( (PATH_RESULTS + '%s_%06.4f_at_%d_of_%d_%s.result'  % \
+	f = open( (PATH_RESULTS + '%s_%06.4f_at_%d_of_%d_%s'  % \
 		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch, model_name)), 'w')
 	f.close()
 	with open('one_line_log.txt', 'a') as f:
