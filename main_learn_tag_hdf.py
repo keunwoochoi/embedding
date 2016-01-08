@@ -54,8 +54,12 @@ if __name__ == "__main__":
 								   		required=False, 
 								   		default='vgg')
 	parser.add_argument('-l', '--layers', type=int,
-								 		help='set the number(s) of layers, \ndefault=[5], set like 4 5 6',
+								 		help='set the number(s) of layers, \ndefault=[5], set like 4, 5, 6',
 										default=5,
+										required=False)
+	parser.add_argument('-lfc', '--num_fc_layers', type=int,
+								 		help='set the number(s) of fc layers, \ndefault=[2], set like 1, 2, 3',
+										default=2,
 										required=False)
 	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=regre', 
 									   required=False, 
@@ -63,6 +67,9 @@ if __name__ == "__main__":
 	parser.add_argument('-op', '--optimiser', help='optimiser - rmsprop, sgd, adagrad, adam, adadelta \ndefault=rmsprop', 
 									   required=False, 
 									   default='rmsprop')
+	parser.add_argument('-lf', '--loss_function', help='loss function - binary_crossentropy, rmse\ndefault=binary_crossentropy', 
+									   required=False, 
+									   default='binary_crossentropy')
 	parser.add_argument('-act', '--activations', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
 									   required=False, 
 									   default='relu')
@@ -80,6 +87,10 @@ if __name__ == "__main__":
 												help='set number of feature maps in convnet, \ndefault=48',
 												required=False,
 												default=48)
+	parser.add_argument('-nu', '--number_units', type=int,
+												help='set number of units in fc layers, \ndefault=512',
+												required=False,
+												default=512)	
 
 	parser.add_argument('-it', '--is_test', type=int,
 												help='say if it is test \ndefault=0 (False)',
@@ -94,6 +105,8 @@ if __name__ == "__main__":
 	
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
+	if args.fc_layers:
+		TR_CONST["num_fc_layers"] = args.fc_layers
 	if args.n_epoch:
 		TR_CONST["num_epoch"] = args.n_epoch
 	# if args.n_song:
@@ -102,6 +115,8 @@ if __name__ == "__main__":
 		TR_CONST["tf_type"] = args.tf
 	if args.optimiser:
 		TR_CONST["optimiser"] = args.optimiser
+	if args.loss_function:
+		TR_CONST["loss_function"] = args.loss_function
 	if args.model:
 		TR_CONST["model_type"] = args.model
 	if args.activations:
@@ -120,6 +135,8 @@ if __name__ == "__main__":
 		TR_CONST["dim_labels"] = args.dim_labels
 	if args.feature_maps:
 		TR_CONST["num_feat_maps"] = [args.feature_maps]*TR_CONST["num_layers"]
+	if args.number_units:
+		TR_CONST["nums_units_fc_layers"] = [args.number_units]*TR_CONST["num_fc_layers"]
 	if args.is_test:
 		is_test = bool(int(args.is_test))
 	else:
@@ -130,6 +147,7 @@ if __name__ == "__main__":
 		TR_CONST["!memo"] = ''
 	if is_test:
 		print '==== This is a test, to quickly check the code. ===='
+		print 'excuted by $ ' + ' '.join(sys.argv)
 	print 'Settings are \n --- num_epoch: %d\n --- model_type: %s --- memo: %s' % \
 			(TR_CONST["num_epoch"], TR_CONST["model_type"], TR_CONST["!memo"])
 	print 'tf types:', TR_CONST["tf_type"]
