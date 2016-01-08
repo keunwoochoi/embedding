@@ -187,7 +187,7 @@ if __name__ == "__main__":
 	if is_test:
 		mode_name = 'test_' + model_name
 	else:
-		model_name = time.strftime('%m-%d-%H-%M_') + model_name
+		model_name = time.strftime('%m-%d-%Hh%Mm') + model_name
 	hyperparams_manager.save_new_setting(TR_CONST)
 	print '-'*60
 	print 'model name: %s' % model_name
@@ -302,6 +302,7 @@ if __name__ == "__main__":
 				num_epoch = max_epoch - total_epoch
 				f = open('will_stop.keunwoo', 'w')
 				f.close()
+				#add a line to remove npy file.
 				continue
 		if os.path.exists('will_stop.keunwoo'):
 			if TR_CONST["isRegre"]:
@@ -341,6 +342,11 @@ if __name__ == "__main__":
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
 	num_run_epoch = len(total_history['val_loss'])
-	os.mkdir(PATH_RESULTS + '_%s_%06.4f_at_%d_of_%d_%s'  % \
-		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch, model_name))
+	f = open( (PATH_RESULTS + '%s_%06.4f_at_%d_of_%d_%s.result'  % \
+		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch, model_name)), 'w')
+	f.close()
+	with open('one_line_log.txt', 'a') as f:
+		f.write('%6.4f, %d/%d, %s' % (min_loss, best_batch, num_run_epoch, model_name))
+		f.write(sys.argv)
+		f.write('\n')
 	print '========== DONE: %s ==========' % model_name
