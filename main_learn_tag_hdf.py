@@ -347,6 +347,6 @@ if __name__ == "__main__":
 	f.close()
 	with open('one_line_log.txt', 'a') as f:
 		f.write('%6.4f, %d/%d, %s' % (min_loss, best_batch, num_run_epoch, model_name))
-		f.write(' '.join(sys.argv))
+		f.write(' ' + ' '.join(sys.argv))
 		f.write('\n')
 	print '========== DONE: %s ==========' % model_name
