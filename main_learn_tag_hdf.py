@@ -265,6 +265,7 @@ if __name__ == "__main__":
 	f.close()
 	total_history = {}
 	num_epoch = TR_CONST["num_epoch"]
+	total_epoch = 0
 	while True:
 		if TR_CONST["isRegre"]:
 			if is_test:
@@ -292,9 +293,16 @@ if __name__ == "__main__":
 										verbose=1, 
 										callbacks=[early_stopping, weight_image_saver, checkpointer],
 										shuffle=False)
-			
+		total_epoch += num_epoch
+		print '%d-th epoch is complete' % total_epoch
 		my_utils.append_history(total_history, history.history)
-
+		if os.path.exists('max_epoch.npy'):
+			max_epoch = np.load('max_epoch.npy')
+			if total_epoch < max_epoch:
+				num_epoch = max_epoch - total_epoch
+				f = open('will_stop.keunwoo', 'w')
+				f.close()
+				continue
 		if os.path.exists('will_stop.keunwoo'):
 			if TR_CONST["isRegre"]:
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
