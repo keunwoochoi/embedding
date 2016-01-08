@@ -40,6 +40,8 @@ def build_regression_convnet_model(setting_dict, is_test):
 	if setting_dict['tf_type'] in ['cqt', 'stft']:
 		image_patch_sizes = [[3,3]]*num_layers
 		pool_sizes = [(2,2)]*num_layers
+		if num_layers < 5:
+			pool_sizes[-1] = (3,3)
 	elif setting_dict['tf_type'] == 'mfcc':
 		image_patch_sizes = [[height,1]]*num_layers
 		pool_sizes = [(1,2)]*num_layers
