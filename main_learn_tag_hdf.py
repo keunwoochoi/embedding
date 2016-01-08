@@ -187,7 +187,7 @@ if __name__ == "__main__":
 	if is_test:
 		mode_name = 'test_' + model_name
 	else:
-		model_name = time.strftime('%m-%d-%Hh_') + model_name
+		model_name = time.strftime('%m-%d-%H-%M_') + model_name
 	hyperparams_manager.save_new_setting(TR_CONST)
 	print '-'*60
 	print 'model name: %s' % model_name
