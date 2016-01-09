@@ -111,7 +111,7 @@ def make_mosaic(imgs, normalize, border=1):
 	return mosaic
 
 def save_weights_changes_plot(weight_changes, save_path):
-	num_layer = weight_changes.shape[1]
+	num_layer = len(weight_changes[0])
 	fig = plt.figure(1)
 	ax = fig.add_subplot(111)
 	ax.plot(weight_changes)
