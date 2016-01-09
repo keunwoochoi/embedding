@@ -64,8 +64,10 @@ def build_regression_convnet_model(setting_dict, is_test):
 		else:
 			if setting_dict['regulariser'][i][0] == 'l2':
 				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][i][1])
+				print 'Add l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][i][1], i)
 			elif setting_dict['regulariser'][i][0] == 'l1':
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][i][1])
+				print 'Add l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][i][1], i)
 
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
@@ -101,6 +103,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 	
 		if not dropouts[i] == 0.0:
 			model.add(Dropout(dropouts[i]))
+			print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
 		else:
 			pass
 	

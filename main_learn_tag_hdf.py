@@ -24,15 +24,15 @@ import my_plots
 
 def update_setting_dict(setting_dict):
 
-	setting_dict["num_feat_maps"] = [48]*setting_dict["num_layers"]
+	setting_dict["num_feat_maps"] = [setting_dict["num_feat_maps"][0]]*setting_dict["num_layers"]
 	setting_dict["activations"] = [setting_dict["activations"][0]] *setting_dict["num_layers"]
 	setting_dict["dropouts"] = [setting_dict["dropouts"][0]]*setting_dict["num_layers"]
 	setting_dict["regulariser"] = [setting_dict["regulariser"][0]]*setting_dict["num_layers"]
 	# tweak
-	setting_dict["dropouts"] = [0.5]*2 + [0.0]*(setting_dict["num_layers"]-2)
+	setting_dict["dropouts"] = [0.25]*2 + [0.0]*(setting_dict["num_layers"]-2)
 	setting_dict["regulariser"] = [None]*2 + [setting_dict["regulariser"][0]]*(setting_dict["num_layers"]-2)
 	setting_dict["!memo"] = setting_dict["!memo"] + '_hybrid_dropout_and_l2'
- 	
+
 
 	setting_dict["dropouts_fc_layers"] = [setting_dict["dropouts_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
