@@ -193,7 +193,6 @@ if __name__ == "__main__":
 
 	update_setting_dict(TR_CONST) # 
 	if is_test:
-		pdb.set_trace()
 		train_x = train_x[0:24]
 		train_y = train_y[0:24]
 		valid_x = valid_x[0:24]
@@ -344,7 +343,7 @@ if __name__ == "__main__":
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
-	
+
 	if TR_CONST["isRegre"]:
 		
 		my_plots.export_history(total_history['loss'], total_history['val_loss'],
