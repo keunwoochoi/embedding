@@ -24,3 +24,4 @@
 0.4769, 1/5, 01-09-01h24mkoala_paw main_learn_tag_hdf.py -ne 5 -l 5 -op adam -lfc 1 -nu 1024
 0.3272, 5/5, 01-09-02h01mfoxy_owl main_learn_tag_hdf.py -ne 5 -l 4 -op adam -lf rmse
 2.0405, 5/5, 01-09-02h38mbear_toy main_learn_tag_hdf.py -ne 5 -op rmsprop -act elu
+0.4588, 20/63, 01-09-06h32m_red_bear main_learn_tag_hdf.py -ne 8 -op adagrad -act elu -memo hybrid_2dropout_l2_quater
