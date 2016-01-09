@@ -130,7 +130,7 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 		current_weights = self.load_weights()
 		num_layer = len(current_weights)
 		ret = [0.0] * num_layer
-		for layer_idx in num_layer:
+		for layer_idx in xrange(num_layer):
 			ret[layer_idx] = np.mean(np.divide(np.abs(self.recent_weights[layer_idx] - current_weights[layer_idx]),  np.abs(self.recent_weights[layer_idx])))
 		return ret
 
