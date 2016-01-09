@@ -47,14 +47,14 @@ def build_regression_convnet_model(setting_dict, is_test):
 			image_patch_sizes = [[height,1]]*num_layers
 			pool_sizes = [(1,2)]*num_layers
 	elif model_type.startswith('flow'):
-		pass # small layers, bigger filter.
+		pass # less layers, bigger filter.
 
 	if setting_dict['tf_type'] == 'mfcc':
-		learning_rate = 1e-7
+		learning_rate = 1e-6
 	elif setting_dict['tf_type'] in ['stft', 'cqt']:
-		learning_rate = 1e-7
+		learning_rate = 1e-6
 	else:
-		learning_rate = 1e-7
+		learning_rate = 1e-6
 	#-------------------------------#
 	
 	
