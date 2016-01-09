@@ -34,7 +34,7 @@ def update_setting_dict(setting_dict):
 	# tweak
 	# setting_dict["dropouts"] = [0.25]*2 + [0.0]*(setting_dict["num_layers"]-2)
 	# setting_dict["dropouts"] = [0.25]*(setting_dict["num_layers"])
-	setting_dict["regulariser"] = [5e-5, 1e-4]*2 + [setting_dict["regulariser"][0]]*(setting_dict["num_layers"]-2)
+	setting_dict["regulariser"] = [('l1', 5e-5), ('l1',1e-4)] + [setting_dict["regulariser"][0]]*(setting_dict["num_layers"]-2)
 	# setting_dict["regulariser"] = [None]*(setting_dict["num_layers"])
 	# setting_dict["!memo"] = setting_dict["!memo"] + '_hybrid_dropout_and_l2'
 
