@@ -206,7 +206,7 @@ if __name__ == "__main__":
 	nickname = hyperparams_manager.get_name(TR_CONST)
 	timename = time.strftime('%m-%d-%Hh%M')
 	if is_test:
-		mode_name = 'test_' + nickname
+		model_name = 'test_' + nickname
 	else:
 		model_name = timename + '_' + nickname
 	hyperparams_manager.save_new_setting(TR_CONST)
