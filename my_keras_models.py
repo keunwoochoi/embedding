@@ -56,6 +56,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		learning_rate = 1e-6
 	#-------------------------------#
 	model = Sequential()
+	#[Convolutional Layers]
 	for i in xrange(num_layers):
 
 		if setting_dict['regulariser'][i] is None:
@@ -111,9 +112,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		# add pooling
 		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		
-	
-		
-	
+	#[Fully Connected Layers]
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
 		if setting_dict['regulariser_fc_layers'][j] is None:
@@ -143,7 +142,6 @@ def build_regression_convnet_model(setting_dict, is_test):
 		
 		model.add(BatchNormalization())
 
-	# model.add(Dense(num_labels, activation='linear', W_constraint = nonneg()))  misunderstood it's constraint on output..
 	model.add(Dense(num_labels, activation='linear')) 
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
