@@ -248,7 +248,8 @@ if __name__ == "__main__":
 													save_best_only=False)
 	weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	
-	patience = 5
+	
+	patience = 3
 
 	if TR_CONST["isRegre"]:
 		#history = my_keras_utils.History_Regression_Val()
