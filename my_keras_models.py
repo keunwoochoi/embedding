@@ -122,13 +122,15 @@ def build_regression_convnet_model(setting_dict, is_test):
 				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][j][1])
 			elif setting_dict['regulariser_fc_layers'][j][0] == 'l1':
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][j][1])
-
+		# dense layer
 		if not dropouts_fc_layers[j] == 0.0:
 			model.add(Dense(nums_units_fc_layers[j]))
 			model.add(Dropout(dropouts_fc_lsayers[j]))
 		else:
 			model.add(Dense(nums_units_fc_layers[j], W_regularizer=W_regularizer))
-		
+		# BN
+		model.add(BatchNormalization())
+		# Activations
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
@@ -140,8 +142,6 @@ def build_regression_convnet_model(setting_dict, is_test):
 		else:
 			print 'No activation here? No!'
 		
-		model.add(BatchNormalization())
-
 	model.add(Dense(num_labels, activation='linear')) 
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
