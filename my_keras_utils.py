@@ -102,7 +102,7 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 
 	def on_epoch_begin(self, epoch, logs={}):
 		# load weight into self.recent_weight
-		self.recent_weights = self.load_weights(model)
+		self.recent_weights = self.load_weights()
 
 	def on_epoch_end(self, epoch, logs={}):
 		#seconds = str(int(time.time()))
@@ -110,14 +110,14 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 												filename_prefix='', 
 												normalize='local', 
 												mono=True)
-		average_change_per_layer = self.get_weights_change(self.model)
+		average_change_per_layer = self.get_weights_change()
 		print 'average change per layer:'
 		print average_change_per_layer
 		self.weights_changes.append(average_change_per_layer)
 
-	def load_weights(self, model):
+	def load_weights(self):
 		ret_W = []
-		for layerind, layer in enumerate(model.layers):
+		for layerind, layer in enumerate(self.model.layers):
 			g = layer.get_config()
 			if g['name'] in ['Convolution2D', 'Convolution1D', 'Dense']:
 				# W = layer.get_weights()[0] # tensor. same as layer.W.get_value(borrow=True)
@@ -125,9 +125,9 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 				#W = np.squeeze(W)
 		return ret_W
 
-	def get_weights_change(self, model):
+	def get_weights_change(self):
 		# compute average amount of change by comparing current weight and self.recent_weight
-		current_weights = self.load_weights(model)
+		current_weights = self.load_weights()
 		num_layer = len(current_weights)
 		ret = [0.0] * num_layer
 		for layer_idx in num_layer:
