@@ -204,11 +204,12 @@ if __name__ == "__main__":
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	# train_x : (num_samples, num_channel, height, width)	
 	hyperparams_manager = my_utils.Hyperparams_Manager()
-	model_name = hyperparams_manager.get_name(TR_CONST)
+	nickname = hyperparams_manager.get_name(TR_CONST)
+	timename = time.strftime('%m-%d-%Hh%M')
 	if is_test:
-		mode_name = 'test_' + model_name
+		mode_name = 'test_' + nickname
 	else:
-		model_name = time.strftime('%m-%d-%Hh%Mm_') + model_name
+		model_name = timename + '_' + nickname
 	hyperparams_manager.save_new_setting(TR_CONST)
 	print '-'*60
 	print 'model name: %s' % model_name
@@ -220,7 +221,7 @@ if __name__ == "__main__":
 		os.mkdir(PATH_RESULTS + model_name_dir)
 		os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 		os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
-		os.mkdir(PATH_RESULTS + model_weight_name_dir)
+		os.mkdir(PATH_RESULTS_W + model_weight_name_dir)
 	start = time.time()
 
 	print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" \
@@ -243,7 +244,7 @@ if __name__ == "__main__":
  	until = time.time()
  	print "--- keras model was built, took %d seconds ---" % (until-start)
 	#prepare callbacks
-	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS + model_weight_name_dir + "weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
+	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
 													verbose=1, 
 													save_best_only=False)
 	weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
@@ -338,7 +339,7 @@ if __name__ == "__main__":
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
-	model.save_weights(PATH_RESULTS + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
+	model.save_weights(PATH_RESULTS_W + model_weight_name_dir + ('final_after_%d.keras' % TR_CONST["num_epoch"]), overwrite=True) 
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
@@ -363,11 +364,10 @@ if __name__ == "__main__":
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
 	num_run_epoch = len(total_history['val_loss'])
-	f = open( (PATH_RESULTS + '%s_%06.4f_at_%d_of_%d_%s'  % \
-		(TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch, model_name)), 'w')
+	f = open( (PATH_RESULTS + '%s_%d_%06.4f_at_(%d_of_%d)_%s'  % \
+		(timename, TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch, nickname)), 'w')
 	f.close()
 	with open('one_line_log.txt', 'a') as f:
 		f.write('%6.4f, %d/%d, %s' % (min_loss, best_batch, num_run_epoch, model_name))
-		f.write(' ' + ' '.join(sys.argv))
-		f.write('\n')
+		f.write(' ' + ' '.join(sys.argv) + '\n')
 	print '========== DONE: %s ==========' % model_name

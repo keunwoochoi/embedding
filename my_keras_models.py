@@ -35,7 +35,6 @@ def build_regression_convnet_model(setting_dict, is_test):
 	#------------------------------------------------------------------#
 	num_channels=1
 
-	model = Sequential()
 	if model_type.startswith('vgg'):
 		# layers = 4,5,6
 		if setting_dict['tf_type'] in ['cqt', 'stft']:
@@ -56,9 +55,9 @@ def build_regression_convnet_model(setting_dict, is_test):
 	else:
 		learning_rate = 1e-6
 	#-------------------------------#
-	
-	
+	model = Sequential()
 	for i in xrange(num_layers):
+
 		if setting_dict['regulariser'][i] is None:
 			W_regularizer = None
 		else:
@@ -69,15 +68,21 @@ def build_regression_convnet_model(setting_dict, is_test):
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][i][1])
 				print 'Add l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][i][1], i)
 
+		# add conv layer
 		if i == 0:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
 									W_regularizer=W_regularizer))
+
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same',
 									W_regularizer=W_regularizer))
+
+		# BN - according to the article on Residual Net (which follows the original paper.)
+		model.add(BatchNormalization())
+		# add activation
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
@@ -97,15 +102,17 @@ def build_regression_convnet_model(setting_dict, is_test):
 				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print 'No activation here? No!'
-		
-		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
-		model.add(BatchNormalization())
-	
+		# add dropout
 		if not dropouts[i] == 0.0:
 			model.add(Dropout(dropouts[i]))
 			print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
 		else:
 			pass
+		# add pooling
+		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
+		
+	
+		
 	
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):

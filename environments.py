@@ -99,9 +99,10 @@ PATH_IMAGES=PATH_WORK + 'images/'
 
 PATH_FIGURE = PATH_WORK + 'figures/'
 PATH_RESULTS= PATH_WORK + 'results/'
+PATH_RESULTS_W= PATH_WORK + 'results_w/'
 
 for path in [PATH_DATA, PATH_MODEL, PATH_SENTI, PATH_IMAGES, 
-             PATH_FIGURE, PATH_RESULTS]:
+             PATH_FIGURE, PATH_RESULTS, PATH_RESULTS_W]:
 	if not os.path.exists(path):
 		os.mkdir(path)
 
