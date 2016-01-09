@@ -28,8 +28,8 @@ def update_setting_dict(setting_dict):
 	setting_dict["activations"] = [setting_dict["activations"][0]] *setting_dict["num_layers"]
 	setting_dict["dropouts"] = [setting_dict["dropouts"][0]]*setting_dict["num_layers"]
 	setting_dict["regulariser"] = [setting_dict["regulariser"][0]]*setting_dict["num_layers"]
-	setting_dict["regulariser"][0][1] = setting_dict["regulariser"][0][1]* 9 # bigger regulariser 
-	setting_dict["regulariser"][1][1] = setting_dict["regulariser"][1][1]* 3
+	setting_dict["regulariser"][0] = ('l1', setting_dict["regulariser"][0][1]* 9) # bigger regulariser 
+	setting_dict["regulariser"][1] = ('l1', setting_dict["regulariser"][1][1]* 3)
 
 	# tweak
 	# setting_dict["dropouts"] = [0.25]*2 + [0.0]*(setting_dict["num_layers"]-2)
