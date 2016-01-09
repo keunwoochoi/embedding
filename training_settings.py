@@ -15,10 +15,10 @@ TR_CONST["loss_function"] = 'binary_crossentropy' # rmse, mse, mae, binary_cross
 TR_CONST["optimiser"] = 'rmsprop'
 
 TR_CONST["num_layers"] = 4 # can be overriden
-TR_CONST["num_feat_maps"] = [64]*TR_CONST["num_layers"]
+TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]
 TR_CONST["activations"] = ['prelu']*TR_CONST["num_layers"]
 TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
-TR_CONST["regulariser"] = [('l2', 3e-6)]*TR_CONST["num_layers"] # use [None] not to use.
+TR_CONST["regulariser"] = [('l1', 3e-10)]*TR_CONST["num_layers"] # use [None] not to use.
 
 TR_CONST["num_fc_layers"] = 2
 TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]

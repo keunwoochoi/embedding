@@ -364,7 +364,7 @@ if __name__ == "__main__":
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
 	num_run_epoch = len(total_history['val_loss'])
-	f = open( (PATH_RESULTS + '%s_%d_%06.4f_at_(%d_of_%d)_%s'  % \
+	f = open( (PATH_RESULTS + '%s_%s_%06.4f_at_(%d_of_%d)_%s'  % \
 		(timename, TR_CONST["loss_function"], min_loss, best_batch, num_run_epoch, nickname)), 'w')
 	f.close()
 	with open('one_line_log.txt', 'a') as f:
