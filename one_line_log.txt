@@ -1,0 +1,26 @@
+0.4589, 23/26, spotty_fox, adagrad and elu
+0.4636, 15/21, musky_pig
+1.9046, 7/7, musky_pig, python main_learn_tag_hdf.py -ne 7 -op rmsprop -act elu 
+0.4529, 3/7, foxy_gryph, python main_learn_tag_hdf.py -ne 7 -l 4 -op adadelta -act elu
+0.4527, 3/7, deer_toy, python main_learn_tag_hdf.py -ne 7 -op adam -act elu
+
+0.4791, 5/7, bad_puma, python main_learn_tag_hdf.py -ne 7 -l 4 -op adagrad -act prelu
+1.8704, 7/7, foxy_dobie, python main_learn_tag_hdf.py -ne 7 -op rmsprop -act prelu
+0.4541, 2/7, blue_puma, python main_learn_tag_hdf.py -ne 7 -l 4 -op adadelta -act prelu
+0.4553, 5/7, dog_paw, python main_learn_tag_hdf.py -ne 7 -op adam -act prelu
+
+
+0.5514, 4/7, foxy_shep, python main_learn_tag_hdf.py -ne 7 -l 4 -op adagrad -act lrelu
+1.9283, 7/7, tiny_horse, python main_learn_tag_hdf.py -ne 7 -op rmsprop -act lrelu
+0.4811, 5/7, red_roo, python main_learn_tag_hdf.py -ne 7 -l 4 -op adadelta -act lrelu
+0.4680, 2/7, spotty_roo, python main_learn_tag_hdf.py -ne 7 -op adam -act lrelu
+# so, elu, prelu > lrelu
+# for initial speed, adagrad,adam,adadelta > rmsprop
+
+
+0.4620, 5/5, 01-08-23h29mblue_fox main_learn_tag_hdf.py -ne 5 -op adam -act elu
+0.4526, 2/5, 01-09-00h08mwet_shibe main_learn_tag_hdf.py -ne 5 -l 6 -op adam -act elu
+0.4522, 3/5, 01-09-00h47mtiny_shark main_learn_tag_hdf.py -ne 5 -l 5 -op adam -fm 80
+0.4769, 1/5, 01-09-01h24mkoala_paw main_learn_tag_hdf.py -ne 5 -l 5 -op adam -lfc 1 -nu 1024
+0.3272, 5/5, 01-09-02h01mfoxy_owl main_learn_tag_hdf.py -ne 5 -l 4 -op adam -lf rmse
+2.0405, 5/5, 01-09-02h38mbear_toy main_learn_tag_hdf.py -ne 5 -op rmsprop -act elu
