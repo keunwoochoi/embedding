@@ -27,7 +27,12 @@ def update_setting_dict(setting_dict):
 	setting_dict["num_feat_maps"] = [48]*setting_dict["num_layers"]
 	setting_dict["activations"] = [setting_dict["activations"][0]] *setting_dict["num_layers"]
 	setting_dict["dropouts"] = [setting_dict["dropouts"][0]]*setting_dict["num_layers"]
- 	setting_dict["regulariser"] = [setting_dict["regulariser"][0]]*setting_dict["num_layers"]
+	setting_dict["regulariser"] = [setting_dict["regulariser"][0]]*setting_dict["num_layers"]
+	# tweak
+	setting_dict["dropouts"] = [0.5]*2 + [0.0]*(setting_dic["num_layer"]-2)
+	setting_dict["regulariser"] = [None]*2 + [setting_dict["regulariser"][0]]*(setting_dict["num_layers"]-2)
+	setting_dict["!memo"] = setting_dict["!memo"] + '_hybrid_dropout_and_l2'
+ 	
 
 	setting_dict["dropouts_fc_layers"] = [setting_dict["dropouts_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
@@ -150,9 +155,7 @@ if __name__ == "__main__":
 		print 'excuted by $ ' + ' '.join(sys.argv)
 	print 'Settings are \n --- num_epoch: %d\n --- model_type: %s --- memo: %s' % \
 			(TR_CONST["num_epoch"], TR_CONST["model_type"], TR_CONST["!memo"])
-	print 'tf types:', TR_CONST["tf_type"]
-	print ' --- num_layers: ', TR_CONST["num_layers"]
-	print ' --- num_feat_maps: ', TR_CONST["num_feat_maps"]
+	print 'tf types:', TR_CONST["tf_type"], ' num_layers: ', TR_CONST["num_layers"], ' num_feat_maps: ', TR_CONST["num_feat_maps"]
 
 	# label matrix
 	dim_latent_feature = TR_CONST["dim_labels"]
@@ -169,8 +172,8 @@ if __name__ == "__main__":
 											num_components=k, 
 											show_topics=False)
 		np.save(PATH_DATA + label_matrix_filename, W)
-	print 'size of mood tag matrix:'
-	print label_matrix.shape
+	# print 'size of mood tag matrix:'
+	# print label_matrix.shape
 
 	# load dataset
 	
@@ -205,11 +208,10 @@ if __name__ == "__main__":
 	if is_test:
 		mode_name = 'test_' + model_name
 	else:
-		model_name = time.strftime('%m-%d-%Hh%Mm') + model_name
+		model_name = time.strftime('%m-%d-%Hh%Mm_') + model_name
 	hyperparams_manager.save_new_setting(TR_CONST)
 	print '-'*60
 	print 'model name: %s' % model_name
-	print '-'*60
 	model_name_dir = model_name + '/'
 	model_weight_name_dir = 'w_' + model_name + '/'
 	fileout = model_name + '_results'
@@ -226,7 +228,7 @@ if __name__ == "__main__":
 
 	my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, TR_CONST)
  	if TR_CONST["isRegre"]:
- 		print '--- ps. this is a regression task. ---'
+ 		
 		model = my_keras_models.build_regression_convnet_model(setting_dict=TR_CONST, is_test=is_test)
 
 	else:

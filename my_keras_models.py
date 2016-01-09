@@ -36,15 +36,18 @@ def build_regression_convnet_model(setting_dict, is_test):
 	num_channels=1
 
 	model = Sequential()
-		
-	if setting_dict['tf_type'] in ['cqt', 'stft']:
-		image_patch_sizes = [[3,3]]*num_layers
-		pool_sizes = [(2,2)]*num_layers
-		if num_layers < 5:
-			pool_sizes[-1] = (3,3)
-	elif setting_dict['tf_type'] == 'mfcc':
-		image_patch_sizes = [[height,1]]*num_layers
-		pool_sizes = [(1,2)]*num_layers
+	if model_type.startswith('vgg'):
+		# layers = 4,5,6
+		if setting_dict['tf_type'] in ['cqt', 'stft']:
+			image_patch_sizes = [[3,3]]*num_layers
+			pool_sizes = [(2,2)]*num_layers
+			if num_layers < 5:
+				pool_sizes[-1] = (3,3)
+		elif setting_dict['tf_type'] == 'mfcc':
+			image_patch_sizes = [[height,1]]*num_layers
+			pool_sizes = [(1,2)]*num_layers
+	elif model_type.startswith('flow'):
+		pass # small layers, bigger filter.
 
 	if setting_dict['tf_type'] == 'mfcc':
 		learning_rate = 1e-7
@@ -99,7 +102,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		if not dropouts[i] == 0.0:
 			model.add(Dropout(dropouts[i]))
 		else:
-			print ' ...no dropout but I put reguralisation.'
+			pass
 	
 	model.add(Flatten())
 	for j in xrange(num_fc_layers):
