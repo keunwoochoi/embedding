@@ -110,6 +110,16 @@ def make_mosaic(imgs, normalize, border=1):
 	#mosaic = 255 * mosaic # imsave want it to be 8-bit integer 
 	return mosaic
 
+def save_weights_changes_plot(weight_changes, save_path):
+	num_layer = weight_changes.shape[1]
+	fig = plt.figure(1)
+	ax = fig.add_subplot(111)
+	ax.plot(weight_changes)
+	lgd = ax.legend([('layer_%d'%idx) for idx in xrange(num_layer)], loc='best')
+	ax.set_title('average weight changes amounts')
+	fig.savefig(save_path + 'average_weight_changes.png')
+
+
 def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='local', mono=True):
 	'''input: keras model variable and strings.
 	save_path: path to save output image

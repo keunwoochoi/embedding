@@ -82,9 +82,11 @@ class History_Regression_Val(keras.callbacks.Callback):
 class Weight_Image_Saver(keras.callbacks.Callback):
 	def __init__(self, path_to_save):
 		self.path_to_save = path_to_save
-		
+		self.recent_weights = None
+		self.weights_changes = []
+
 	def on_train_begin(self, logs={}):
-			pass
+		pass
 		# seconds = str(int(time.time()))
 		# my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
 		# 										filename_prefix='000_INIT_', 
@@ -93,13 +95,45 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 		# my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
 		# 										filename_prefix='INIT_', 
 		# 										normalize='local', 
-		# 										mono=True)
+		# 										mono=True
+
+	def on_train_end(self, logs={}):
+		my_plots.save_weights_changes_plot(self.weights_changes, self.path_to_save)
+
+	def on_epoch_begin(self, epoch, logs={}):
+		# load weight into self.recent_weight
+		self.recent_weights = self.load_weights(model)
+
 	def on_epoch_end(self, epoch, logs={}):
 		#seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
 												filename_prefix='', 
 												normalize='local', 
 												mono=True)
+		average_change_per_layer = self.get_weights_change(self.model)
+		print 'average change per layer:'
+		print average_change_per_layer
+		self.weights_changes.append(average_change_per_layer)
+
+	def load_weights(self, model):
+		ret_W = []
+		for layerind, layer in enumerate(model.layers):
+			g = layer.get_config()
+			if g['name'] in ['Convolution2D', 'Convolution1D', 'Dense']:
+				# W = layer.get_weights()[0] # tensor. same as layer.W.get_value(borrow=True)
+				ret_W.append(layer.W.get_value(borrow=True))
+				#W = np.squeeze(W)
+		return ret_W
+
+	def get_weights_change(self, model):
+		# compute average amount of change by comparing current weight and self.recent_weight
+		current_weights = self.load_weights(model)
+		num_layer = len(current_weights)
+		ret = [0.0] * num_layer
+		for layer_idx in num_layer:
+			ret[layer_idx] = np.mean(np.divide(np.abs(self.recent_weights[layer_idx] - current_weights[layer_idx]),  np.abs(self.recent_weights[layer_idx])))
+		return ret
+
 
 def continuous_to_categorical(y):
 	'''input y: continuous label, (N,M) array.

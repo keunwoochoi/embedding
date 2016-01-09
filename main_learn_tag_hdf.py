@@ -247,7 +247,7 @@ if __name__ == "__main__":
 	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
 													verbose=1, 
 													save_best_only=False)
-	weight_image_saver = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
+	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	
 	
 	patience = 3
@@ -296,7 +296,7 @@ if __name__ == "__main__":
 													nb_epoch=num_epoch, 
 													show_accuracy=False, 
 													verbose=1, 
-													callbacks=[weight_image_saver],
+													callbacks=[weight_image_monitor],
 													shuffle=False)
 			else:
 				history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -304,7 +304,7 @@ if __name__ == "__main__":
 													nb_epoch=num_epoch, 
 													show_accuracy=False, 
 													verbose=1, 
-													callbacks=[weight_image_saver, early_stopping, checkpointer],
+													callbacks=[weight_image_monitor, early_stopping, checkpointer],
 													shuffle=False)
 		else:
 			batch_size = batch_size / 2
@@ -313,7 +313,7 @@ if __name__ == "__main__":
 										nb_epoch=num_epoch, 
 										show_accuracy=True, 
 										verbose=1, 
-										callbacks=[early_stopping, weight_image_saver, checkpointer],
+										callbacks=[early_stopping, weight_image_monitor, checkpointer],
 										shuffle=False)
 		total_epoch += num_epoch
 		print '%d-th epoch is complete' % total_epoch
@@ -343,7 +343,8 @@ if __name__ == "__main__":
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
-
+	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
+	
 	if TR_CONST["isRegre"]:
 		
 		my_plots.export_history(total_history['loss'], total_history['val_loss'],
