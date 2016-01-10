@@ -329,6 +329,10 @@ if __name__ == "__main__":
 	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=bool,
 															help='BN for fc layers',
 															required=False)
+	parser.add_argument('-lr', '--learning_rate', type=float,
+													help='learning_rate',
+													required=False)
+	
 	
 	args = parser.parse_args()
 	
@@ -379,8 +383,13 @@ if __name__ == "__main__":
 		TR_CONST["regulariser"] = [TR_CONST["regulariser"][0][0], args.regulariser]*TR_CONST["num_layers"]
 	if args.regulariser_fc:
 		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser]*TR_CONST["num_fc_layers"]
+	if args.batch_normalization:
+		TR_CONST["BN"] = args.batch_normalization
+	if args.batch_normalization_fc:
+		TR_CONST["BN_fc_layers"] = args.batch_normalization_fc
+	if args.learning_rate:
+		TR_CONST["learning_rate"] = args.learning_rate
 
-	
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
