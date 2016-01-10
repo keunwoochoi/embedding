@@ -266,9 +266,9 @@ if __name__ == "__main__":
 										mono=True)
 
 	if TR_CONST["tf_type"] == 'cqt':
-		batch_size = 32
+		batch_size = 24
 	elif TR_CONST["tf_type"] == 'stft':
-		batch_size = 16
+		batch_size = 12
 	elif TR_CONST["tf_type"] == 'mfcc':
 		batch_size = 48
 	else:
