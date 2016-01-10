@@ -125,7 +125,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		# dense layer
 		if not dropouts_fc_layers[j] == 0.0:
 			model.add(Dense(nums_units_fc_layers[j]))
-			model.add(Dropout(dropouts_fc_lsayers[j]))
+			model.add(Dropout(dropouts_fc_layers[j]))
 		else:
 			model.add(Dense(nums_units_fc_layers[j], W_regularizer=W_regularizer))
 		# BN
