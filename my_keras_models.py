@@ -81,7 +81,8 @@ def build_regression_convnet_model(setting_dict, is_test):
 									W_regularizer=W_regularizer))
 
 		# BN - according to the article on Residual Net (which follows the original paper.)
-		model.add(BatchNormalization())
+		if setting_dict['BN']:
+			model.add(BatchNormalization())
 		# add activation
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
@@ -128,7 +129,8 @@ def build_regression_convnet_model(setting_dict, is_test):
 		else:
 			model.add(Dense(nums_units_fc_layers[j], W_regularizer=W_regularizer))
 		# BN
-		model.add(BatchNormalization())
+		if setting_dict['BN_fc_layers']:
+			model.add(BatchNormalization())
 		# Activations
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
