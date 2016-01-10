@@ -34,16 +34,19 @@ def update_setting_dict(setting_dict):
 	# tweak
 	# setting_dict["dropouts"] = [0.25]*2 + [0.0]*(setting_dict["num_layers"]-2)
 	# setting_dict["dropouts"] = [0.25]*(setting_dict["num_layers"])
-	setting_dict["regulariser"] = [('l1', 5e-5), ('l1',1e-4)] + [setting_dict["regulariser"][0]]*(setting_dict["num_layers"]-2)
+	# setting_dict["regulariser"] = [('l1', 5e-5), ('l1',1e-4)] + [setting_dict["regulariser"][0]]*(setting_dict["num_layers"]-2)
 	# setting_dict["regulariser"] = [None]*(setting_dict["num_layers"])
 	# setting_dict["!memo"] = setting_dict["!memo"] + '_hybrid_dropout_and_l2'
-
 
 	setting_dict["dropouts_fc_layers"] = [setting_dict["dropouts_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["activations_fc_layers"] = [setting_dict["activations_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["regulariser_fc_layers"] = [setting_dict["regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
 
+	#tweak 2
+	setting_dict["regulariser"] = [0.0]*(setting_dict["num_layers"])
+	setting_dict["regulariser_fc_layers"] = [0.0]]*(setting_dict["num_fc_layers"])
+	
 	return
 
 if __name__ == "__main__":
@@ -82,7 +85,7 @@ if __name__ == "__main__":
 									   default='binary_crossentropy')
 	parser.add_argument('-act', '--activations', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
 									   required=False, 
-									   default='relu')
+									   default='elu')
 
 	parser.add_argument('-cps', '--clips_per_song', type=int,
 													help='set #clips/song, \ndefault=3',
@@ -123,6 +126,7 @@ if __name__ == "__main__":
 	# 	TR_CONST["num_songs"] = args.n_song
 	if args.tf:
 		TR_CONST["tf_type"] = args.tf
+		print 'tf-representation type is: %s' % TR_CONST["tf_type"]
 	if args.optimiser:
 		TR_CONST["optimiser"] = args.optimiser
 	if args.loss_function:
@@ -348,6 +352,9 @@ if __name__ == "__main__":
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
+
+
+	# ADD weight change saving code
 
 	if TR_CONST["isRegre"]:
 		
