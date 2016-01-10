@@ -81,37 +81,26 @@ if __name__ == "__main__":
 									   required=False, 
 									   default='rmsprop')
 	parser.add_argument('-lf', '--loss_function', help='loss function - binary_crossentropy, rmse\ndefault=binary_crossentropy', 
-									   required=False, 
-									   default='binary_crossentropy')
+									   required=False)
 	parser.add_argument('-act', '--activations', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
-									   required=False, 
-									   default='elu')
-
+									   required=False)
 	parser.add_argument('-cps', '--clips_per_song', type=int,
 													help='set #clips/song, \ndefault=3',
-													required=False,
-													default=3)
+													required=False)
 	parser.add_argument('-dl', '--dim_labels', type=int,
 												help='set dimension of label, \ndefault=3',
-												required=False,
-												default=8)
-
+												required=False)
 	parser.add_argument('-fm', '--feature_maps', type=int,
 												help='set number of feature maps in convnet, \ndefault=48',
-												required=False,
-												default=48)
+												required=False)
 	parser.add_argument('-nu', '--number_units', type=int,
 												help='set number of units in fc layers, \ndefault=512',
-												required=False,
-												default=512)	
-
+												required=False)	
 	parser.add_argument('-it', '--is_test', type=int,
 												help='say if it is test \ndefault=0 (False)',
-												required=False,
-												default=0)
+												required=False)
 	parser.add_argument('-memo', '--memo', 	help='short memo \ndefault=""',
-											required=False,
-											default='')
+											required=False)
 	
 
 	args = parser.parse_args()
@@ -126,7 +115,7 @@ if __name__ == "__main__":
 	# 	TR_CONST["num_songs"] = args.n_song
 	if args.tf:
 		TR_CONST["tf_type"] = args.tf
-		print 'tf-representation type is: %s' % TR_CONST["tf_type"]
+		print 'tf-representation type is input by: %s' % TR_CONST["tf_type"]
 	if args.optimiser:
 		TR_CONST["optimiser"] = args.optimiser
 	if args.loss_function:
