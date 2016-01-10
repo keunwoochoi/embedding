@@ -54,32 +54,25 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='parser for input arguments')
 	parser.add_argument('-ne', '--n_epoch', type=int, 
 											help='set the number of epoch, \ndefault=30', 
-											required=False,
-											default=30)
+											required=False)
 	# parser.add_argument('-ns',  '--n_song', type=int, 
 	# 										help='set the number of songs to train, \ndefault=300', 
 	# 										required=False,
 	# 										default=300)
 	parser.add_argument('-tf', '--tf', help='whether cqt, stft, mfcc, \ndefault=cqt.', 
-								required=False,
-								default='cqt')
+								required=False)
 	parser.add_argument('-m', '--model', help='set the model, \ndefault=vgg_sequential.', 
-								   		required=False, 
-								   		default='vgg')
+								   		required=False)
 	parser.add_argument('-l', '--layers', type=int,
 								 		help='set the number(s) of layers, \ndefault=[5], set like 4, 5, 6',
-										default=5,
 										required=False)
 	parser.add_argument('-lfc', '--num_fc_layers', type=int,
 								 		help='set the number(s) of fc layers, \ndefault=[2], set like 1, 2, 3',
-										default=2,
 										required=False)
 	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=regre', 
-									   required=False, 
-									   default='regre')
+									   required=False)
 	parser.add_argument('-op', '--optimiser', help='optimiser - rmsprop, sgd, adagrad, adam, adadelta \ndefault=rmsprop', 
-									   required=False, 
-									   default='rmsprop')
+									   required=False)
 	parser.add_argument('-lf', '--loss_function', help='loss function - binary_crossentropy, rmse\ndefault=binary_crossentropy', 
 									   required=False)
 	parser.add_argument('-act', '--activations', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
@@ -101,7 +94,20 @@ if __name__ == "__main__":
 												required=False)
 	parser.add_argument('-memo', '--memo', 	help='short memo \ndefault=""',
 											required=False)
-	
+	parser.add_argument('-do', '--dropout', type=float,
+											help='dropout value that is applied to conv',
+											required=False)
+	parser.add_argument('-do_fc', '--dropout_fc', type=float,
+												help='dropout value that is applied to FC layers',
+												required=False)
+	parser.add_argument('-reg', '--regulariser', type=float,
+												help='regularise coeff that is applied to conv',
+												required=False)
+	parser.add_argument('-reg_fc', '--regulariser_fc', type=float,
+														help='regularise coeff that is applied to fc layer',
+														required=False)
+		
+
 
 	args = parser.parse_args()
 	
@@ -148,6 +154,16 @@ if __name__ == "__main__":
 		TR_CONST["!memo"] = args.memo
 	else:
 		TR_CONST["!memo"] = ''
+	if args.dropout:
+		TR_CONST["dropouts"] = [args.dropout]*TR_CONST["num_layers"]
+	if args.dropout_fc:
+		TR_CONST["dropouts_fc_layers"] = [args.dropout_fc]*TR_CONST["num_fc_layers"]
+	if args.regulariser:
+		TR_CONST["regulariser"] = [TR_CONST["regulariser"][0][0], args.regulariser]*TR_CONST["num_layers"]
+	if args.regulariser_fc:
+		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser]*TR_CONST["num_fc_layers"]
+
+	# -------------------------------
 	if is_test:
 		print '==== This is a test, to quickly check the code. ===='
 		print 'excuted by $ ' + ' '.join(sys.argv)
