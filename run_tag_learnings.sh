@@ -1,11 +1,11 @@
+
 #!/bin/bash
-python main_learn_tag_hdf.py -ne 5 -op adam -act elu
-python main_learn_tag_hdf.py -ne 5 -l 6 -op adam -act elu
 
-# check if otheres are bottlneck
-python main_learn_tag_hdf.py -ne 5 -l 5 -op adam -fm 80
-python main_learn_tag_hdf.py -ne 5 -l 5 -op adam -lfc 1 -nu 1024
-python main_learn_tag_hdf.py -ne 5 -l 4 -op adam -lf rmse
+sleep 120
+python main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 3 -fm 2 -nu 4 -do 0.0 -do_fc 0.0 -reg 0.0 -reg_fc 0.0 -tf stft
+python main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 3 -fm 2 -nu 64 -do 0.0 -do_fc 0.0 -reg 0.0 -reg_fc 0.0 -tf stft
+python main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 3 -fm 2 -nu 1024 -do 0.0 -do_fc 0.0 -reg 0.0 -reg_fc 0.0 -tf stft
 
-python main_learn_tag_hdf.py -ne 5 -op rmsprop -act elu
-python main_learn_tag_hdf.py -ne 30 -op sgd -act elu
+python main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 5 -fm 16 -nu 32 -do 0.0 -do_fc 0.0 -reg 0.0 -reg_fc 0.0 -tf stft
+python main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 5 -fm 32 -nu 128 -do 0.25 -do_fc 0.0 -reg 0.0 -reg_fc 0.00001 -tf stft
+
