@@ -45,7 +45,7 @@ def update_setting_dict(setting_dict):
 
 	#tweak 2
 	setting_dict["regulariser"] = [0.0]*(setting_dict["num_layers"])
-	setting_dict["regulariser_fc_layers"] = [0.0]]*(setting_dict["num_fc_layers"])
+	setting_dict["regulariser_fc_layers"] = [0.0]*(setting_dict["num_fc_layers"])
 	
 	return
 
