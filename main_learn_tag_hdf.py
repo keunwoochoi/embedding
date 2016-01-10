@@ -323,7 +323,13 @@ if __name__ == "__main__":
 	parser.add_argument('-reg_fc', '--regulariser_fc', type=float,
 														help='regularise coeff that is applied to fc layer',
 														required=False)
-
+	parser.add_argument('-bn', '--batch_normalization', type=bool,
+														help='BN for conv layers',
+														required=False)
+	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=bool,
+															help='BN for fc layers',
+															required=False)
+	
 	args = parser.parse_args()
 	
 	if args.layers:
@@ -375,14 +381,8 @@ if __name__ == "__main__":
 		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser]*TR_CONST["num_fc_layers"]
 
 	
-	TR_CONST["dropouts"][0] = 0.0
-	TR_CONST["num_epoch"] = 3
-	for BN in [True, False]:
-		for BN_fc in [True, False]:
-			TR_CONST["BN"] = BN
-			TR_CONST["BN_fc_layers"] = BN_fc
-			update_setting_dict(TR_CONST)
-			run_with_setting(TR_CONST, sys.argv)
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
 
 
 	# for act in [('l1', 5e-3), ('l1', 1e-4), ('l1', 3e-6),('l2', 5e-3), ('l2', 1e-4), ('l2', 3e-6)]:
