@@ -375,6 +375,21 @@ if __name__ == "__main__":
 		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser]*TR_CONST["num_fc_layers"]
 
 	
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+	TR_CONST["dropout"][0] = 0.0
+	TR_CONST["num_epoch"] = 3
+	for BN in [True, False]:
+		for BN_fc in [True, False]:
+			TR_CONST["BN"] = BN
+			TR_CONST["BN_fc_layers"] = BN_fc
+			update_setting_dict(TR_CONST)
+			run_with_setting(TR_CONST, sys.argv)
+
+
+	# for act in [('l1', 5e-3), ('l1', 1e-4), ('l1', 3e-6),('l2', 5e-3), ('l2', 1e-4), ('l2', 3e-6)]:
+	# 	for act_fc in 
+
+
+
+	# update_setting_dict(TR_CONST)
+	# run_with_setting(TR_CONST, sys.argv)
 

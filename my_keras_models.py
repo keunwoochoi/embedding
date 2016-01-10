@@ -58,7 +58,6 @@ def build_regression_convnet_model(setting_dict, is_test):
 	model = Sequential()
 	#[Convolutional Layers]
 	for i in xrange(num_layers):
-
 		if setting_dict['regulariser'][i] in [None, 0.0]:
 			W_regularizer = None
 		else:
