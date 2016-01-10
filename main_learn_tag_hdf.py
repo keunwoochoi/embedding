@@ -176,7 +176,6 @@ def run_with_setting(hyperparams, argv):
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 
 	predicted = model.predict(test_x, batch_size=batch_size)
-	print 'Loss for test x before training: ', model.test_on_batch(test_x, test_y)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	#train!
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
@@ -235,7 +234,6 @@ def run_with_setting(hyperparams, argv):
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 
-	print 'Loss for test x after training: ', model.test_on_batch(test_x, test_y)
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	model.save_weights(PATH_RESULTS_W + model_weight_name_dir + ('final_after_%d.keras' % hyperparams["num_epoch"]), overwrite=True) 
