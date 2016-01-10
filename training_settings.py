@@ -27,4 +27,5 @@ TR_CONST["activations_fc_layers"] = ['prelu']*TR_CONST["num_fc_layers"]
 # TR_CONST["regulariser_fc_layers"] = [('l2', 0.0007)]*TR_CONST["num_fc_layers"]
 TR_CONST["regulariser_fc_layers"] = [('l2', 2e-4), ('l2', 3e-4)]
 TR_CONST["!memo"] = ''
+TR_CONST["is_test"] = False
 # TODO: change this to a Clas
