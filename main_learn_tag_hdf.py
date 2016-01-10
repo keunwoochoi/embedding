@@ -375,7 +375,7 @@ if __name__ == "__main__":
 		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser]*TR_CONST["num_fc_layers"]
 
 	
-	TR_CONST["dropout"][0] = 0.0
+	TR_CONST["dropouts"][0] = 0.0
 	TR_CONST["num_epoch"] = 3
 	for BN in [True, False]:
 		for BN_fc in [True, False]:
