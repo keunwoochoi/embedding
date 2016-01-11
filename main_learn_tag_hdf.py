@@ -412,17 +412,16 @@ if __name__ == "__main__":
 	nus = [(1,4096), (1,2048), (1,256), (1,512), (1,1024), (2,64), (2,256), (3, 32)]
 	for num_fc_lyr, nu in nus:
 		TR_CONST["num_fc_layers"] = num_fc_lyr
-		TR_CONST["nums_units_fc_layers"] = nu
-		update_setting_dict(TR_CONST)
+		TR_CONST["nums_units_fc_layers"] = [nu]*num_fc_lyr
 		min_losses.append(run_with_setting(TR_CONST, sys.argv))
 
 	best_layer = nus[np.argmin(min_losses)]
 	print 'best layer setting: ' + best_layer
 	TR_CONST["num_fc_layers"] = best_layer[0]
-	TR_CONST["nums_units_fc_layers"] = best_layer[1]
+	TR_CONST["nums_units_fc_layers"] = [best_layer[1]]*best_layer[0]
 	#------------------
 	min_losses = []
-	num_layers = [4, 6, 7, 8]
+	num_layers = [4, 5, 6, 7, 8]
 	for lyr in num_layers:
 		TR_CONST["num_layers"] = lyr
 		update_setting_dict(TR_CONST)
