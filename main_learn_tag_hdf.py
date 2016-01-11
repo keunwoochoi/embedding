@@ -394,11 +394,8 @@ if __name__ == "__main__":
 	run_with_setting(TR_CONST, sys.argv)
 
 
-	# for act in [('l1', 5e-3), ('l1', 1e-4), ('l1', 3e-6),('l2', 5e-3), ('l2', 1e-4), ('l2', 3e-6)]:
-	# 	for act_fc in 
-
-
-
-	# update_setting_dict(TR_CONST)
-	# run_with_setting(TR_CONST, sys.argv)
+	for act in [('l1', 5e-3), ('l1', 1e-4), ('l1', 3e-6),('l2', 5e-3), ('l2', 1e-4), ('l2', 3e-6)]:
+	 	TR_CONST["regulariser"][0] = act
+	 	update_setting_dict(TR_CONST)
+	 	run_with_setting(TR_CONST, sys.argv)
 

@@ -27,7 +27,7 @@ TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
 TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 # TR_CONST["regulariser_fc_layers"] = [('l2', 0.0007)]*TR_CONST["num_fc_layers"]
-TR_CONST["regulariser_fc_layers"] = [('l2', 2e-4), ('l2', 3e-4)]
+TR_CONST["regulariser_fc_layers"] = [('l2', 3e-4), ('l2', 3e-4)]
 TR_CONST["BN_fc_layers"] = True
 
 TR_CONST["!memo"] = ''
