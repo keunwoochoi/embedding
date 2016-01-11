@@ -53,3 +53,34 @@ the results's still the same! 0.46xx. what the fuck? Even the training loss stay
 0.5513, 2/3, 01-10-21h42_mare_paw main_learn_tag_hdf.py -l 5 -fm 48
 0.5540, 3/3, 01-10-23h44_cyan_pig main_learn_tag_hdf.py -l 5 -fm 48 -bn False -do 0.0 -bn_fc False -do_fc 0.0 -reg 0.0005 -reg_fc 0.0005 -ne 3
 0.6249, 4/4, 01-11-00h17_wolfy_panda main_learn_tag_hdf.py -l 5 -fm 48 -bn False -do 0.0 -bn_fc False -do_fc 0.0 -reg 0.0005 -reg_fc 0.0005 -ne 3 -op adagrad
+0.7489, 1/3, 01-11-01h12_red_pup main_learn_tag_hdf.py -l 5 -ne 3 -op adagrad
+5.0560, 1/1, test_green_puma main_learn_tag_hdf.py -it 1 -ne 1
+0.5582, 3/3, 01-11-02h07_good_shark main_learn_tag_hdf.py -ne 3
+0.5623, 3/3, 01-11-02h37_musky_vixen main_learn_tag_hdf.py -ne 3
+0.5672, 3/3, 01-11-03h06_silly_puma main_learn_tag_hdf.py -ne 3
+0.5586, 3/3, 01-11-03h35_silly_mare main_learn_tag_hdf.py -ne 3
+0.5579, 3/3, 01-11-04h05_musky_pig main_learn_tag_hdf.py -ne 3
+0.5568, 3/3, 01-11-04h34_green_panda main_learn_tag_hdf.py -ne 3
+0.5604, 3/3, 01-11-05h04_doge_paw main_learn_tag_hdf.py -ne 3
+0.5659, 3/3, 01-11-05h33_rage_dobie main_learn_tag_hdf.py -ne 3
+0.5597, 3/3, 01-11-06h03_orca_toy main_learn_tag_hdf.py -ne 3
+0.5660, 3/3, 01-11-06h32_pink_deer main_learn_tag_hdf.py -ne 3
+0.5639, 3/3, 01-11-07h02_lynx_toy main_learn_tag_hdf.py -ne 3
+0.5549, 3/3, 01-11-07h31_red_shep main_learn_tag_hdf.py -ne 3
+0.5574, 3/3, 01-11-08h01_tiny_roo main_learn_tag_hdf.py -ne 3
+0.5560, 3/3, 01-11-08h30_tiny_shep main_learn_tag_hdf.py -ne 3
+0.5698, 3/3, 01-11-09h00_sharp_owl main_learn_tag_hdf.py -ne 3
+0.5632, 2/2, 01-11-09h58_tiny_pig main_learn_tag_hdf.py -ne 2 -l 5
+6.2356, 1/2, 01-11-10h40_blue_orca main_learn_tag_hdf.py -ne 2 -l 5
+7.2909, 3/3, 01-11-11h02_shep_wing main_learn_tag_hdf.py -ne 2 -l 5
+0.7598, 2/2, 01-11-11h26_pink_shark main_learn_tag_hdf.py -ne 2 -l 5
+7.0687, 2/2, 01-11-11h42_tiny_panda main_learn_tag_hdf.py -ne 2 -l 5
+0.5548, 2/3, 01-11-12h03_big_pup main_learn_tag_hdf.py -ne 2 -l 5
+4.2670, 3/8, 01-11-12h51_musky_koala main_learn_tag_hdf.py -ne 2 -l 5
+4.6026, 3/5, 01-11-14h07_silly_cat main_learn_tag_hdf.py -ne 2 -l 5
+0.5555, 4/7, 01-11-15h08_green_bear main_learn_tag_hdf.py -ne 2 -l 5
+0.7225, 2/2, 01-11-16h21_rage_gryph main_learn_tag_hdf.py -ne 2 -l 5
+0.5597, 4/5, 01-11-16h45_pink_vixen main_learn_tag_hdf.py -ne 4 -l 5 -nu 512 -lfc 2
+0.4513, 4/4, 01-11-19h04_wolfy_bunny main_learn_tag_hdf.py -ne 4 -l 5 -nu 512 -lfc 2 -dl 8
+0.4528, 3/4, 01-11-19h47_spotty_shep main_learn_tag_hdf.py -ne 4 -l 5 -nu 512 -lfc 2 -dl 8
+0.4513, 2/4, 01-11-20h29_wet_dog main_learn_tag_hdf.py -ne 4 -l 5 -nu 512 -lfc 2 -dl 8
