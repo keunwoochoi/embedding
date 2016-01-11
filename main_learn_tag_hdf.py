@@ -397,14 +397,14 @@ if __name__ == "__main__":
 
 	# prelu, elu > lrelu > relu
 
-	
+	TR_CONST["learning_rate"] = 1e-7
 	TR_CONST["BN"] = False
 	TR_CONST["BN_fc_layers"] = False
 	run_with_setting(TR_CONST, sys.argv)
 	TR_CONST["BN"] = True
 	TR_CONST["BN_fc_layers"] = True
 	
-
+	TR_CONST["learning_rate"] = 3e-7
 	#------------------
 	min_losses = []
 	opts = ['adadelta', 'adam', 'rmsprop']
