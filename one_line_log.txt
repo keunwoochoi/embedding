@@ -48,3 +48,8 @@ the results's still the same! 0.46xx. what the fuck? Even the training loss stay
 0.5513, 4/5, 01-10-06h30_wet_shibe main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 5 -fm 16 -nu 32 -do 0.0 -do_fc 0.0 -reg 0.0 -reg_fc 0.0 -tf stft
 2.1366, 3/5, 01-10-07h30_green_bat main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 5 -fm 32 -nu 128 -do 0.25 -do_fc 0.0 -reg 0.0 -reg_fc 0.00001 -tf stft
 0.5602, 9/9, 01-10-17h09_musky_fox main_learn_tag_hdf.py -ne 5 -op adam -act elu -l 5 -fm 40 -nu 256 -do 0.25 -do_fc 0.0 -reg 0.0 -reg_fc 0.00001
+0.5519, 3/3, 01-10-20h43_koala_wing main_learn_tag_hdf.py -l 5 -fm 48
+5.6362, 1/3, 01-10-21h13_shibe_paw main_learn_tag_hdf.py -l 5 -fm 48
+0.5513, 2/3, 01-10-21h42_mare_paw main_learn_tag_hdf.py -l 5 -fm 48
+0.5540, 3/3, 01-10-23h44_cyan_pig main_learn_tag_hdf.py -l 5 -fm 48 -bn False -do 0.0 -bn_fc False -do_fc 0.0 -reg 0.0005 -reg_fc 0.0005 -ne 3
+0.6249, 4/4, 01-11-00h17_wolfy_panda main_learn_tag_hdf.py -l 5 -fm 48 -bn False -do 0.0 -bn_fc False -do_fc 0.0 -reg 0.0005 -reg_fc 0.0005 -ne 3 -op adagrad
