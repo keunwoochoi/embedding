@@ -145,9 +145,9 @@ def run_with_setting(hyperparams, argv):
  	until = time.time()
  	print "--- keras model was built, took %d seconds ---" % (until-start)
 	#prepare callbacks
-	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.{epoch:02d}-{val_loss:.2f}.hdf5", 
+	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.{epoch:02d}.hdf5", 
 													verbose=1, 
-													save_best_only=False)
+													save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	patience = 3
 	if hyperparams["isRegre"]:
@@ -233,7 +233,9 @@ def run_with_setting(hyperparams, argv):
 			num_epoch = 1
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
-
+	#
+	best_batch = np.argmin(total_history['val_loss'])+1
+	# model.load_weights() # load the best model
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	model.save_weights(PATH_RESULTS_W + model_weight_name_dir + ('final_after_%d.keras' % hyperparams["num_epoch"]), overwrite=True) 
@@ -258,7 +260,10 @@ def run_with_setting(hyperparams, argv):
 	# 									filename_prefix='', 
 	# 									normalize='local', 
 	# 									mono=True)
-
+	
+	oneline_result = '%6.4f, %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
+	with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
+		f.close()
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
 	num_run_epoch = len(total_history['val_loss'])
@@ -393,9 +398,12 @@ if __name__ == "__main__":
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
+	#l1, 5e3 --> stopped at 0.72 
 
-	for act in [('l1', 5e-3), ('l1', 1e-4), ('l1', 3e-6),('l2', 5e-3), ('l2', 1e-4), ('l2', 3e-6)]:
-	 	TR_CONST["regulariser"][0] = act
-	 	update_setting_dict(TR_CONST)
-	 	run_with_setting(TR_CONST, sys.argv)
+	for act in [('l1', 1e-3), ('l1', 1e-4), ('l1', 3e-6), ('l2', 5e-3), ('l2', 1e-4), ('l2', 3e-6)]:
+	 	for act_fc in [('l1', 1e-4), ('l1', 1e-5), ('l2', 1e-4), ('l2', 1e-5)]:
+	 		TR_CONST["regulariser"][0] = act
+	 		TR_CONST["regulariser_fc_layers"][0] = act_fc
+	 		update_setting_dict(TR_CONST)
+	 		run_with_setting(TR_CONST, sys.argv)
 

@@ -12,7 +12,7 @@ TR_CONST["num_epoch"] = 30
 TR_CONST["model_type"] = 'vgg_sequential' # or vgg_graph, etc.
 
 TR_CONST["loss_function"] = 'binary_crossentropy' # rmse, mse, mae, binary_crossentropy
-TR_CONST["optimiser"] = 'adam'
+TR_CONST["optimiser"] = 'adagrad'
 TR_CONST['learning_rate'] = 3e-7
 
 TR_CONST["num_layers"] = 6 # can be overriden
