@@ -399,6 +399,14 @@ if __name__ == "__main__":
 
 	TR_CONST['activations'] = ['prelu']
 	TR_CONST['activations_fc_layers'] = ['prelu']
+
+	TR_CONST["BN"] = False
+	TR_CONST["BN_fc_layers"] = False
+	run_with_setting(TR_CONST, sys.argv)
+	TR_CONST["BN"] = True
+	TR_CONST["BN_fc_layers"] = True
+	
+
 	#------------------
 	min_losses = []
 	opts = ['adadelta', 'adam', 'rmsprop']
