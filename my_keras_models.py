@@ -133,9 +133,11 @@ def build_regression_convnet_model(setting_dict, is_test):
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print 'No activation here? No!'
-	if setting_dict["output_activation"]:	
+	if setting_dict["output_activation"]:
+		print 'Output activation is: ' + 	setting_dict["output_activation"]
 		model.add(Dense(num_labels, activation=setting_dict["output_activation"])) 
 	else:
+		print 'Output activation: linear'
 		model.add(Dense(num_labels, activation='linear')) 
 
 	if optimizer_name == 'sgd':
