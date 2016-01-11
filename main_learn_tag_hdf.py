@@ -394,10 +394,10 @@ if __name__ == "__main__":
 	run_with_setting(TR_CONST, sys.argv)
 
 	#l1, 5e3 --> stopped at 0.72 
-	TR_CONST["num_epoch"] == 2
+	TR_CONST["num_epoch"] = 2
 
-	for BN in [True, False]:
-		for BN_fc in [True, False]:
+	for BN in [False, True]:
+		for BN_fc in [False, True]:
 			print ' *** Go with BN: %s, BN_fc: %s  ***' % (str(BN), str(BN_fc))
 			TR_CONST["BN"] = BN
 			TR_CONST["BN_fc_layers"] = BN_fc
