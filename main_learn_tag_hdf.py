@@ -409,7 +409,7 @@ if __name__ == "__main__":
 
 	#------------------
 	min_losses = []
-	nus = [(1,2048), (1,256), (1,512), (1,1024), (2,64), (2,256)]
+	nus = [(1,4096), (1,2048), (1,256), (1,512), (1,1024), (2,64), (2,256), (3, 32)]
 	for num_fc_lyr, nu in nus:
 		TR_CONST["num_fc_layers"] = num_fc_lyr
 		TR_CONST["nums_units_fc_layers"] = nu
@@ -422,7 +422,7 @@ if __name__ == "__main__":
 	TR_CONST["nums_units_fc_layers"] = best_layer[1]
 	#------------------
 	min_losses = []
-	num_layers = [4, 6, 7]
+	num_layers = [4, 6, 7, 8]
 	for lyr in num_layers:
 		TR_CONST["num_layers"] = lyr
 		update_setting_dict(TR_CONST)
@@ -432,7 +432,7 @@ if __name__ == "__main__":
 	print 'best conv layers number: %s' % best_layers
 	#------------------
 	min_losses = []
-	opts = ['adadelta', 'adam', 'rmsprop', 'sgd']
+	opts = ['adagrad', 'adadelta', 'adam', 'rmsprop', 'sgd']
 	for opt in opts:
 		if opt == 'rmsprop':
 			TR_CONST["num_epoch"] = 8
