@@ -401,7 +401,7 @@ if __name__ == "__main__":
 	TR_CONST['activations_fc_layers'] = ['prelu']
 	#------------------
 	min_losses = []
-	opts = ['adagrad', 'adam', 'rmsprop']
+	opts = ['adadelta', 'adam', 'rmsprop']
 	for opt in opts:
 		TR_CONST["optimiser"] = opt
 		update_setting_dict(TR_CONST)
