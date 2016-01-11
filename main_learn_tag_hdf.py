@@ -397,9 +397,7 @@ if __name__ == "__main__":
 
 	# prelu, elu > lrelu > relu
 
-	TR_CONST['activations'] = ['prelu']
-	TR_CONST['activations_fc_layers'] = ['prelu']
-
+	
 	TR_CONST["BN"] = False
 	TR_CONST["BN_fc_layers"] = False
 	run_with_setting(TR_CONST, sys.argv)
