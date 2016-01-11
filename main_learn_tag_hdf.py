@@ -50,7 +50,7 @@ def update_setting_dict(setting_dict):
 	return
 
 def run_with_setting(hyperparams, argv):
-
+	print '#'*60
 	#function: input args: TR_CONST, sys.argv.
 	# -------------------------------
 	if hyperparams["is_test"]:
