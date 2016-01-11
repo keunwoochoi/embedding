@@ -44,8 +44,8 @@ def update_setting_dict(setting_dict):
 	setting_dict["regulariser_fc_layers"] = [setting_dict["regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
 
 	#tweak 2
-	setting_dict["regulariser"] = [None]*(setting_dict["num_layers"])
-	setting_dict["regulariser_fc_layers"] = [None]*(setting_dict["num_fc_layers"])
+	# setting_dict["regulariser"] = [None]*(setting_dict["num_layers"])
+	# setting_dict["regulariser_fc_layers"] = [None]*(setting_dict["num_fc_layers"])
 	
 	return
 
@@ -56,10 +56,7 @@ def run_with_setting(hyperparams, argv):
 	if hyperparams["is_test"]:
 		print '==== This is a test, to quickly check the code. ===='
 		print 'excuted by $ ' + ' '.join(argv)
-	print 'Settings are \n --- num_epoch: %d\n --- model_type: %s --- memo: %s' % \
-			(hyperparams["num_epoch"], hyperparams["model_type"], hyperparams["!memo"])
-	print 'tf types:', hyperparams["tf_type"], ' num_layers: ', hyperparams["num_layers"], ' num_feat_maps: ', hyperparams["num_feat_maps"]
-
+	
 	# label matrix
 	dim_latent_feature = hyperparams["dim_labels"]
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -80,10 +77,6 @@ def run_with_setting(hyperparams, argv):
 
 	# load dataset
 	
-	print '='*60
-	print 'tf type: %s' % hyperparams["tf_type"]
-	print '='*60
-	print "I'll take %d clips for each song." % hyperparams["clips_per_song"]
 	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets_from_hdf(tf_type=hyperparams["tf_type"],
 																				n_dim=dim_latent_feature,
 																				task_cla=hyperparams['isClass'])
@@ -128,7 +121,8 @@ def run_with_setting(hyperparams, argv):
 	print "--- going to build a keras model with height:%d, width:%d, num_labels:%d" \
 							% (train_x.shape[2], train_x.shape[3], train_y.shape[1])
 
-	my_utils.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
+	hyperparams_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
+ 	hyperparams_manager.print_setting(hyperparams)
  	if hyperparams["isRegre"]:
  		
 		model = my_keras_models.build_regression_convnet_model(setting_dict=hyperparams, is_test=hyperparams["is_test"])
@@ -400,11 +394,24 @@ if __name__ == "__main__":
 	run_with_setting(TR_CONST, sys.argv)
 
 	#l1, 5e3 --> stopped at 0.72 
+	TR_CONST["num_epoch"] == 2
 
-	for act in [('l1', 1e-3), ('l1', 1e-4), ('l1', 3e-6), ('l2', 5e-3), ('l2', 1e-4), ('l2', 3e-6)]:
-	 	for act_fc in [('l1', 1e-4), ('l1', 1e-5), ('l2', 1e-4), ('l2', 1e-5)]:
+	for BN in [True, False]:
+		for BN_fc in [True, False]:
+			print ' *** Go with BN: %s, BN_fc: %s  ***' % (str(BN), str(BN_fc))
+			TR_CONST["BN"] = BN
+			TR_CONST["BN_fc_layers"] = BN_fc
+	 		update_setting_dict(TR_CONST)
+	 		run_with_setting(TR_CONST, sys.argv)
+	
+	BN = True
+	BN_fc = True			
+
+	for act in [('l1', 3e-6), ('l2', 1e-5)]:
+	 	for act_fc in [('l1', 1e-5), ('l2', 1e-4)]:
 	 		TR_CONST["regulariser"][0] = act
 	 		TR_CONST["regulariser_fc_layers"][0] = act_fc
+
 	 		update_setting_dict(TR_CONST)
 	 		run_with_setting(TR_CONST, sys.argv)
 

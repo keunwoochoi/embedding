@@ -54,6 +54,7 @@ class Hyperparams_Manager():
 		self.dict_str2name[long_name] = new_name
 		cP.dump(self, open(PATH_DATA + FILE_DICT["hyperparam_manager"], 'w'))
 
+
 	def list_setting_names(self):
 		pprint.pprint(self.dict.keys())
 
@@ -63,6 +64,23 @@ class Hyperparams_Manager():
 	def has_setting(self, setting_dict):
 		return dict2str(setting_dict) in self.dict_str2name
 
+	def write_setting_as_texts(self, path_to_save, setting_dict): # TODO : move this to hyperparams()
+		from datetime import datetime
+		timeinfo = datetime.now().strftime('%Y-%m-%d-%Hh%Mm')
+		f = open(path_to_save + timeinfo + '.time', 'w')
+		f.close()
+		for key in setting_dict:
+			with open(path_to_save+ 'a_'+str(key)+ '_' + str(setting_dict[key])+'.txt', 'w') as f:
+				pass
+		return
+
+	def print_setting(self, setting_dict):
+		print '-'*60
+		for key in setting_dict:
+			print( ' * ' + str(key)+ ': ' + str(setting_dict[key]))
+		print '-'*60
+		return
+		
 def dict2str(setting_dict):
 	return '_'.join([key+'.'+str(setting_dict[key]) for key in setting_dict])
 
@@ -123,15 +141,9 @@ class File_Manager():
 
 		return rand_inds[0:num_train], rand_inds[num_train:num_train+num_valid], rand_inds[num_train+num_valid:]
 
-def write_setting_as_texts(path_to_save, setting_dict):
-	from datetime import datetime
-	timeinfo = datetime.now().strftime('%Y-%m-%d-%Hh%Mm')
-	f = open(path_to_save + timeinfo + '.time', 'w')
-	f.close()
-	for key in setting_dict:
-		with open(path_to_save+ 'a_'+str(key)+ '_' + str(setting_dict[key])+'.txt', 'w') as f:
-			pass
-	return
+
+
+
 
 def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=256, width_image=256, clips_per_song=0):
 	"""indices: list consists of integers between [0, 9320], 
