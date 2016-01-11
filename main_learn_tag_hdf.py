@@ -402,9 +402,13 @@ if __name__ == "__main__":
 	
 	TR_CONST["BN"] = True
 	TR_CONST["BN_fc_layers"] = True
-
+	skip_once = True
 	for act in [('l2', 1e-5), ('l1', 3e-6)]:
-	 	for act_fc in [('l1', 1e-5), ('l2', 1e-4)]:
+	 	for act_fc in [('l1', 1e-5), ('l2', 1e-5)]:
+	 		if skip_once:
+	 			skip_once = False
+	 			pass
+
 	 		TR_CONST["regulariser"][0] = act
 	 		TR_CONST["regulariser_fc_layers"][0] = act_fc
 
