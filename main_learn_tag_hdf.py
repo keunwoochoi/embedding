@@ -261,12 +261,13 @@ def run_with_setting(hyperparams, argv):
 	# 									normalize='local', 
 	# 									mono=True)
 	
-	oneline_result = '%6.4f, %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
-	with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
-		pass
+	
 	min_loss = np.min(total_history['val_loss'])
 	best_batch = np.argmin(total_history['val_loss'])+1
 	num_run_epoch = len(total_history['val_loss'])
+	oneline_result = '%6.4f, %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
+	with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
+		pass
 	f = open( (PATH_RESULTS + '%s_%s_%06.4f_at_(%d_of_%d)_%s'  % \
 		(timename, hyperparams["loss_function"], min_loss, best_batch, num_run_epoch, nickname)), 'w')
 	f.close()
