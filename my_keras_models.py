@@ -87,20 +87,11 @@ def build_regression_convnet_model(setting_dict, is_test):
 		if activations[i] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
-			if i==0:
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1, input_shape=(num_channels, height, width)))
-			else:
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
 		elif activations[i] == 'prelu':
-			if i==0:
-				model.add(keras.layers.advanced_activations.PReLU(input_shape=(num_channels, height, width)))
-			else:
-				model.add(keras.layers.advanced_activations.PReLU())
+			model.add(keras.layers.advanced_activations.PReLU())
 		elif activations[i] == 'elu':
-			if i==0:
-				model.add(keras.layers.advanced_activations.ELU(alpha=1.0, input_shape=(num_channels, height, width)))
-			else:
-				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print 'No activation here? No!'
 		# add dropout
