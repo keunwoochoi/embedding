@@ -405,7 +405,7 @@ if __name__ == "__main__":
 
 	TR_CONST["optimiser"] = 'adagrad'
 	for act in ['prelu', 'lrelu', 'elu']:
-		TR_CONST['activations'] = act
+		TR_CONST['activations'] = [act]
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 
