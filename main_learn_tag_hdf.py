@@ -400,18 +400,12 @@ if __name__ == "__main__":
 	#  		update_setting_dict(TR_CONST)
 	#  		run_with_setting(TR_CONST, sys.argv)
 	
-	TR_CONST["BN"] = True
-	TR_CONST["BN_fc_layers"] = True
-	skip_once = True
-	for act in [('l2', 1e-5), ('l1', 3e-6)]:
-	 	for act_fc in [('l1', 1e-5), ('l2', 1e-5)]:
-	 		if skip_once:
-	 			skip_once = False
-	 			pass
+	# TR_CONST["BN"] = True
+	# TR_CONST["BN_fc_layers"] = True
 
-	 		TR_CONST["regulariser"][0] = act
-	 		TR_CONST["regulariser_fc_layers"][0] = act_fc
-
-	 		update_setting_dict(TR_CONST)
-	 		run_with_setting(TR_CONST, sys.argv)
+	TR_CONST["optimiser"] = 'adagrad'
+	for act in ['prelu', 'lrelu', 'elu']:
+		TR_CONST['activations'] = act
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
 
