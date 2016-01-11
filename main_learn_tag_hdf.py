@@ -400,8 +400,8 @@ if __name__ == "__main__":
 	#  		update_setting_dict(TR_CONST)
 	#  		run_with_setting(TR_CONST, sys.argv)
 	
-	BN = False
-	BN_fc = True
+	BN = True
+	BN_fc = False
 	for act in [('l1', 3e-6), ('l2', 1e-5)]:
 	 	for act_fc in [('l1', 1e-5), ('l2', 1e-4)]:
 	 		TR_CONST["regulariser"][0] = act
