@@ -401,9 +401,9 @@ if __name__ == "__main__":
 	#  		run_with_setting(TR_CONST, sys.argv)
 	
 	TR_CONST["BN"] = True
-	TR_CONST["BN_fc_layers"] = False
-	
-	for act in [('l1', 3e-6), ('l2', 1e-5)]:
+	TR_CONST["BN_fc_layers"] = True
+
+	for act in [('l2', 1e-5), ('l1', 3e-6)]:
 	 	for act_fc in [('l1', 1e-5), ('l2', 1e-4)]:
 	 		TR_CONST["regulariser"][0] = act
 	 		TR_CONST["regulariser_fc_layers"][0] = act_fc
