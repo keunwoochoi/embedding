@@ -181,16 +181,7 @@ def run_with_setting(hyperparams, argv):
 	total_epoch = 0
 	while True:
 		if hyperparams["isRegre"]:
-			if hyperparams["is_test"]:
-				history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-													batch_size=batch_size, 
-													nb_epoch=num_epoch, 
-													show_accuracy=False, 
-													verbose=1, 
-													callbacks=[weight_image_monitor],
-													shuffle=False)
-			else:
-				history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 													batch_size=batch_size, 
 													nb_epoch=num_epoch, 
 													show_accuracy=False, 
@@ -269,6 +260,7 @@ def run_with_setting(hyperparams, argv):
 		f.write('%6.4f, %d/%d, %s' % (min_loss, best_batch, num_run_epoch, model_name))
 		f.write(' ' + ' '.join(argv) + '\n')
 	print '========== DONE: %s ==========' % model_name
+	return min_loss
 
 if __name__ == "__main__":
 
@@ -403,10 +395,47 @@ if __name__ == "__main__":
 	# TR_CONST["BN"] = True
 	# TR_CONST["BN_fc_layers"] = True
 
-	TR_CONST["optimiser"] = 'adagrad'
-	for act in ['prelu', 'lrelu', 'elu']:
-		TR_CONST['activations'] = [act]
-		TR_CONST['activations_fc_layers'] = [act]
+	# prelu, elu > lrelu > relu
+
+	TR_CONST['activations'] = ['prelu']
+	TR_CONST['activations_fc_layers'] = ['prelu']
+	#------------------
+	min_losses = []
+	opts = ['adagrad', 'adam', 'rmsprop']
+	for opt in opts:
+		TR_CONST["optimiser"] = opt
 		update_setting_dict(TR_CONST)
-		run_with_setting(TR_CONST, sys.argv)
+		min_losses.append(run_with_setting(TR_CONST, sys.argv))
+
+	best_optimiser = opts[np.argmin(min_losses)]
+	print 'best optimiser: %s' % best_optimiser
+	
+	TR_CONST["optimiser"] = best_optimiser
+	#------------------
+	min_losses = []
+	nus = [(1,2048), (1,256), (1,512), (1,1024), (2,64), (2,256)]
+	for num_fc_lyr, nu in nus:
+		TR_CONST["num_fc_layers"] = num_fc_lyr
+		TR_CONST["nums_units_fc_layers"] = nu
+		update_setting_dict(TR_CONST)
+		min_losses.append(run_with_setting(TR_CONST, sys.argv))
+
+	best_layer = nus[np.argmin(min_losses)]
+	print 'best layer setting: ' + best_layer
+	TR_CONST["num_fc_layers"] = best_layer[0]
+	TR_CONST["nums_units_fc_layers"] = best_layer[1]
+	#------------------
+	min_losses = []
+	num_layers = [4, 6, 7]
+	for lyr in num_layers:
+		TR_CONST["num_layers"] = lyr
+		update_setting_dict(TR_CONST)
+		min_losses.append(run_with_setting(TR_CONST, sys.argv))
+
+	best_layers = num_layers[np.argmin(min_losses)]
+	print 'best conv layers number: %s' % best_layers
+	#------------------
+		
+
+
 
