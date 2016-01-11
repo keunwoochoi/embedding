@@ -401,6 +401,7 @@ if __name__ == "__main__":
 			print ' *** Go with BN: %s, BN_fc: %s  ***' % (str(BN), str(BN_fc))
 			TR_CONST["BN"] = BN
 			TR_CONST["BN_fc_layers"] = BN_fc
+			pdb.set_trace()
 	 		update_setting_dict(TR_CONST)
 	 		run_with_setting(TR_CONST, sys.argv)
 	
