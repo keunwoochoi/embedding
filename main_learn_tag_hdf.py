@@ -397,26 +397,16 @@ if __name__ == "__main__":
 
 	# prelu, elu > lrelu > relu
 
-	TR_CONST["learning_rate"] = 1e-7
-	TR_CONST["BN"] = False
-	TR_CONST["BN_fc_layers"] = False
-	run_with_setting(TR_CONST, sys.argv)
-	TR_CONST["BN"] = True
-	TR_CONST["BN_fc_layers"] = True
-	
-	TR_CONST["learning_rate"] = 3e-7
 	#------------------
-	min_losses = []
-	opts = ['adadelta', 'adam', 'rmsprop']
-	for opt in opts:
-		TR_CONST["optimiser"] = opt
-		update_setting_dict(TR_CONST)
-		min_losses.append(run_with_setting(TR_CONST, sys.argv))
-
-	best_optimiser = opts[np.argmin(min_losses)]
-	print 'best optimiser: %s' % best_optimiser
+	# TR_CONST["learning_rate"] = 1e-7
+	# TR_CONST["BN"] = False
+	# TR_CONST["BN_fc_layers"] = False
+	# run_with_setting(TR_CONST, sys.argv)
+	# TR_CONST["BN"] = True
+	# TR_CONST["BN_fc_layers"] = True
 	
-	TR_CONST["optimiser"] = best_optimiser
+	# TR_CONST["learning_rate"] = 3e-7
+
 	#------------------
 	min_losses = []
 	nus = [(1,2048), (1,256), (1,512), (1,1024), (2,64), (2,256)]
@@ -441,7 +431,26 @@ if __name__ == "__main__":
 	best_layers = num_layers[np.argmin(min_losses)]
 	print 'best conv layers number: %s' % best_layers
 	#------------------
-		
+	min_losses = []
+	opts = ['adadelta', 'adam', 'rmsprop', 'sgd']
+	for opt in opts:
+		if opt == 'rmsprop':
+			TR_CONST["num_epoch"] = 8
+		elif opt == 'sgd':
+			TR_CONST["num_epoch"] = 20
+		else:
+			TR_CONST["num_epoch"] = 4
+		TR_CONST["optimiser"] = opt
+		update_setting_dict(TR_CONST)
+		min_losses.append(run_with_setting(TR_CONST, sys.argv))
+
+	best_optimiser = opts[np.argmin(min_losses)]
+	print 'best optimiser: %s' % best_optimiser
+	TR_CONST["optimiser"] = best_optimiser
+	if best_optimiser == 'rmsprop':
+		TR_CONST["num_epoch"] = 8
+	elif opt == 'sgd':
+		TR_CONST["num_epoch"] = 20		
 
 
 
