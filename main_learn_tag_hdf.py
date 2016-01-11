@@ -392,10 +392,10 @@ if __name__ == "__main__":
 
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
-
+	pdb.set_trace()
 	#l1, 5e3 --> stopped at 0.72 
 	TR_CONST["num_epoch"] = 2
-
+	pdb.set_trace()
 	for BN in [False, True]:
 		for BN_fc in [False, True]:
 			print ' *** Go with BN: %s, BN_fc: %s  ***' % (str(BN), str(BN_fc))
@@ -404,10 +404,11 @@ if __name__ == "__main__":
 			pdb.set_trace()
 	 		update_setting_dict(TR_CONST)
 	 		run_with_setting(TR_CONST, sys.argv)
-	
+	pdb.set_trace()
+
 	BN = True
 	BN_fc = True			
-
+	pdb.set_trace()
 	for act in [('l1', 3e-6), ('l2', 1e-5)]:
 	 	for act_fc in [('l1', 1e-5), ('l2', 1e-4)]:
 	 		TR_CONST["regulariser"][0] = act
