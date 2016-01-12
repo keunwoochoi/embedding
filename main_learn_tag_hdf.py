@@ -372,9 +372,9 @@ if __name__ == "__main__":
 	if args.dropout_fc:
 		TR_CONST["dropouts_fc_layers"] = [args.dropout_fc]*TR_CONST["num_fc_layers"]
 	if args.regulariser:
-		TR_CONST["regulariser"] = [TR_CONST["regulariser"][0][0], args.regulariser]*TR_CONST["num_layers"]
+		TR_CONST["regulariser"] = [(TR_CONST["regulariser"][0][0], args.regulariser)]*TR_CONST["num_layers"]
 	if args.regulariser_fc:
-		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser_fc]*TR_CONST["num_fc_layers"]
+		TR_CONST["regulariser_fc_layers"] = [(TR_CONST["regulariser_fc_layers"][0][0], args.regulariser_fc)]*TR_CONST["num_fc_layers"]
 	if args.batch_normalization:
 		TR_CONST["BN"] = args.batch_normalization
 	if args.batch_normalization_fc:
@@ -382,6 +382,7 @@ if __name__ == "__main__":
 	if args.learning_rate:
 		TR_CONST["learning_rate"] = args.learning_rate
 
+	pdb.set_trace()
 	#l1, 5e3 --> stopped at 0.72 
 	# TR_CONST["num_epoch"] = 2
 	# for BN in [False, True]:
