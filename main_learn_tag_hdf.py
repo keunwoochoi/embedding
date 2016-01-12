@@ -408,6 +408,9 @@ if __name__ == "__main__":
 	# TR_CONST["learning_rate"] = 3e-7
 
 	#------------------
+	run_with_setting(TR_CONST, sys.argv)
+	sys.exit()
+	#------------------
 	min_losses = []
 	nus = [(1,4096), (1,2048), (1,256), (1,512), (1,1024), (2,64), (2,256), (3, 32)]
 	for num_fc_lyr, nu in nus:
