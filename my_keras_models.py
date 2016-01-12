@@ -101,7 +101,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		else:
 			pass
 		# add pooling
-		model.add(MaxPooling2D(pool_size=pool_sizes[i]), strides=(2, 2))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i], strides=(2, 2)))
 		
 	#[Fully Connected Layers]
 	model.add(Flatten())
