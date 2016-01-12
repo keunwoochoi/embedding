@@ -332,7 +332,7 @@ if __name__ == "__main__":
 	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=str,
 															help='BN for fc layers',
 															required=False)
-	parser.add_argument('-dbg', '--debug', type=str,
+	parser.add_argument('-debug', '--debug', type=str,
 											help='if debug',
 											required=False)
 	parser.add_argument('-lr', '--learning_rate', type=float,
