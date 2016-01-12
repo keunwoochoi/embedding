@@ -139,7 +139,7 @@ def run_with_setting(hyperparams, argv):
  	until = time.time()
  	print "--- keras model was built, took %d seconds ---" % (until-start)
 	#prepare callbacks
-	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.{epoch:02d}.hdf5", 
+	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.best.hdf5", 
 													verbose=1, 
 													save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
@@ -223,7 +223,7 @@ def run_with_setting(hyperparams, argv):
 	# model.load_weights() # load the best model
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
-	model.save_weights(PATH_RESULTS_W + model_weight_name_dir + ('final_after_%d.keras' % hyperparams["num_epoch"]), overwrite=True) 
+	# model.save_weights(PATH_RESULTS_W + model_weight_name_dir + ('final_after_%d.keras' % hyperparams["num_epoch"]), overwrite=True) 
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
@@ -409,7 +409,6 @@ if __name__ == "__main__":
 
 	#------------------
 	update_setting_dict(TR_CONST)
-	pdb.set_trace()
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
 	#------------------
