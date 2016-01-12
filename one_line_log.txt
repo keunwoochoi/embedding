@@ -93,3 +93,4 @@ the results's still the same! 0.46xx. what the fuck? Even the training loss stay
 0.4832, 55/100, test_musky_bear main_learn_tag_hdf.py -ne 100 -l 5 -nu 128 -lfc 2 -dl 8 -reg 0.0 -reg_fc 0.0 -it 1
 0.5517, 2/2, 01-12-18h34_panda_wing main_learn_tag_hdf.py -ne 2 -l 5 -nu 128 -lfc 2 -debug 1
 0.5524, 2/6, 01-12-19h01_sharp_bat main_learn_tag_hdf.py -ne 5 -l 5 -nu 128 -lfc 2
+0.5515, 1/3, 01-12-20h22_silly_dog main_learn_tag_hdf.py -ne 3 -l 6 -nu 128 -lfc 2
