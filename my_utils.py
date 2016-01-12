@@ -285,8 +285,8 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 	for any tf_type, any post-processing is not required except standardization.
 	'''
 	def normalizer_cqt(input_data):
-		global_mean = -61.25 # computed from the whole data for cqt
-		global_std  = 14.36
+		global_mean = -28.3472 # computed from the whole data for cqt
+		global_std  = 6.59574
 		return (input_data - global_mean) / global_std
 
 	def normalizer_stft(input_data):	
