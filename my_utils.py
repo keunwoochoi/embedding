@@ -390,6 +390,7 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	if tf_type == 'cqt':
 		global_mean = -61.25 # computed from the whole data for cqt
 		global_std  = 14.36
+		print 'NO'*10000000
 	elif tf_type == 'stft':
 		global_mean = -61.25 # should be mended with STFT values
 		global_std  = 14.36

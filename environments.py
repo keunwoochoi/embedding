@@ -81,6 +81,7 @@ PATH_MFCC = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/mfcc20/'
 PATH_CHROMA = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/chroma/'
 PATH_HGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/harmonigram/'
 PATH_PGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/pitchgram/'
+PATH_MELGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/melgram/'
 
 PATH_CQT_H = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/cqt_harmony/'
 PATH_CQT_P = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_features/cqt_percussive/'
@@ -112,7 +113,7 @@ else:
 
 	for path in [PATH_MFCC, PATH_CHROMA,
 	             PATH_HGRAM, PATH_PGRAM, PATH_CQT, PATH_STFT,
-	             PATH_CQT_H, PATH_CQT_P, PATH_HDF]:
+	             PATH_CQT_H, PATH_CQT_P, PATH_MELGRAM, PATH_HDF]:
 		if not os.path.exists(path):
 			os.mkdir(path)
 

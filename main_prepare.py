@@ -56,6 +56,11 @@ def do_stft(src, track_id):
 	np.save(PATH_STFT + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
 	print "Done: %s" % str(track_id)
 
+def do_melgram(src, track_id):
+	SRC = librosa.librosa.feature.melspectrogram(y=src[0,:]+src[1,:]) # MONO!
+	np.save(PATH_MELGRAM + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
+	print "Done: %s" % str(track_id)	
+
 def do_cqt(src, track_id):
 	SRC_cqt_L = librosa.logamplitude(librosa.cqt(src[0,:], sr=CQT_CONST["sr"], 
 									 hop_length=CQT_CONST["hop_len"], 
@@ -193,6 +198,7 @@ def process_mfcc(track_id):
 		src, sr = load_src(track_id)
 		do_mfcc(src, track_id)	
 
+
 def process_chroma(track_id):
 	'''
 	option: none: do chroma based on normal CQT
@@ -260,6 +266,13 @@ def process_stft_cqt(track_id):
 		do_cqt(src, track_id)
 		do_stft(src, track_id)
 
+def process_melgram(track_id):
+	if os.path.exists(PATH_MELGRAM + str(track_id) + '.npy'):
+		print "melgram: skip this id: %d, it's already there!" % track_id
+	else:
+		src, sr = load_src(track_id)
+		do_melgram(src, track_id)
+
 def prepare_transforms_detail(num_process, ind_process, task, isTest):
 
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
@@ -302,6 +315,8 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 		p.map(process_hps_on_cqt, track_ids_here)
 	elif task=='all_about_cqt':
 		p.map(process_all_about_cqt, track_ids_here)
+	elif task=='melgram':
+		p.map(process_melgram, track_ids_here)
 	else:
 		print 'task name undefined: %s' % task
 		pass
@@ -330,7 +345,7 @@ def prepare_transforms(arguments):
 	task = arguments[3].lower()
 	print num_process, " processes"
 	
-	if task not in ['stft', 'cqt', 'mfcc', 'chroma', 'hgram', 'pgram', 'hps_on_cqt', 'all_about_cqt']:
+	if task not in ['stft', 'cqt', 'mfcc', 'chroma', 'hgram', 'pgram', 'hps_on_cqt', 'all_about_cqt', 'melgram']:
 		print 'wrong argument, choose stft, cqt, mfcc, chroma, hgram, pgram, hps_on_cqt, all_about_cqt'
 		sys.exit()
 	if arguments[4] == 'test':
