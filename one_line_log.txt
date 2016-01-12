@@ -84,3 +84,7 @@ the results's still the same! 0.46xx. what the fuck? Even the training loss stay
 0.4513, 4/4, 01-11-19h04_wolfy_bunny main_learn_tag_hdf.py -ne 4 -l 5 -nu 512 -lfc 2 -dl 8
 0.4528, 3/4, 01-11-19h47_spotty_shep main_learn_tag_hdf.py -ne 4 -l 5 -nu 512 -lfc 2 -dl 8
 0.4513, 2/4, 01-11-20h29_wet_dog main_learn_tag_hdf.py -ne 4 -l 5 -nu 512 -lfc 2 -dl 8
+0.4513, 4/4, 01-11-21h44_red_gryph main_learn_tag_hdf.py -ne 4 -dl 8
+0.4518, 1/4, 01-11-22h29_wolfy_fox main_learn_tag_hdf.py -ne 4 -dl 8
+0.4511, 1/4, 01-11-23h13_red_orca main_learn_tag_hdf.py -ne 4 -dl 8
+0.4524, 2/4, 01-11-23h58_blue_shark main_learn_tag_hdf.py -ne 4 -dl 8
