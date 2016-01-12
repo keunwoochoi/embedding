@@ -408,6 +408,7 @@ if __name__ == "__main__":
 	# TR_CONST["learning_rate"] = 3e-7
 
 	#------------------
+	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
 	#------------------
