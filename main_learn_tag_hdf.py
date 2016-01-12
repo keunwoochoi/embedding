@@ -141,7 +141,7 @@ def run_with_setting(hyperparams, argv):
 	#prepare callbacks
 	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.best.hdf5", 
 													verbose=1, 
-													save_best_only=True)
+											             		save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	patience = 3
 	if hyperparams["is_test"] is True:
@@ -181,6 +181,11 @@ def run_with_setting(hyperparams, argv):
 	total_history = {}
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
+	if hyperparams['is_test']:
+		callbacks = [weight_image_monitor]
+	else:
+		callbacks = [weight_image_monitor, early_stopping, checkpointer]
+
 	while True:
 		if hyperparams["isRegre"]:
 			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -188,7 +193,7 @@ def run_with_setting(hyperparams, argv):
 													nb_epoch=num_epoch, 
 													show_accuracy=False, 
 													verbose=1, 
-													callbacks=[weight_image_monitor, early_stopping, checkpointer],
+													callbacks=callbacks,
 													shuffle=False)
 		else:
 			batch_size = batch_size / 2
@@ -197,7 +202,7 @@ def run_with_setting(hyperparams, argv):
 										nb_epoch=num_epoch, 
 										show_accuracy=True, 
 										verbose=1, 
-										callbacks=[early_stopping, weight_image_monitor, checkpointer],
+										callbacks=callbacks,
 										shuffle=False)
 		total_epoch += num_epoch
 		print '%d-th epoch is complete' % total_epoch
