@@ -332,6 +332,9 @@ if __name__ == "__main__":
 	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=str,
 															help='BN for fc layers',
 															required=False)
+	parser.add_argument('-dbg', '--debug', type=str,
+											help='if debug',
+											required=False)
 	parser.add_argument('-lr', '--learning_rate', type=float,
 													help='learning_rate',
 													required=False)
@@ -392,6 +395,9 @@ if __name__ == "__main__":
 		TR_CONST["BN_fc_layers"] = str2bool(args.batch_normalization_fc)
 	if args.learning_rate:
 		TR_CONST["learning_rate"] = args.learning_rate
+	if args.debug:
+		TR_CONST["debug"] = str2bool(args.debug)
+
 
 	#l1, 5e3 --> stopped at 0.72 
 	# TR_CONST["num_epoch"] = 2
