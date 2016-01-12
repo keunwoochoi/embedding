@@ -374,7 +374,7 @@ if __name__ == "__main__":
 	if args.regulariser:
 		TR_CONST["regulariser"] = [TR_CONST["regulariser"][0][0], args.regulariser]*TR_CONST["num_layers"]
 	if args.regulariser_fc:
-		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser]*TR_CONST["num_fc_layers"]
+		TR_CONST["regulariser_fc_layers"] = [TR_CONST["regulariser_fc_layers"][0][0], args.regulariser_fc]*TR_CONST["num_fc_layers"]
 	if args.batch_normalization:
 		TR_CONST["BN"] = args.batch_normalization
 	if args.batch_normalization_fc:
