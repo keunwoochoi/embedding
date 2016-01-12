@@ -144,6 +144,8 @@ def run_with_setting(hyperparams, argv):
 													save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	patience = 3
+	if hyperparams["is_test"] is True:
+		patience = 100
 	if hyperparams["isRegre"]:
 		#history = my_keras_utils.History_Regression_Val()
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
