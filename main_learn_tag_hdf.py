@@ -22,6 +22,9 @@ import time
 import sys
 import my_plots
 
+def str2bool(v):
+	return v.lower() in ("yes", "true", "t", "1")
+
 def update_setting_dict(setting_dict):
 
 	setting_dict["num_feat_maps"] = [setting_dict["num_feat_maps"][0]]*setting_dict["num_layers"]
@@ -86,7 +89,8 @@ def run_with_setting(hyperparams, argv):
 														clips_per_song=3)
 	hyperparams["height_image"] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
-
+	if hyperparams["debug"]:
+		pdb.set_trace()
 	if hyperparams["is_test"]:
 		train_x = train_x[0:24]
 		train_y = train_y[0:24]
@@ -322,10 +326,10 @@ if __name__ == "__main__":
 	parser.add_argument('-reg_fc', '--regulariser_fc', type=float,
 														help='regularise coeff that is applied to fc layer',
 														required=False)
-	parser.add_argument('-bn', '--batch_normalization', type=bool,
+	parser.add_argument('-bn', '--batch_normalization', type=str,
 														help='BN for conv layers',
 														required=False)
-	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=bool,
+	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=str,
 															help='BN for fc layers',
 															required=False)
 	parser.add_argument('-lr', '--learning_rate', type=float,
@@ -383,9 +387,9 @@ if __name__ == "__main__":
 	if args.regulariser_fc or args.regulariser == 0.0:
 		TR_CONST["regulariser_fc_layers"] = [(TR_CONST["regulariser_fc_layers"][0][0], args.regulariser_fc)]*TR_CONST["num_fc_layers"]
 	if args.batch_normalization:
-		TR_CONST["BN"] = args.batch_normalization
+		TR_CONST["BN"] = str2bool(args.batch_normalization)
 	if args.batch_normalization_fc:
-		TR_CONST["BN_fc_layers"] = args.batch_normalization_fc
+		TR_CONST["BN_fc_layers"] = str2bool(args.batch_normalization_fc)
 	if args.learning_rate:
 		TR_CONST["learning_rate"] = args.learning_rate
 

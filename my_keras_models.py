@@ -35,7 +35,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 	#------------------------------------------------------------------#
 	num_channels=1
 
-	if model_type.startswith('vgg_simple'):
+	if model_type.startswith('vgg'):
 		# layers = 4,5,6
 		if setting_dict['tf_type'] in ['cqt', 'stft']:
 			image_patch_sizes = [[3,3]]*num_layers
@@ -55,6 +55,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 	else:
 		learning_rate = 1e-6
 	#-------------------------------#
+	# prepre modules
 	model = Sequential()
 	#[Convolutional Layers]
 	for i in xrange(num_layers):
@@ -80,7 +81,6 @@ def build_regression_convnet_model(setting_dict, is_test):
 									border_mode='same',
 									W_regularizer=W_regularizer))
 
-		# BN - according to the article on Residual Net (which follows the original paper.)
 		if setting_dict['BN']:
 			model.add(BatchNormalization())
 		# add activation
@@ -100,8 +100,35 @@ def build_regression_convnet_model(setting_dict, is_test):
 			print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
 		else:
 			pass
+		if model_type.startswith('vgg_original'):
+			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+									border_mode='same',
+									W_regularizer=W_regularizer))
+			if setting_dict['BN']:
+				model.add(BatchNormalization())
+			# add activation
+			if activations[i] == 'relu':
+				model.add(Activation('relu'))
+			elif activations[i] == 'lrelu':
+				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
+			elif activations[i] == 'prelu':
+				model.add(keras.layers.advanced_activations.PReLU())
+			elif activations[i] == 'elu':
+				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+			else:
+				print 'No activation here? No!'
+			# add dropout
+			if not dropouts[i] == 0.0:
+				model.add(Dropout(dropouts[i]))
+				print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
+			else:
+				pass
+
 		# add pooling
-		model.add(MaxPooling2D(pool_size=pool_sizes[i], strides=(2, 2)))
+		if model_type.startswith('vgg_simple'):
+			model.add(MaxPooling2D(pool_size=pool_sizes[i], strides=(2, 2)))
+		elif model_type.startswith('vgg_original'):
+			model.add(MaxPooling2D(pool_size=pool_sizes[i]))
 		
 	#[Fully Connected Layers]
 	model.add(Flatten())
