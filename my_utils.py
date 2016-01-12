@@ -107,10 +107,15 @@ class File_Manager():
 			return self.load_mfcc(ind)
 		elif data_type == 'chroma':
 			return self.load_chroma(ind)
+		elif data_type == 'melgram':
+			return self.load_melgram(ind)
 		else:
 			print 'wrong data type input in file_manager.load()'
 			raise ValueError
 		# make more for mfcc, chroma, ... 
+
+	def load_melgram(self, ind):
+		return np.load(PATH_MELGRAM + str(self.track_ids[ind]) + '.npy')
 
 	def load_mfcc(self, ind):
 		return np.load(PATH_MFCC + str(self.track_ids[ind]) + '.npy')

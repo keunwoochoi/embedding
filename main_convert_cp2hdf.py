@@ -32,13 +32,15 @@ def select_and_save_each(args):
 		return
 	# pdb.set_trace()
 	clips_per_song = 3
-	if tf_type in ['cqt', 'stft', 'chroma']:
+	if tf_type in ['cqt', 'stft', 'chroma', 'melgram']:
 		tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
 	elif tf_type in ['mfcc']:
 		tf_width = int(6 * MFCC_CONST["frames_per_sec"])
 
 	#load data for whole signal
-	if tf_type in ['cqt', 'stft']:
+	if tf_type in ['melgram']:
+		tf_mono = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 1
+	elif tf_type in ['cqt', 'stft']:
 		tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
 		num_frames = tf_stereo.shape[1]
 	elif tf_type in ['mfcc', 'chroma']:
@@ -60,7 +62,10 @@ def select_and_save_each(args):
 			frame_to = num_frames
 			frame_from = frame_to - tf_width
 		
-		if tf_type in ['mfcc', 'chroma']:
+		if tf_type in ['melgram']: #mono
+			tf_selection = tf_mono[:, frame_from:frame_to, 0]
+			ret[:,:,clip_idx] = my_utils.log_amplitude(tf_selection) # mfcc/chroma --> put directly
+		elif tf_type in ['mfcc', 'chroma']:
 			tf_selection = tf_triple[:, frame_from:frame_to, 2]
 			ret[:,:,clip_idx] = tf_selection # mfcc/chroma --> put directly
 		else:
@@ -80,7 +85,7 @@ def select_and_save(tf_type):
 	'''select and save cqt and stft using multiprocessing
 	for CQT and STFT...and MFCC and chroma
 	Do this, and then execute create_hdf_dataset()'''
-	if tf_type not in ['stft','cqt','mfcc','chroma','label']:
+	if tf_type not in ['stft','cqt','mfcc','chroma','label', 'melgram']:
 		raise RuntimeError('Wrong data type, %s.' % tf_type)
 		if tf_type == 'label':
 			raise RuntimeError('Dont do this for labels. just use FILE_DICT["latent_matrix_w_blahblah.."]')
@@ -121,7 +126,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	num_clips = clips_per_song*num_songs
 	print 'num_songs:%d, num_clips:%d' % (num_songs, num_clips)
 	# get the size of dataset.
-	if dataset_name in ['cqt', 'stft', 'mfcc', 'chroma']:
+	if dataset_name in ['cqt', 'stft', 'mfcc', 'chroma', 'melgram']:
 		tf_representation = file_manager.load(ind=0, data_type=dataset_name) # change to more general name than 'tf_represnetation'
 		tf_height = HEIGHT[dataset_name]
 		tf_width = int(6 * CQT_CONST["frames_per_sec"]) # 6-seconds		
@@ -140,6 +145,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		file_write = h5py.File(PATH_HDF_LOCAL + filename, 'w')
 		print 'creating new hdf file.'
 
+	#------messy part of label starts ------
 	if dataset_name == 'label':
 		for dim_label in xrange(2, 21):
 			dataset_name_num = dataset_name + str(dim_label) #name: 'label2, label3, .. label20'
@@ -171,7 +177,8 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		else:
 			data_to_store = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), 
 													maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
-	
+	#------messy part of label ends ------
+
 	# fill the dataset.
 	done_idx_file_path = PATH_HDF_LOCAL + filename + '_' +dataset_name + '_done_idx.npy'
 	if os.path.exists(done_idx_file_path):
@@ -205,7 +212,11 @@ if __name__=="__main__":
 		sys.exit(0)
 	elif worktype == 'b':
 	# after create all file for cqt and stft with selected segments, then add them on hdf.
-	# example: $ python main_convert_cp2hdf.py b stft test
+	# example: 	$ python main_convert_cp2hdf.py a stft train (at the same time, valid/test)
+	# 			            ---after it's done,---
+	# 			$ python main_convert_cp2hdf.py b stft train (at the same time, valid/test )
+	# Then the result is update in local hdf path.
+
 		file_manager = my_utils.File_Manager()
 		train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=10)
 		if sys.argv[3] == 'train':
