@@ -35,7 +35,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 	#------------------------------------------------------------------#
 	num_channels=1
 
-	if model_type.startswith('vgg'):
+	if model_type.startswith('vgg_simple'):
 		# layers = 4,5,6
 		if setting_dict['tf_type'] in ['cqt', 'stft']:
 			image_patch_sizes = [[3,3]]*num_layers
@@ -101,7 +101,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		else:
 			pass
 		# add pooling
-		model.add(MaxPooling2D(pool_size=pool_sizes[i]))
+		model.add(MaxPooling2D(pool_size=pool_sizes[i]), strides=(2, 2))
 		
 	#[Fully Connected Layers]
 	model.add(Flatten())
@@ -156,6 +156,8 @@ def build_regression_convnet_model(setting_dict, is_test):
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	# print '--- complie fin. ---'
 	return model
+
+
 
 def build_whole_graph():
 	'''A graph model that takes advantages of
