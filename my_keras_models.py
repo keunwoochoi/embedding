@@ -176,7 +176,7 @@ def build_regression_convnet_model(setting_dict):
 		else:
 			print ' ---->>No activation here? No!'
 	if setting_dict["output_activation"]:
-		print ' ---->>Output activation is: %s with %d units'	(setting_dict["output_activation"], num_labels)
+		print ' ---->>Output activation is: %s with %d units' % (setting_dict["output_activation"], num_labels)
 		model.add(Dense(num_labels, activation=setting_dict["output_activation"],
 									init='he_normal')) 
 	else:
