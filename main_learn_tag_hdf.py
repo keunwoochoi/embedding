@@ -142,6 +142,7 @@ def run_with_setting(hyperparams, argv):
 																	num_channels=1)		
  	until = time.time()
  	print "--- keras model was built, took %d seconds ---" % (until-start)
+ 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
 	#prepare callbacks
 	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.best.hdf5", 
 													verbose=1, 
@@ -174,11 +175,13 @@ def run_with_setting(hyperparams, argv):
 		batch_size = 48
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
+	if hyperparams['model_type'] == 'vgg_original':
+		batch_size = (batch_size * 2)/3
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	#train!
-	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
+	
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
