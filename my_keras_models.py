@@ -59,117 +59,128 @@ def build_regression_convnet_model(setting_dict):
 	# prepre modules
 	model = Sequential()
 	#[Convolutional Layers]
-	for i in xrange(num_layers):
-		if setting_dict['regulariser'][i] in [None, 0.0]:
+	for conv_idx in xrange(num_layers):
+		if setting_dict['regulariser'][conv_idx] in [None, 0.0]:
 			W_regularizer = None
 		else:
-			if setting_dict['regulariser'][i][0] == 'l2':
-				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][i][1])
-				print 'Add l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][i][1], i)
+			if setting_dict['regulariser'][conv_idx][0] == 'l2':
+				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][conv_idx][1])
+				print ' ---->>Add l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 			elif setting_dict['regulariser'][i][0] == 'l1':
-				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][i][1])
-				print 'Add l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][i][1], i)
+				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][conv_idx][1])
+				print ' ---->>Add l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 
 		# add conv layer
-		if i == 0:
-			print 'First layer is being added!'
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+		if conv_idx == 0:
+			print ' ---->>First conv layer is being added!'
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
 									W_regularizer=W_regularizer,
 									init='he_normal'))
 
 		else:
-			print '%d-th layer is being added ' % i
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+			print ' ---->>%d-th conv layer is being added ' % conv_idx
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same',
 									W_regularizer=W_regularizer,
 									init='he_normal'))
 
 		if setting_dict['BN']:
+			print ' ---->>BN is added for conv layer'
 			model.add(BatchNormalization())
 		# add activation
-		if activations[i] == 'relu':
+		print ' ---->>%s activation is added.' % activations[conv_idx]
+		if activations[conv_idx] == 'relu':
 			model.add(Activation('relu'))
-		elif activations[i] == 'lrelu':
+		elif activations[conv_idx] == 'lrelu':
 			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
-		elif activations[i] == 'prelu':
+		elif activations[conv_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations[i] == 'elu':
+		elif activations[conv_idx] == 'elu':
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
-			print 'No activation here? No!'
+			print ' ---->>No activation here? No!'
 		# add dropout
-		if not dropouts[i] == 0.0:
-			model.add(Dropout(dropouts[i]))
-			print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
+		if not dropouts[conv_idx] == 0.0:
+			model.add(Dropout(dropouts[conv_idx]))
+			print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 		
 		if model_type.startswith('vgg_original'):
-			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
+			print ' ---->>additional conv layer is added for vgg_original'
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same',
 									W_regularizer=W_regularizer,
 									init='he_normal'))
 			if setting_dict['BN']:
+				print ' ---->>and BN,'
 				model.add(BatchNormalization())
 			# add activation
-			if activations[i] == 'relu':
+			print ' ---->>and %s activaion.' % activations[conv_idx]
+			if activations[conv_idx] == 'relu':
 				model.add(Activation('relu'))
-			elif activations[i] == 'lrelu':
+			elif activations[conv_idx] == 'lrelu':
 				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
-			elif activations[i] == 'prelu':
+			elif activations[conv_idx] == 'prelu':
 				model.add(keras.layers.advanced_activations.PReLU())
-			elif activations[i] == 'elu':
+			elif activations[conv_idx] == 'elu':
 				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 			else:
-				print 'No activation here? No!'
+				print ' ---->>No activation here? No!'
 			# add dropout
-			if not dropouts[i] == 0.0:
-				model.add(Dropout(dropouts[i]))
-				print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
+			if not dropouts[conv_idx] == 0.0:
+				model.add(Dropout(dropouts[conv_idx]))
+				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 
 		# add pooling
-		if model_type.startswith('vgg_simple'):
-			model.add(MaxPooling2D(pool_size=pool_sizes[i], strides=(2, 2)))
-		elif model_type.startswith('vgg_original'):
-			model.add(MaxPooling2D(pool_size=pool_sizes[i]))
+		if model_type.startswith('vgg_original'):
+			print ' ---->>MP with pool size %d and (2,2) strides is added' % pool_sizes[conv_idx]
+			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx], strides=(2, 2)))
+		elif model_type.startswith('vgg_simple'):
+			print ' ---->>MP with pool size %d is added' % pool_sizes[conv_idx]
+			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 		
 	#[Fully Connected Layers]
 	model.add(Flatten())
-	for j in xrange(num_fc_layers):
-		if setting_dict['regulariser_fc_layers'][j] is None:
+	for fc_idx in xrange(num_fc_layers):
+		if setting_dict['regulariser_fc_layers'][fc_idx] is None:
 			W_regularizer = None
 		else:
-			if setting_dict['regulariser_fc_layers'][j][0] == 'l2':
-				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][j][1])
-			elif setting_dict['regulariser_fc_layers'][j][0] == 'l1':
-				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][j][1])
+			if setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l2':
+				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][fc_idx][1])
+			elif setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l1':
+				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
 		# dense layer
-		if not dropouts_fc_layers[j] == 0.0:
-			model.add(Dense(nums_units_fc_layers[j],init='he_normal'))
-			model.add(Dropout(dropouts_fc_layers[j]))
+		if not dropouts_fc_layers[fc_idx] == 0.0:
+			print ' ---->>Dense layer is added with dropout of %f.' % dropouts_fc_layers[fc_idx]
+			model.add(Dense(nums_units_fc_layers[fc_idx],init='he_normal'))
+			model.add(Dropout(dropouts_fc_layers[fc_idx]))
 		else:
-			model.add(Dense(nums_units_fc_layers[j], W_regularizer=W_regularizer,
+			print ' ---->>Dense layer is added with regularizer.'
+			model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
 													init='he_normal'))
 		# BN
 		if setting_dict['BN_fc_layers']:
+			print ' ---->>BN for dense is added'
 			model.add(BatchNormalization())
 		# Activations
-		if activations[i] == 'relu':
+		print ' ---->>%s activation is added' % activations[fc_idx]
+		if activations[fc_idx] == 'relu':
 			model.add(Activation('relu'))
-		elif activations[i] == 'lrelu':
+		elif activations[fc_idx] == 'lrelu':
 			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
-		elif activations[i] == 'prelu':
+		elif activations[fc_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations[i] == 'elu':
+		elif activations[fc_idx] == 'elu':
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
-			print 'No activation here? No!'
+			print ' ---->>No activation here? No!'
 	if setting_dict["output_activation"]:
-		print 'Output activation is: ' + 	setting_dict["output_activation"]
+		print ' ---->>Output activation is: %s with %d units'	(setting_dict["output_activation"], num_labels)
 		model.add(Dense(num_labels, activation=setting_dict["output_activation"],
 									init='he_normal')) 
 	else:
-		print 'Output activation: linear'
+		print ' ---->>Output activation: linear with %d units' % num_labels
 		model.add(Dense(num_labels, activation='linear')) 
 
 	if optimizer_name == 'sgd':
@@ -184,9 +195,8 @@ def build_regression_convnet_model(setting_dict):
 		optimiser = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 	else:
 		raise RuntimeError('no optimiser? no! - %s' % optimizer_name )
-	# print '--- ready to compile keras model ---'
+	print ' ---->>--- ready to compile keras model ---'
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
-	# print '--- complie fin. ---'
 	return model
 
 
