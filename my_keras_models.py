@@ -86,7 +86,7 @@ def build_regression_convnet_model(setting_dict, is_test):
 		if setting_dict['BN']:
 			model.add(BatchNormalization())
 		# add activation
-		if activations[i] == 'relu': 
+		if activations[i] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
 			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
