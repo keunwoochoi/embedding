@@ -134,10 +134,10 @@ def build_regression_convnet_model(setting_dict):
 
 		# add pooling
 		if model_type.startswith('vgg_original'):
-			print ' ---->>MP with pool size %d and (2,2) strides is added' % pool_sizes[conv_idx]
+			print ' ---->>MP with (2,2) strides is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx], strides=(2, 2)))
 		elif model_type.startswith('vgg_simple'):
-			print ' ---->>MP with pool size %d is added' % pool_sizes[conv_idx]
+			print ' ---->>MP is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 		
 	#[Fully Connected Layers]
