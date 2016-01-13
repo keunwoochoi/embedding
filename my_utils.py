@@ -295,8 +295,8 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 		return (input_data - global_mean) / global_std
 
 	def normalizer_stft(input_data):	
-		global_mean = -61.25 # should be mended with STFT values
-		global_std  = 14.36
+		global_mean = -2.01616 # should be mended with STFT values
+		global_std  = 9.23697
 		return (input_data - global_mean) / global_std
 
 	def normalizer_mfcc(input_data):
@@ -392,13 +392,13 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(test_x), len(test_inds), (until-start) )
 	
-	if tf_type == 'cqt':
-		global_mean = -61.25 # computed from the whole data for cqt
-		global_std  = 14.36
-		print 'NO'*10000000
-	elif tf_type == 'stft':
-		global_mean = -61.25 # should be mended with STFT values
-		global_std  = 14.36
+	# if tf_type == 'cqt':
+	# 	global_mean = -61.25 # computed from the whole data for cqt
+	# 	global_std  = 14.36
+	# 	print 'NO'*10000000
+	# elif tf_type == 'stft':
+	# 	global_mean = -61.25 # should be mended with STFT values
+	# 	global_std  = 14.36
 
 	train_x = (train_x - global_mean)/global_std	
 	valid_x = (valid_x - global_mean)/global_std
