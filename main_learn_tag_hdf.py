@@ -92,13 +92,18 @@ def run_with_setting(hyperparams, argv):
 	if hyperparams["debug"]:
 		pdb.set_trace()
 	if hyperparams["is_test"]:
-		train_x = train_x[0:24]
-		train_y = train_y[0:24]
-		valid_x = valid_x[0:24]
-		valid_y = valid_y[0:24]
-		test_x = test_x[0:24]
-		test_y = test_y[0:24]
-		
+		# train_x = train_x[0:24]
+		# train_y = train_y[0:24]
+		# valid_x = valid_x[0:24]
+		# valid_y = valid_y[0:24]
+		# test_x = test_x[0:24]
+		# test_y = test_y[0:24]
+		train_y = train_y[:,0]
+		valid_y = valid_y[:,0]
+		test_y  = test_y[:,0]
+		print 'Output is one dimensional value.'
+	
+
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	# train_x : (num_samples, num_channel, height, width)	
 	hyperparams_manager = my_utils.Hyperparams_Manager()
@@ -129,7 +134,7 @@ def run_with_setting(hyperparams, argv):
  	hyperparams_manager.print_setting(hyperparams)
  	if hyperparams["isRegre"]:
  		
-		model = my_keras_models.build_regression_convnet_model(setting_dict=hyperparams, is_test=hyperparams["is_test"])
+		model = my_keras_models.build_regression_convnet_model(setting_dict=hyperparams)
 
 	else:
 		print '--- ps. this is a classification task. ---'

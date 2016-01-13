@@ -14,8 +14,9 @@ from keras.constraints import maxnorm, nonneg
 
 import keras.regularizers
 
-def build_regression_convnet_model(setting_dict, is_test):
+def build_regression_convnet_model(setting_dict):
 	
+	is_test = setting_dict["is_test"]
 	height = setting_dict["height_image"]
 	width = setting_dict["width_image"]
 	dropouts = setting_dict["dropouts"]
