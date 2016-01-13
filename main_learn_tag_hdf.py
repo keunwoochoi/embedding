@@ -80,7 +80,7 @@ def run_with_setting(hyperparams, argv):
 
 	# load dataset
 	
-	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets_from_hdf(tf_type=hyperparams["tf_type"],
+	train_x, valid_x, test_x, = my_utils.load_all_sets_from_hdf(tf_type=hyperparams["tf_type"],
 																				n_dim=dim_latent_feature,
 																				task_cla=hyperparams['isClass'])
 	# *_y is not correct - 01 Jan 2016. Use nympy files directly.
@@ -176,7 +176,7 @@ def run_with_setting(hyperparams, argv):
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
-		batch_size = (batch_size * 2)/3
+		batch_size = (batch_size * 3)/5
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
@@ -201,7 +201,7 @@ def run_with_setting(hyperparams, argv):
 													show_accuracy=False, 
 													verbose=1, 
 													callbacks=callbacks,
-													shuffle=False)
+													shuffle='batch')
 		else:
 			batch_size = batch_size / 2
 			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
@@ -210,7 +210,7 @@ def run_with_setting(hyperparams, argv):
 										show_accuracy=True, 
 										verbose=1, 
 										callbacks=callbacks,
-										shuffle=False)
+										shuffle='batch')
 		total_epoch += num_epoch
 		print '%d-th epoch is complete' % total_epoch
 		my_utils.append_history(total_history, history.history)

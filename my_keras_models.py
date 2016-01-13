@@ -74,17 +74,19 @@ def build_regression_convnet_model(setting_dict, is_test):
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
-									W_regularizer=W_regularizer))
+									W_regularizer=W_regularizer,
+									init='he_normal'))
 
 		else:
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same',
-									W_regularizer=W_regularizer))
+									W_regularizer=W_regularizer,
+									init='he_normal'))
 
 		if setting_dict['BN']:
 			model.add(BatchNormalization())
 		# add activation
-		if activations[i] == 'relu':
+		if activations[i] == 'relu': 
 			model.add(Activation('relu'))
 		elif activations[i] == 'lrelu':
 			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
@@ -103,7 +105,8 @@ def build_regression_convnet_model(setting_dict, is_test):
 		if model_type.startswith('vgg_original'):
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same',
-									W_regularizer=W_regularizer))
+									W_regularizer=W_regularizer,
+									init='he_normal'))
 			if setting_dict['BN']:
 				model.add(BatchNormalization())
 			# add activation
@@ -142,10 +145,11 @@ def build_regression_convnet_model(setting_dict, is_test):
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][j][1])
 		# dense layer
 		if not dropouts_fc_layers[j] == 0.0:
-			model.add(Dense(nums_units_fc_layers[j]))
+			model.add(Dense(nums_units_fc_layers[j],init='he_normal'))
 			model.add(Dropout(dropouts_fc_layers[j]))
 		else:
-			model.add(Dense(nums_units_fc_layers[j], W_regularizer=W_regularizer))
+			model.add(Dense(nums_units_fc_layers[j], W_regularizer=W_regularizer,
+													init='he_normal'))
 		# BN
 		if setting_dict['BN_fc_layers']:
 			model.add(BatchNormalization())
@@ -162,7 +166,8 @@ def build_regression_convnet_model(setting_dict, is_test):
 			print 'No activation here? No!'
 	if setting_dict["output_activation"]:
 		print 'Output activation is: ' + 	setting_dict["output_activation"]
-		model.add(Dense(num_labels, activation=setting_dict["output_activation"])) 
+		model.add(Dense(num_labels, activation=setting_dict["output_activation"],
+									init='he_normal')) 
 	else:
 		print 'Output activation: linear'
 		model.add(Dense(num_labels, activation='linear')) 
