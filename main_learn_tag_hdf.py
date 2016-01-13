@@ -101,6 +101,7 @@ def run_with_setting(hyperparams, argv):
 		train_y = train_y[:,[0]]
 		valid_y = valid_y[:,[0]]
 		test_y  = test_y[:,[0]]
+		hyperparams["dim_labels"] = 1
 		print 'Output is one dimensional value.'
 	
 
