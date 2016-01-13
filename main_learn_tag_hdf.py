@@ -147,9 +147,9 @@ def run_with_setting(hyperparams, argv):
  	print "--- keras model was built, took %d seconds ---" % (until-start)
  	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
 	#prepare callbacks
-	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights.best.hdf5", 
+	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
 													verbose=1, 
-											             		save_best_only=True)
+								             		save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	patience = 3
 	if hyperparams["is_test"] is True:
@@ -182,6 +182,11 @@ def run_with_setting(hyperparams, argv):
 		batch_size = (batch_size * 3)/5
 
 	predicted = model.predict(test_x, batch_size=batch_size)
+	print 'mean of target value:'
+	print np.mean(test_y, axis=0)
+	print 'mean of predicted value:'
+	print np.mean(predicted, axis=0)
+
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	#train!
 	
@@ -238,7 +243,9 @@ def run_with_setting(hyperparams, argv):
 	#
 	best_batch = np.argmin(total_history['val_loss'])+1
 	# model.load_weights() # load the best model
-	model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights.best.hdf5") 
+	if hyperparams["debug"] == True:
+		pdb.set_trace()
+	model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	#save results
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
