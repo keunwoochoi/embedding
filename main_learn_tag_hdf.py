@@ -98,9 +98,9 @@ def run_with_setting(hyperparams, argv):
 		# valid_y = valid_y[0:24]
 		# test_x = test_x[0:24]
 		# test_y = test_y[0:24]
-		train_y = train_y[:,0]
-		valid_y = valid_y[:,0]
-		test_y  = test_y[:,0]
+		train_y = train_y[:,[0]]
+		valid_y = valid_y[:,[0]]
+		test_y  = test_y[:,[0]]
 		print 'Output is one dimensional value.'
 	
 
