@@ -360,14 +360,14 @@ def prepare_transforms(arguments):
 
 if __name__=="__main__":
 	
-	if False or "if in a case I'd like to convert more songs or other transformations ":
+	if False and "if in a case I'd like to convert more songs or other transformations ":
 		prepare_transforms(sys.argv)
 		sys.exit(0)
 
 	
 	print '## structure segmentation. add any argument to test it.'
 	# structural segmentation
-	if False and 'after understand input arguments of msaf':
+	if False or 'after understand input arguments of msaf':
 		
 		if len(sys.argv) == 1:
 			print 'msaf for the whole song!'
