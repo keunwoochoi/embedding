@@ -65,10 +65,10 @@ def build_regression_convnet_model(setting_dict):
 		else:
 			if setting_dict['regulariser'][conv_idx][0] == 'l2':
 				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][conv_idx][1])
-				print ' ---->>Add l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
+				print ' ---->>prepare l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 			elif setting_dict['regulariser'][i][0] == 'l1':
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][conv_idx][1])
-				print ' ---->>Add l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
+				print ' ---->>prepare l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 
 		# add conv layer
 		if conv_idx == 0:
@@ -176,11 +176,11 @@ def build_regression_convnet_model(setting_dict):
 		else:
 			print ' ---->>No activation here? No!'
 	if setting_dict["output_activation"]:
-		print ' ---->>Output activation is: %s with %d units' % (setting_dict["output_activation"], num_labels)
+		print ' ---->>Output dense and activation is: %s with %d units' % (setting_dict["output_activation"], num_labels)
 		model.add(Dense(num_labels, activation=setting_dict["output_activation"],
 									init='he_normal')) 
 	else:
-		print ' ---->>Output activation: linear with %d units' % num_labels
+		print ' ---->>Output dense and activation: linear with %d units' % num_labels
 		model.add(Dense(num_labels, activation='linear')) 
 
 	if optimizer_name == 'sgd':

@@ -182,11 +182,13 @@ def run_with_setting(hyperparams, argv):
 		batch_size = (batch_size * 3)/5
 
 	predicted = model.predict(test_x, batch_size=batch_size)
+	if hyperparams['debug'] == True:
+		pdb.set_trace()
 	print 'mean of target value:'
 	print np.mean(test_y, axis=0)
 	print 'mean of predicted value:'
 	print np.mean(predicted, axis=0)
-
+	print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	#train!
 	
