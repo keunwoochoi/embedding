@@ -122,7 +122,7 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 										(filename, dataset_name, len(song_file_inds))
 	
 	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
-	segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
+	# segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
 	clips_per_song = 3
 	num_songs = len(song_file_inds)
 	num_clips = clips_per_song*num_songs
