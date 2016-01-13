@@ -72,6 +72,7 @@ def build_regression_convnet_model(setting_dict):
 
 		# add conv layer
 		if i == 0:
+			print 'First layer is being added!'
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
@@ -79,6 +80,7 @@ def build_regression_convnet_model(setting_dict):
 									init='he_normal'))
 
 		else:
+			print '%d-th layer is being added ' % i
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same',
 									W_regularizer=W_regularizer,
@@ -101,8 +103,7 @@ def build_regression_convnet_model(setting_dict):
 		if not dropouts[i] == 0.0:
 			model.add(Dropout(dropouts[i]))
 			print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
-		else:
-			pass
+		
 		if model_type.startswith('vgg_original'):
 			model.add(Convolution2D(num_stacks[i], image_patch_sizes[i][0], image_patch_sizes[i][1], 
 									border_mode='same',
@@ -125,8 +126,6 @@ def build_regression_convnet_model(setting_dict):
 			if not dropouts[i] == 0.0:
 				model.add(Dropout(dropouts[i]))
 				print 'Add dropout of %f for %d-th conv layer' % (dropouts[i], i)
-			else:
-				pass
 
 		# add pooling
 		if model_type.startswith('vgg_simple'):
