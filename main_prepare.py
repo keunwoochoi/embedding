@@ -58,7 +58,7 @@ def do_stft(src, track_id):
 
 def do_melgram(src, track_id):
 	SRC = librosa.feature.melspectrogram(y=src[0,:]+src[1,:], n_fft=N_FFT, hop_length=HOP_LEN, n_mels=128) # MONO!
-	np.save(PATH_MELGRAM + str(track_id) + '.npy', np.dstack((SRC_L, SRC_R)))
+	np.save(PATH_MELGRAM + str(track_id) + '.npy', np.dstack((SRC)))
 	print "Done: %s" % str(track_id)	
 
 def do_cqt(src, track_id):
