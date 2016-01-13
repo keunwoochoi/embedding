@@ -1,11 +1,15 @@
 """functions and modules that are used in main_prepare.
 25 Dec 2015, Keunwoo Choi"""
 
-
+import os
+import sys
+import cPickle as cP
 import numpy as np
 import cPickle as cP
 import msaf
 import my_utils
+from multiprocessing import Pool
+
 from environments import *
 from constants import *
 import time
