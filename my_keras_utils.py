@@ -107,8 +107,12 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 	def on_epoch_end(self, epoch, logs={}):
 		#seconds = str(int(time.time()))
 		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
-												filename_prefix='', 
+												filename_prefix='local_', 
 												normalize='local', 
+												mono=True)
+		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
+												filename_prefix='global_', 
+												normalize='global', 
 												mono=True)
 		average_change_per_layer = self.get_weights_change()
 		print 'average change per layer:'
