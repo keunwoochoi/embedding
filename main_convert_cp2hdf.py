@@ -27,7 +27,10 @@ HEIGHT['chroma']=12*3
 print 'cqt and stft height: %d and %d' % (HEIGHT['cqt'], HEIGHT['stft'])
 
 def select_and_save_each(args):
+	'''path: /import/c4dm-04/keunwoo/ilm10k_hdf/temp_%s % 'stft' for example
+	'''
 	track_id, idx, boundaries, path, tf_type = args
+
 	print 'idx, track_id: %d, %d, start!' % (idx, track_id)
 	if os.path.exists(path+str(track_id)+'.npy'):
 		print '%d, track_id %d: already done.' % (idx, track_id)
