@@ -172,31 +172,36 @@ def load_stft(track_id):
 
 def process_stft(track_id):
 	if os.path.exists(PATH_STFT + str(track_id) + '.npy'):
-		print "stft: skip this id: %d, it's already there!" % track_id
-	else:
-		src, sr = load_src(track_id)
-		do_stft(src, track_id)
+		if os.path.getsize(PATH_STFT + str(track_id) + '.npy') != 0: 
+			print "stft: skip this id: %d, it's already there!" % track_id
+	
+	src, sr = load_src(track_id)
+	do_stft(src, track_id)
 
 def process_cqt(track_id):
 	if os.path.exists(PATH_CQT + str(track_id) + '.npy'):
-		print "cqt :skip this id: %d, it's already there!" % track_id
-	else:
-		src, sr = load_src(track_id)
-		do_cqt(src, track_id)
+		if os.path.getsize(PATH_CQT + str(track_id) + '.npy') != 0: 
+			print "cqt :skip this id: %d, it's already there!" % track_id
+	
+	src, sr = load_src(track_id)
+	do_cqt(src, track_id)
 
 def process_hps_on_cqt(track_id):
 	if os.path.exists(PATH_CQT_H + str(track_id) + '.npy') and os.path.exists(PATH_CQT_P + str(track_id) + '.npy'):
-		print "hps on cqt :skip this id: %d, it's already there!" % track_id
-	else:
-		CQT = load_cqt(track_id)
-		do_HPS_on_CQT(CQT, track_id)
+		if os.path.getsize(PATH_CQT_H + str(track_id) + '.npy') != 0: 
+			if os.path.getsize(PATH_CQT_P + str(track_id) + '.npy') != 0:
+				print "hps on cqt :skip this id: %d, it's already there!" % track_id
+	
+	CQT = load_cqt(track_id)
+	do_HPS_on_CQT(CQT, track_id)
 
 def process_mfcc(track_id):
 	if os.path.exists(PATH_MFCC + str(track_id) + '.npy'):
-		print "mfcc:skip this id: %d, it's already there!" % track_id
-	else:
-		src, sr = load_src(track_id)
-		do_mfcc(src, track_id)	
+		if os.path.getsize(PATH_MFCC + str(track_id) + '.npy') != 0: 
+			print "mfcc:skip this id: %d, it's already there!" % track_id
+	
+	src, sr = load_src(track_id)
+	do_mfcc(src, track_id)	
 
 
 def process_chroma(track_id):
@@ -206,26 +211,29 @@ def process_chroma(track_id):
 
 	'''
 	if os.path.exists(PATH_CHROMA + str(track_id) + '.npy'):
-		print "chroma:skip this id: %d, it's already there!" % track_id
-	else:
-		CQT = load_cqt(track_id, option='h')
-		do_chroma_cqt(CQT, track_id)	
+		if os.path.getsize(PATH_CHROMA + str(track_id) + '.npy') != 0: 
+			print "chroma:skip this id: %d, it's already there!" % track_id
+
+	CQT = load_cqt(track_id, option='h')
+	do_chroma_cqt(CQT, track_id)	
 
 
 def process_pitchgram(track_id):
 	if os.path.exists(PATH_PGRAM + str(track_id) + '.npy'):
-		print "pgram:skip this id: %d, it's already there!" % track_id
-	else:
-		CQT = load_cqt(track_id)
-		do_pitchgram(CQT, track_id)
+		if os.path.getsize(PATH_PGRAM + str(track_id) + '.npy') != 0: 
+			print "pgram:skip this id: %d, it's already there!" % track_id
+	
+	CQT = load_cqt(track_id)
+	do_pitchgram(CQT, track_id)
 		
 
 def process_harmonigram(track_id):
 	if os.path.exists(PATH_HGRAM + str(track_id) + '.npy'):
-		print "hgram:skip this id: %d, it's already there!" % track_id
-	else:
-		STFT = load_stft(track_id)
-		do_harmonigram(STFT, track_id, SR, N_FFT)
+		if os.path.getsize(PATH_HGRAM + str(track_id) + '.npy') != 0: 
+			print "hgram:skip this id: %d, it's already there!" % track_id
+
+	STFT = load_stft(track_id)
+	do_harmonigram(STFT, track_id, SR, N_FFT)
 
 def process_all_about_cqt(track_id):
 	'''do hps_on_cqt, chroma, pitchgram'''
@@ -268,8 +276,8 @@ def process_stft_cqt(track_id):
 
 def process_melgram(track_id):
 	if os.path.exists(PATH_MELGRAM + str(track_id) + '.npy'):
-		# if os.path.getsize(PATH_MELGRAM + str(track_id) + '.npy') != 0: # have no permission
-		print "melgram: skip this id: %d, it's already there!" % track_id
+		if os.path.getsize(PATH_MELGRAM + str(track_id) + '.npy') != 0: # have no permission
+			print "melgram: skip this id: %d, it's already there!" % track_id
 	
 	src, sr = load_src(track_id)
 	do_melgram(src, track_id)
