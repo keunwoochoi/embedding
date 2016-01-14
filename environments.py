@@ -10,21 +10,22 @@ if device_name.startswith('ewert-server'):
 	isMacbook= False
 	isDT1     = False
 	isDT2 	 = False
-elif device_name in["KChoiMBPR2013.local", "KChoi.MBPR.2013.home", "lt91-51", 'lt91-51.eecs.qmul.ac.uk']:
+elif device_name in ["KChoiMBPR2013.local", "KChoi.MBPR.2013.home", "lt91-51", 'lt91-51.eecs.qmul.ac.uk','lt91-47']:
+	print 'macbook pro'
 	isMacPro = False
 	isServer = False
 	isMacbook = True
 	isDT1 = False
 	isDT2 = False
 
-elif device_name.endswith('eecs.qmul.ac.uk') or device_name in ['octave', 'big-bird']:
+elif device_name in ['octave', 'big-bird','lincoln','frank','jazz']:
 	isMacPro = False
 	isServer = True
 	isMacbook= False
 	isDT1 	 = False
 	isDT2 	 = False
 
-else:
+elif device_name.startswith('keunwoo'):
 	isMacPro = False
 	isServer = False
 	if device_name == "keunwoo-dt-ubuntu":
@@ -35,6 +36,12 @@ else:
 		isMacbook= False
 		isDT1 = False
 		isDT2 = True
+else:
+	isMacPro = False
+	isServer = False
+	isMacbook = True
+	isDT1 = False
+	isDT2 = False
 
 if isMacPro:
 	print "This is MacPro in CS.319"
@@ -51,11 +58,10 @@ elif isDT1:
 	print "You are using Ubuntu Desktop"
 	PATH_IMPORT = '/mnt/c4dm/'
 	PATH_HOME   = '/mnt/kc306home/'
-
 elif isMacbook:
 	print "Do not use MacbookPro for computation!...I hope."
 	PATH_IMPORT = '/Users/gnu/mnt/c4dm/'
-	PATH_HOME   = '/Users/gnu/GoogleDrive/phdCodes/'
+	PATH_HOME   = '/Users/gnu/Gnubox/'
 
 
 PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/ilm10k_audio_transformed/' + 'STFT/' # stft for whole file(left, right)
@@ -72,6 +78,8 @@ elif isDT1:
 	PATH_HDF_LOCAL = '/home/keunwoo/data/'
 elif isServer:
 	PATH_HDF_LOCAL = '/import/c4dm-04/keunwoo/ilm10k_hdf/hdf/'
+elif isMacbook:
+	PATH_HDF_LOCAL = '/Users/gnu/Gnubox/Srcs/hdf_data/'
 
 PATH_ILM_ACT = PATH_ILM + 'act-coordinates/'
 #PATH_ILM_AUDIO = PATH_ILM + 'ilmaudio/'
@@ -105,7 +113,11 @@ PATH_RESULTS_W= PATH_WORK + 'results_w/'
 for path in [PATH_DATA, PATH_MODEL, PATH_SENTI, PATH_IMAGES, 
              PATH_FIGURE, PATH_RESULTS, PATH_RESULTS_W]:
 	if not os.path.exists(path):
-		os.mkdir(path)
+		try:
+			os.mkdir(path)
+		except:
+			print "Can't make the directory: %s" % path
+			pass
 
 if isMacbook:
 	pass

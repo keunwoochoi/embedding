@@ -75,9 +75,9 @@ def preprocess():
 			tags_matrix_w_audio.append(tags_matrix[ind])
 			dict_id_path_w_audio[track_ids[ind]] = dict_id_path[track_ids[ind]]
 
-	cP.dump(dict_id_path_w_audio, open(PATH_DATA + "id_path_dict_w_audio.cP" , "w"))
-	cP.dump(track_id_w_audio, open(PATH_DATA + "track_ids_w_audio.cP", "w"))
-	np.save(PATH_DATA + "mood_tags_matrix_w_audio", np.array(tags_matrix_w_audio))
+	cP.dump(dict_id_path_w_audio, open(PATH_DATA + FILE_DICT["id_path"], "w"))
+	cP.dump(track_id_w_audio, open(PATH_DATA + FILE_DICT["track_ids"], "w"))
+	np.save(PATH_DATA + FILE_DICT["mood_tags_matrix"], np.array(tags_matrix_w_audio))
 	'''int, int, string(stft or cqt)'''
 	print '---preprocess: done---'
 

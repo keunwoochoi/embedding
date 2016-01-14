@@ -54,7 +54,6 @@ class Hyperparams_Manager():
 		self.dict_str2name[long_name] = new_name
 		cP.dump(self, open(PATH_DATA + FILE_DICT["hyperparam_manager"], 'w'))
 
-
 	def list_setting_names(self):
 		pprint.pprint(self.dict.keys())
 
@@ -84,10 +83,11 @@ class Hyperparams_Manager():
 def dict2str(setting_dict):
 	return '_'.join([key+'.'+str(setting_dict[key]) for key in setting_dict])
 
+
 class File_Manager():
 	def __init__(self):
-		self.track_ids = cP.load(open(PATH_DATA + FILE_DICT["track_ids"], 'r')) #list, 9320
-		self.id_path = cP.load(open(PATH_DATA + FILE_DICT["id_path"], 'r')) #dict, 9320
+		self.track_ids = cP.load(open(PATH_DATA + FILE_DICT["track_ids"], 'r')) # # all 9320 ids [440, 444, 447, 646,...]
+		self.id_path = cP.load(open(PATH_DATA + FILE_DICT["id_path"], 'r')) # dict, {440 : 310829-10.01.wav, ...}
 		self.filenum = len(self.track_ids)
 		print "file manager init with %d track ids and %d element dictionary " % (self.filenum, len(self.id_path))
 	'''
@@ -139,8 +139,10 @@ class File_Manager():
 
 		rand_filename = PATH_DATA +("random_permutation_%d_%d.npy" % (num_folds, self.filenum))
 		if os.path.exists(rand_filename):
+			print 'File manager will use a previously made random permutation file'
 			rand_inds = np.load(rand_filename)
 		else:
+			print 'File manager will use a new random permutation file'
 			rand_inds = np.random.permutation(self.filenum)
 			np.save(rand_filename, rand_inds)
 

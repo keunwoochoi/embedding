@@ -61,7 +61,7 @@ def select_and_save_each(args):
 		#for segment_idx in [0]:
 		frame_from, frame_to = boundaries[clip_idx] # TODO : ?? [0]? all 3 segments? ??? how??
 		frame_to = frame_from + tf_width
-		if frame_to > num_frames:
+		if frame_to > num_frames:   
 			frame_to = num_frames
 			frame_from = frame_to - tf_width
 		
@@ -117,12 +117,12 @@ def select_and_save(tf_type):
 def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 	'''filename: .h5 filename to store.
 	dataset_name: e.g. 'cqt', 'stft', 'mfcc', 'chroma', i.e. key of the h5 file.
-	song_file_inds: index <= 9320.
+	song_file_inds: index <= 9320. 7456 for train, 932 for valid and test
 	'''
 	print 'create_hdf_dataset begins - for filename:%s, dataset_name:%s, %d files' % \
 										(filename, dataset_name, len(song_file_inds))
 	
-	track_ids = cP.load(open(PATH_DATA + "track_ids_w_audio.cP", "r"))
+	track_ids = cP.load(open(PATH_DATA + FILE_DICT["track_ids"], "r"))
 	# segment_selection = cP.load(open(PATH_DATA + FILE_DICT["segment_selection"], "r")) # track_id : (boundaries, labels)
 	clips_per_song = 3
 	num_songs = len(song_file_inds)
@@ -174,13 +174,14 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		file_write.close()
 		print 'Writing labels in hdfs: done for label in range(2, 20)'
 		return
+		#------messy part of label ends ------
 	else:
+		# ---- create or load dataset ----
 		if dataset_name in file_write:
 			data_to_store = file_write[dataset_name]
 		else:
 			data_to_store = file_write.create_dataset(dataset_name, (num_clips, 1, tf_height, tf_width), 
 													maxshape=(None, None, None, None)) #(num_samples, num_channel, height, width)
-	#------messy part of label ends ------
 
 	# fill the dataset.
 	done_idx_file_path = PATH_HDF_LOCAL + filename + '_' +dataset_name + '_done_idx.npy'
@@ -188,10 +189,11 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 		done_idx = np.load(done_idx_file_path)
 	else:
 		done_idx = -1
-	for dataset_idx in xrange(len(song_file_inds)):
+	for dataset_idx, song_idx in enumerate(song_file_inds):
+		# song_idx: randomly selected indices between [0:9320] 
+		# dataset idx: 0 to 7456 (or 0 to 932)
 		if dataset_idx <= done_idx:
 			continue			
-		song_idx = song_file_inds[dataset_idx]
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
 		tf_selections = np.load(path_in + str(track_id) + '.npy')
