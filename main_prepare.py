@@ -270,9 +270,9 @@ def process_melgram(track_id):
 	if os.path.exists(PATH_MELGRAM + str(track_id) + '.npy'):
 		if os.path.getsize(PATH_MELGRAM + str(track_id) + '.npy') != 0:
 			print "melgram: skip this id: %d, it's already there!" % track_id
-	else:
-		src, sr = load_src(track_id)
-		do_melgram(src, track_id)
+	
+	src, sr = load_src(track_id)
+	do_melgram(src, track_id)
 
 def prepare_transforms_detail(num_process, ind_process, task, isTest):
 
