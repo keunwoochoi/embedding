@@ -33,7 +33,8 @@ def select_and_save_each(args):
 
 	print 'idx, track_id: %d, %d, start!' % (idx, track_id)
 	if os.path.exists(path+str(track_id)+'.npy'):
-		print '%d, track_id %d: already done.' % (idx, track_id)
+		if os.path.getsize(path+str(track_id)+'.npy') != 0:
+			print '%d, track_id %d: already done.' % (idx, track_id)
 		return
 	# pdb.set_trace()
 	clips_per_song = 3
@@ -199,7 +200,12 @@ def create_hdf_dataset(filename, dataset_name, file_manager, song_file_inds):
 			continue			
 		track_id = track_ids[song_idx]
 		# put this cqt selection into hdf dataset.
-		tf_selections = np.load(path_in + str(track_id) + '.npy')
+		try:
+			tf_selections = np.load(path_in + str(track_id) + '.npy')
+		except IOError:
+			print path_in + str(track_id) + '.npy'
+			print 'io error on this file.'
+
 		for clip_idx in range(clips_per_song):
 			data_to_store[dataset_idx + clip_idx*num_songs, 0, :, :] =  tf_selections[:,:,clip_idx]
 		print 'Done: cp2hdf, dataset_idx:%d, track_id: %d' % (dataset_idx, track_id)
