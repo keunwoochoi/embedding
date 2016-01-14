@@ -359,6 +359,9 @@ if __name__ == "__main__":
 	parser.add_argument('-lr', '--learning_rate', type=float,
 													help='learning_rate',
 													required=False)
+	parser.add_argument('-ol', '--output_layer', type=str,
+												help='sigmoid, linear',
+												required=False )
 	
 	
 	args = parser.parse_args()
@@ -418,6 +421,8 @@ if __name__ == "__main__":
 		TR_CONST["learning_rate"] = args.learning_rate
 	if args.debug:
 		TR_CONST["debug"] = str2bool(args.debug)
+	if args.output_layer:
+		TR_CONST["output_activation"] = args.output_layer
 
 
 	#l1, 5e3 --> stopped at 0.72 
