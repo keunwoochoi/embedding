@@ -304,6 +304,7 @@ def prepare_transforms_detail(num_process, ind_process, task, isTest):
 		track_ids_here = track_ids[rand_ind:rand_ind+2]
 
 	print "Only %d files will be converted by task named: %s " % (len(track_ids_here), task)
+	time.sleep(2)
 	start = time.time()
 
 	p = Pool(num_process)
