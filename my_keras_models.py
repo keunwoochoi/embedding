@@ -175,6 +175,8 @@ def build_regression_convnet_model(setting_dict):
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print ' ---->>No activation here? No!'
+
+	#[Output layer]
 	if setting_dict["output_activation"]:
 		print ' ---->>Output dense and activation is: %s with %d units' % (setting_dict["output_activation"], num_labels)
 		model.add(Dense(num_labels, activation=setting_dict["output_activation"],

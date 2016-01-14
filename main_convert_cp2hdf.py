@@ -42,6 +42,7 @@ def select_and_save_each(args):
 	#load data for whole signal
 	if tf_type in ['melgram']:
 		tf_mono = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 1
+		num_frames = tf_mono.shape[1]
 	elif tf_type in ['cqt', 'stft']:
 		tf_stereo = FILE_MANAGER.load(ind=idx, data_type=tf_type) # height, width, 2
 		num_frames = tf_stereo.shape[1]

@@ -336,21 +336,24 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 	n_valid_examples = 2796
 	n_test_examples	 = 2796
 
-	# ??? using hdf5matrix.
-	# train_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', tf_type,					 0, n_train_examples, normalizer=normalizer)
-	# train_y = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', 'label'+str(n_dim)+suffix, 0, n_train_examples, normalizer=normalizer)
+	# ??? using hdf5matrix. [1]
+	train_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', tf_type,					 0, n_train_examples, normalizer=normalizer)
+	train_y = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_train.h5', 'label'+str(n_dim)+suffix, 0, n_train_examples, normalizer=normalizer)
 	
-	# valid_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', tf_type,					 0, n_valid_examples, normalizer=normalizer)
-	# valid_y = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', 'label'+str(n_dim)+suffix, 0, n_valid_examples, normalizer=normalizer)
+	valid_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', tf_type,					 0, n_valid_examples, normalizer=normalizer)
+	valid_y = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', 'label'+str(n_dim)+suffix, 0, n_valid_examples, normalizer=normalizer)
 	
-	# test_x  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  tf_type, 				 0, n_test_examples, normalizer=normalizer)
-	# test_y  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  'label'+str(n_dim)+suffix, 0, n_test_examples, normalizer=normalizer)
+	test_x  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  tf_type, 				 0, n_test_examples, normalizer=normalizer)
+	test_y  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  'label'+str(n_dim)+suffix, 0, n_test_examples, normalizer=normalizer)
 	
-	# or, 
-	file_train = h5py.File(PATH_HDF_LOCAL + 'data_train.h5', 'r')
-	file_valid = h5py.File(PATH_HDF_LOCAL + 'data_valid.h5', 'r')
-	file_test  = h5py.File(PATH_HDF_LOCAL + 'data_test.h5', 'r')
-	return file_train[tf_type], file_valid[tf_type], file_test[tf_type]
+	return train_x, valid_x, test_x
+	# or, [2]
+	# file_train = h5py.File(PATH_HDF_LOCAL + 'data_train.h5', 'r')
+	# file_valid = h5py.File(PATH_HDF_LOCAL + 'data_valid.h5', 'r')
+	# file_test  = h5py.File(PATH_HDF_LOCAL + 'data_test.h5', 'r')
+	# return file_train[tf_type], file_valid[tf_type], file_test[tf_type]
+
+
 
 def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=None):
 	if not tf_type:
