@@ -245,7 +245,9 @@ def run_with_setting(hyperparams, argv):
 	#
 	best_batch = np.argmin(total_history['val_loss'])+1
 	# model.load_weights() # load the best model
+	predicted = model.predict(test_x, batch_size=batch_size)
 	if hyperparams["debug"] == True:
+		print predicted[:10]
 		pdb.set_trace()
 	if not hyperparams['is_test']:
 		model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
