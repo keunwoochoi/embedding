@@ -360,7 +360,7 @@ def prepare_transforms(arguments):
 
 if __name__=="__main__":
 	
-	if False and "if in a case I'd like to convert more songs or other transformations ":
+	if False or "if in a case I'd like to convert more songs or other transformations ":
 		prepare_transforms(sys.argv)
 		sys.exit(0)
 
