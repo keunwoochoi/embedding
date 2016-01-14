@@ -85,10 +85,11 @@ def build_regression_convnet_model(setting_dict):
 									border_mode='same',
 									W_regularizer=W_regularizer,
 									init='he_normal'))
+		# add BN
 		if setting_dict['BN']:
 			print ' ---->>BN is added for conv layer'
 			model.add(BatchNormalization())
-			
+
 		# add activation
 		print ' ---->>%s activation is added.' % activations[conv_idx]
 		if activations[conv_idx] == 'relu':
