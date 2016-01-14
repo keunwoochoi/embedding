@@ -85,7 +85,10 @@ def build_regression_convnet_model(setting_dict):
 									border_mode='same',
 									W_regularizer=W_regularizer,
 									init='he_normal'))
-
+		if setting_dict['BN']:
+			print ' ---->>BN is added for conv layer'
+			model.add(BatchNormalization())
+			
 		# add activation
 		print ' ---->>%s activation is added.' % activations[conv_idx]
 		if activations[conv_idx] == 'relu':
@@ -98,9 +101,7 @@ def build_regression_convnet_model(setting_dict):
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print ' ---->>No activation here? No!'
-		if setting_dict['BN']:
-			print ' ---->>BN is added for conv layer'
-			model.add(BatchNormalization())
+		
 		# add dropout
 		if not dropouts[conv_idx] == 0.0:
 			model.add(Dropout(dropouts[conv_idx]))
