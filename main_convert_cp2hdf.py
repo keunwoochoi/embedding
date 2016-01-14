@@ -35,7 +35,7 @@ def select_and_save_each(args):
 	if os.path.exists(path+str(track_id)+'.npy'):
 		if os.path.getsize(path+str(track_id)+'.npy') != 0:
 			print '%d, track_id %d: already done.' % (idx, track_id)
-		return
+			return
 	# pdb.set_trace()
 	clips_per_song = 3
 	if tf_type in ['cqt', 'stft', 'chroma', 'melgram']:
