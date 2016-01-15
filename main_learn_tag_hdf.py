@@ -100,8 +100,6 @@ def run_with_setting(hyperparams, argv):
 	if hyperparams["debug"]:
 		pdb.set_trace()
 	
-	
-
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	# train_x : (num_samples, num_channel, height, width)	
 	hyperparams_manager = my_utils.Hyperparams_Manager()

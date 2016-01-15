@@ -163,11 +163,11 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 	"""
 	# first, set the numbers
 	if tf_type=='stft':
-		tf_representation = file_manager.load_stft(0)
+		tf_representation = file_manager.load_stft(0)[:,:,0:1]
 		len_freq, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 
 	elif tf_type=='cqt':
-		tf_representation = file_manager.load_cqt(0)
+		tf_representation = file_manager.load_cqt(0)[:,:,0:1]
 		len_freq, num_fr_temp, num_ch = tf_representation.shape # 513, 6721, 2 for example.
 	if len_freq > max_len_freq:
 		len_freq = max_len_freq
@@ -182,9 +182,9 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 	if clips_per_song==0:
 		for i in indices:
 			if tf_type=='stft':
-				tf_representation = file_manager.load_stft(i)
+				tf_representation = file_manager.load_stft(i)[:,:,0:1]
 			elif tf_type=='cqt':
-				tf_representation = file_manager.load_cqt(i)
+				tf_representation = file_manager.load_cqt(i)[:,:,0:1]
 			num_data += tf_representation.shape[1] / width
 	else:
 		num_data = len(indices) * clips_per_song
@@ -200,9 +200,9 @@ def get_input_output_set(file_manager, indices, truths, tf_type, max_len_freq=25
 	for i in indices: # for every song
 		# print i
 		if tf_type == 'stft':
-			tf_representation = 10*np.log10(np.abs(file_manager.load_stft(i)))
+			tf_representation = 10*np.log10(np.abs(file_manager.load_stft(i)[:,:,0:1]))
 		elif tf_type=='cqt':
-			tf_representation = file_manager.load_cqt(i)
+			tf_representation = file_manager.load_cqt(i)[:,:,0:1]
 
 		tf_representation = np.expand_dims(tf_representation[:len_freq, :, :], axis=3) # len_freq, num_fr, num_ch, nothing(#data). -->
 		# print 'expending done'
@@ -358,6 +358,7 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 
 
 def load_all_sets(label_matrix, hyperparams):
+	'''load files using numpy array i.e. batch into memory'''
 	if hyperparams['debug']:
 		num_train_songs = 30
 		num_test_songs = 30
@@ -411,6 +412,7 @@ def load_all_sets(label_matrix, hyperparams):
 	elif tf_type == 'stft':
 		global_mean = -2.01616 # should be mended with STFT values
 		global_std  = 9.23697
+
 
 	train_x = (train_x - global_mean)/global_std	
 	valid_x = (valid_x - global_mean)/global_std
