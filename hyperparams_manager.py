@@ -12,6 +12,8 @@ import pprint
 
 import pdb
 
+def dict2str(setting_dict):
+	return '_'.join([key+'.'+str(setting_dict[key]) for key in setting_dict])
 
 class Hyperparams_Manager():
 	def __init__(self):
