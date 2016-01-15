@@ -190,7 +190,7 @@ def run_with_setting(hyperparams, argv):
 		history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 											batch_size=batch_size, 
 											nb_epoch=num_epoch, 
-											show_accuracy=False, 
+											show_accuracy=hyperparams['isClass'], 
 											verbose=1, 
 											callbacks=callbacks,
 											shuffle='batch')
