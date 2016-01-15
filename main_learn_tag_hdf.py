@@ -109,14 +109,14 @@ def run_with_setting(hyperparams, argv):
 	
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	# train_x : (num_samples, num_channel, height, width)	
-	hyperparams_manager = hyperparams_manager.Hyperparams_Manager()
-	nickname = hyperparams_manager.get_name(hyperparams)
+	hp_manager = hyperparams_manager.Hyperparams_Manager()
+	nickname = hp_manager.get_name(hyperparams)
 	timename = time.strftime('%m-%d-%Hh%M')
 	if hyperparams["is_test"]:
 		model_name = 'test_' + nickname
 	else:
 		model_name = timename + '_' + nickname
-	hyperparams_manager.save_new_setting(hyperparams)
+	hp_manager.save_new_setting(hyperparams)
 	print '-'*60
 	print 'model name: %s' % model_name
 	model_name_dir = model_name + '/'
@@ -130,8 +130,8 @@ def run_with_setting(hyperparams, argv):
 		os.mkdir(PATH_RESULTS_W + model_weight_name_dir)
 	
 
-	hyperparams_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
- 	hyperparams_manager.print_setting(hyperparams)
+	hp_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
+ 	hp_manager.print_setting(hyperparams)
  	
 	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
 
