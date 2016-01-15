@@ -104,10 +104,6 @@ def build_convnet_model(setting_dict):
 		else:
 			print ' ---->>No activation here? No!'
 		
-		# add dropout
-		if not dropouts[conv_idx] == 0.0:
-			model.add(Dropout(dropouts[conv_idx]))
-			print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 		
 		if model_type.startswith('vgg_original'):
 			print ' ---->>additional conv layer is added for vgg_original'
@@ -130,11 +126,7 @@ def build_convnet_model(setting_dict):
 				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 			else:
 				print ' ---->>No activation here? No!'
-			# add dropout
-			if not dropouts[conv_idx] == 0.0:
-				model.add(Dropout(dropouts[conv_idx]))
-				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
-
+			
 		# add pooling
 		if model_type.startswith('vgg_original'):
 			print ' ---->>MP with (2,2) strides is added', pool_sizes[conv_idx]
@@ -142,6 +134,10 @@ def build_convnet_model(setting_dict):
 		elif model_type.startswith('vgg_simple'):
 			print ' ---->>MP is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+		# add dropout
+		if not dropouts[conv_idx] == 0.0:
+			model.add(Dropout(dropouts[conv_idx]))
+			print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 		
 	#[Fully Connected Layers]
 	model.add(Flatten())
@@ -157,7 +153,7 @@ def build_convnet_model(setting_dict):
 		if not dropouts_fc_layers[fc_idx] == 0.0:
 			print ' ---->>Dense layer is added with dropout of %f.' % dropouts_fc_layers[fc_idx]
 			model.add(Dense(nums_units_fc_layers[fc_idx],init='he_normal'))
-			model.add(Dropout(dropouts_fc_layers[fc_idx]))
+		
 		else:
 			print ' ---->>Dense layer is added with regularizer.'
 			model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
@@ -175,6 +171,9 @@ def build_convnet_model(setting_dict):
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print ' ---->>No activation here? No!'
+		# Dropout
+		if not dropouts_fc_layers[fc_idx] == 0.0:
+			model.add(Dropout(dropouts_fc_layers[fc_idx]))
 		# BN
 		if setting_dict['BN_fc_layers']:
 			print ' ---->>BN for dense is added'
