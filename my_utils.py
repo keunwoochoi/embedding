@@ -357,22 +357,24 @@ def load_all_sets_from_hdf(tf_type=None, n_dim=None, task_cla=False):
 
 
 
-def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=None):
-	if not tf_type:
-		print '--- tf_type not specified, so stft is assumed. ---'
-		tf_type = 'stft'
-	if tf_type not in ['stft', 'cqt']:
-		print '--- wrong tf_type:%s, it should be either stft or cqt---' % tf_type
-		return
-
+def load_all_sets(label_matrix, hyperparams):
+	if hyperparams['debug']:
+		num_train_songs = 30
+		num_test_songs = 30
+	else:
+		num_train_songs = 1000
+		num_test_songs = 300
+	clips_per_song = 3
+	tf_type = hyperparams['tf_type']
+	
 	file_manager = File_Manager()
 
 	train_inds, valid_inds, test_inds = file_manager.split_inds(num_folds=5)
 	num_songs_train = min(num_train_songs, len(train_inds))
 	
-	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[:300]
-	test_inds  = test_inds [:300]
+	train_inds = train_inds[:num_songs_train]
+	valid_inds = valid_inds[:num_test_songs]
+	test_inds  = test_inds [:num_test_songs]
 	print "--- Lets go! ---"
 	start = time.time()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix,

@@ -89,26 +89,17 @@ def run_with_setting(hyperparams, argv):
 														clips_per_song=3)
 	'''
 	print 'temporary came back with numpy loading'
+	if hyperparams["debug"]:
+		num_train_songs = 30
+	else:
+		num_train_songs = 1000
 	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix, 
-																				clips_per_song=3,
-																				num_train_songs=1000,
-																				tf_type=hyperparams["tf_type"])
+																				hyperparams=hyperparams)
 	hyperparams["height_image"] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
 	if hyperparams["debug"]:
 		pdb.set_trace()
-	if hyperparams["is_test"]:
-		# train_x = train_x[0:24]
-		# train_y = train_y[0:24]
-		# valid_x = valid_x[0:24]
-		# valid_y = valid_y[0:24]
-		# test_x = test_x[0:24]
-		# test_y = test_y[0:24]
-		train_y = train_y[:,[0]]
-		valid_y = valid_y[:,[0]]
-		test_y  = test_y[:,[0]]
-		hyperparams["dim_labels"] = 1
-		print 'Output is one dimensional value.'
+	
 	
 
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
