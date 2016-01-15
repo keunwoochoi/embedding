@@ -226,7 +226,7 @@ if __name__=="__main__":
 		sys.exit(0)
 	elif worktype == 'b':
 	# after create all file for cqt and stft with selected segments, then add them on hdf.
-	# example: 	$ python main_convert_cp2hdf.py stft a train (at the same time, valid/test)
+	# example: 	$ python main_convert_cp2hdf.py stft a
 	# 			            ---after it's done,---
 	# 			$ python main_convert_cp2hdf.py stft b train (at the same time, valid/test )
 	# Then the result is update in local hdf path.

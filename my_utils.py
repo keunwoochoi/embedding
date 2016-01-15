@@ -371,8 +371,8 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	num_songs_train = min(num_train_songs, len(train_inds))
 	
 	train_inds = train_inds[0:num_songs_train]
-	valid_inds = valid_inds[:500]
-	test_inds  = test_inds [:500]
+	valid_inds = valid_inds[:300]
+	test_inds  = test_inds [:300]
 	print "--- Lets go! ---"
 	start = time.time()
 	train_x, train_y = get_input_output_set(file_manager, train_inds, truths=label_matrix,
@@ -402,13 +402,13 @@ def load_all_sets(label_matrix, clips_per_song, num_train_songs=100, tf_type=Non
 	print "--- test data prepared; %d clips from %d songs, took %d seconds to load---" \
 									% (len(test_x), len(test_inds), (until-start) )
 	
-	# if tf_type == 'cqt':
-	# 	global_mean = -61.25 # computed from the whole data for cqt
-	# 	global_std  = 14.36
+	if tf_type == 'cqt':
+		global_mean = -28.3472 # computed from the whole data for cqt
+		global_std  = 6.59574
 	# 	print 'NO'*10000000
-	# elif tf_type == 'stft':
-	# 	global_mean = -61.25 # should be mended with STFT values
-	# 	global_std  = 14.36
+	elif tf_type == 'stft':
+		global_mean = -2.01616 # should be mended with STFT values
+		global_std  = 9.23697
 
 	train_x = (train_x - global_mean)/global_std	
 	valid_x = (valid_x - global_mean)/global_std

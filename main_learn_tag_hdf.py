@@ -79,7 +79,7 @@ def run_with_setting(hyperparams, argv):
 	# print label_matrix.shape
 
 	# load dataset
-	
+	'''
 	train_x, valid_x, test_x, = my_utils.load_all_sets_from_hdf(tf_type=hyperparams["tf_type"],
 																				n_dim=dim_latent_feature,
 																				task_cla=hyperparams['isClass'])
@@ -87,6 +87,12 @@ def run_with_setting(hyperparams, argv):
 	train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
 														num_fold=10, 
 														clips_per_song=3)
+	'''
+	print 'temporary came back with numpy loading'
+	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(mood_tags_matrix, 
+																				clips_per_song=3,
+																				num_train_songs=1000,
+																				tf_type=hyperparams["tf_type"])
 	hyperparams["height_image"] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
 	if hyperparams["debug"]:
@@ -164,11 +170,7 @@ def run_with_setting(hyperparams, argv):
 		early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
-	#save image of weights
-	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
-										filename_prefix='INIT_', 
-										normalize='local', 
-										mono=True)
+	
 	# other constants
 	if hyperparams["tf_type"] == 'cqt':
 		batch_size = 24
@@ -190,8 +192,7 @@ def run_with_setting(hyperparams, argv):
 	print np.mean(predicted, axis=0)
 	print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
-	#train!
-	
+	#train!	
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
