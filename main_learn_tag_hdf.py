@@ -15,6 +15,7 @@ import numpy as np
 import keras
 import my_keras_models
 import my_keras_utils
+import hyperparams_manager
 from keras.utils.visualize_util import plot as keras_plot
 import my_utils
 import cPickle as cP
@@ -79,7 +80,7 @@ def run_with_setting(hyperparams, argv):
 	print label_matrix.shape
 
 	# load dataset
-	'''
+	
 	train_x, valid_x, test_x, = my_utils.load_all_sets_from_hdf(tf_type=hyperparams["tf_type"],
 																				n_dim=dim_latent_feature,
 																				task_cla=hyperparams['isClass'])
@@ -87,14 +88,20 @@ def run_with_setting(hyperparams, argv):
 	train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
 														num_fold=10, 
 														clips_per_song=3)
-	'''
-	print 'temporary came back with numpy loading'
-	if hyperparams["debug"]:
-		num_train_songs = 30
-	else:
-		num_train_songs = 1000
-	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix, 
-																				hyperparams=hyperparams)
+	threshold_label = 0.6
+	if hyperparams['isClass']:
+		train_y = (train_y>threshold_label).astype(int)
+		valid_y = (valid_y>threshold_label).astype(int)
+		test_y = (test_y>threshold_label).astype(int)
+	
+	# print 'temporary came back with numpy loading'
+	# if hyperparams["debug"]:
+	# 	num_train_songs = 30
+	# else:
+	# 	num_train_songs = 1000
+	# train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix, 
+	# 																			hyperparams=hyperparams)
+
 	hyperparams["height_image"] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
 	if hyperparams["debug"]:
@@ -102,7 +109,7 @@ def run_with_setting(hyperparams, argv):
 	
 	moodnames = cP.load(open(PATH_DATA + FILE_DICT["moodnames"], 'r')) #list, 100
 	# train_x : (num_samples, num_channel, height, width)	
-	hyperparams_manager = my_utils.Hyperparams_Manager()
+	hyperparams_manager = hyperparams_manager.Hyperparams_Manager()
 	nickname = hyperparams_manager.get_name(hyperparams)
 	timename = time.strftime('%m-%d-%Hh%M')
 	if hyperparams["is_test"]:
@@ -121,25 +128,13 @@ def run_with_setting(hyperparams, argv):
 		os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 		os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
 		os.mkdir(PATH_RESULTS_W + model_weight_name_dir)
-	start = time.time()
+	
 
 	hyperparams_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
  	hyperparams_manager.print_setting(hyperparams)
- 	if hyperparams["isRegre"]:
- 		
-		model = my_keras_models.build_regression_convnet_model(setting_dict=hyperparams)
+ 	
+	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
 
-	else:
-		print '--- ps. this is a classification task. ---'
-		print 'Hey, dont classify this.'
-		model = my_keras_models.build_classification_convnet_model(height=train_x.shape[2], 
-																	width=train_x.shape[3], 
-																	num_labels=train_y.shape[1], 
-																	num_layers=hyperparams["num_layers"], 
-																	model_type=hyperparams["model_type"],
-																	num_channels=1)		
- 	until = time.time()
- 	print "--- keras model was built, took %d seconds ---" % (until-start)
  	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
 	#prepare callbacks
 	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
@@ -150,15 +145,13 @@ def run_with_setting(hyperparams, argv):
 	if hyperparams["is_test"] is True:
 		patience = 99999999
 	if hyperparams["isRegre"]:
-		#history = my_keras_utils.History_Regression_Val()
-		early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', 
-														patience=patience, 
-														verbose=0)
+		value_to_monitor = 'val_loss'
 	else:
-		#history = my_keras_utils.History_Classification_Val()
-		early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
-														patience=patience, 
-														verbose=0)
+		value_to_monitor = 'val_acc'
+		#history = my_keras_utils.History_Regression_Val()
+	early_stopping = keras.callbacks.EarlyStopping(monitor=value_to_monitor, 
+													patience=patience, 
+													verbose=0)
 	
 	# other constants
 	if hyperparams["tf_type"] == 'cqt':
@@ -193,35 +186,18 @@ def run_with_setting(hyperparams, argv):
 	else:
 		callbacks = [weight_image_monitor, early_stopping, checkpointer]
 
-	while True:
-		if hyperparams["isRegre"]:
-			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-													batch_size=batch_size, 
-													nb_epoch=num_epoch, 
-													show_accuracy=False, 
-													verbose=1, 
-													callbacks=callbacks,
-													shuffle='batch')
-		else:
-			batch_size = batch_size / 2
-			history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-										batch_size=batch_size, 
-										nb_epoch=num_epoch, 
-										show_accuracy=True, 
-										verbose=1, 
-										callbacks=callbacks,
-										shuffle='batch')
+	while True:		
+		history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+											batch_size=batch_size, 
+											nb_epoch=num_epoch, 
+											show_accuracy=False, 
+											verbose=1, 
+											callbacks=callbacks,
+											shuffle='batch')
+		
 		total_epoch += num_epoch
 		print '%d-th epoch is complete' % total_epoch
 		my_utils.append_history(total_history, history.history)
-		if os.path.exists('max_epoch.npy'):
-			max_epoch = np.load('max_epoch.npy')
-			if total_epoch < max_epoch:
-				num_epoch = max_epoch - total_epoch
-				f = open('will_stop.keunwoo', 'w')
-				f.close()
-				#add a line to remove npy file.
-				continue
 		if os.path.exists('will_stop.keunwoo'):
 			if hyperparams["isRegre"]:
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
@@ -233,20 +209,24 @@ def run_with_setting(hyperparams, argv):
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
-	best_batch = np.argmin(total_history['val_loss'])+1
-	# model.load_weights() # load the best model
-	predicted = model.predict(test_x, batch_size=batch_size)
-	print predicted[:10]
-
+	best_batch = np.argmin(total_history['value_to_monitor'])+1
+	
 	if hyperparams["debug"] == True:
-
 		pdb.set_trace()
+
 	if not hyperparams['is_test']:
 		model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
+
 	predicted = model.predict(test_x, batch_size=batch_size)
+	print 'predicted example using best model'
 	print predicted[:10]
+	print 'and truths'
+	print test_y[:10]
 	#save results
-	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
+	if hyperparams['isRegre']:
+		np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
+	else:
+		np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', total_history)
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
@@ -263,23 +243,18 @@ def run_with_setting(hyperparams, argv):
 												val_acc=total_history['val_acc'], 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	
-	# my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
-	# 									filename_prefix='', 
-	# 									normalize='local', 
-	# 									mono=True)
 	
-	
-	min_loss = np.min(total_history['val_loss'])
-	best_batch = np.argmin(total_history['val_loss'])+1
-	num_run_epoch = len(total_history['val_loss'])
-	oneline_result = '%6.4f, %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
+	min_loss = np.min(total_history[value_to_monitor])
+	best_batch = np.argmin(total_history[value_to_monitor])+1
+	num_run_epoch = len(total_history[value_to_monitor])
+	oneline_result = '%s, %6.4f, %d_of_%d, %s' % (value_to_monitor, min_loss, best_batch, num_run_epoch, model_name)
 	with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
 		pass
-	f = open( (PATH_RESULTS + '%s_%s_%06.4f_at_(%d_of_%d)_%s'  % \
-		(timename, hyperparams["loss_function"], min_loss, best_batch, num_run_epoch, nickname)), 'w')
+	f = open( (PATH_RESULTS + '%s_%s_%s_%06.4f_at_(%d_of_%d)_%s'  % \
+		(timename, hyperparams["loss_function"], value_to_monitor, min_loss, best_batch, num_run_epoch, nickname)), 'w')
 	f.close()
 	with open('one_line_log.txt', 'a') as f:
-		f.write('%6.4f, %d/%d, %s' % (min_loss, best_batch, num_run_epoch, model_name))
+		f.write(oneline_result)
 		f.write(' ' + ' '.join(argv) + '\n')
 	print '========== DONE: %s ==========' % model_name
 	return min_loss
@@ -441,6 +416,12 @@ if __name__ == "__main__":
 	# TR_CONST["learning_rate"] = 3e-7
 
 	#------------------
+	# do it like an approximated classification.
+	TR_CONST['isClass'] = True
+	TR_CONST['isRegre'] = False
+	TR_CONST['loss_function'] = 'categorical_crossentropy'
+	TR_CONST["output_activation"] = 'softmax'
+
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()

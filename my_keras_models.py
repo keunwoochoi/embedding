@@ -10,12 +10,13 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import RMSprop, SGD
 from keras.layers.normalization import BatchNormalization
 from keras.constraints import maxnorm, nonneg
-
+import time
 
 import keras.regularizers
 
-def build_regression_convnet_model(setting_dict):
-	
+def build_convnet_model(setting_dict):
+	start = time.time()
+
 	is_test = setting_dict["is_test"]
 	height = setting_dict["height_image"]
 	width = setting_dict["width_image"]
@@ -202,6 +203,9 @@ def build_regression_convnet_model(setting_dict):
 		raise RuntimeError('no optimiser? no! - %s' % optimizer_name )
 	print ' ---->>--- ready to compile keras model ---'
 	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
+	until = time.time()
+ 	print "--- keras model was built, took %d seconds ---" % (until-start)
+ 	
 	return model
 
 

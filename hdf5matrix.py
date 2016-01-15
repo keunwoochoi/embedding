@@ -7,7 +7,6 @@ from collections import defaultdict
 import h5py
 import numpy as np
 
-
 class HDF5Matrix():
 	def __init__(self, datapath, dataset, start, end, normalizer=None):
 		self.refs = defaultdict(int) # MODI
@@ -17,6 +16,12 @@ class HDF5Matrix():
 			self.refs[datapath] = f
 		else:
 			f = self.refs[datapath]
+
+		if start == None:
+			start = 0
+		if end == None:
+			end = f.shape[0]
+		
 		self.start = start
 		self.end = end
 		self.data = f[dataset]
