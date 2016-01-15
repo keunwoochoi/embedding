@@ -76,7 +76,7 @@ def run_with_setting(hyperparams, argv):
 											show_topics=False)
 		np.save(PATH_DATA + label_matrix_filename, W)
 	# print 'size of mood tag matrix:'
-	# print label_matrix.shape
+	print label_matrix.shape
 
 	# load dataset
 	'''
@@ -89,7 +89,7 @@ def run_with_setting(hyperparams, argv):
 														clips_per_song=3)
 	'''
 	print 'temporary came back with numpy loading'
-	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(mood_tags_matrix, 
+	train_x, train_y, valid_x, valid_y, test_x, test_y = my_utils.load_all_sets(label_matrix, 
 																				clips_per_song=3,
 																				num_train_songs=1000,
 																				tf_type=hyperparams["tf_type"])
