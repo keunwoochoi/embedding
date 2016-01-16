@@ -51,7 +51,7 @@ def build_convnet_model(setting_dict):
 		pass # less layers, bigger filter.
 
 	
-	learning_rate = setting_dict['learing_rate']
+	learning_rate = setting_dict['learning_rate']
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()
