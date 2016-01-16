@@ -20,8 +20,8 @@ class HDF5Matrix():
 		if start == None:
 			start = 0
 		if end == None:
-			end = f.shape[0]
-		
+			end = f[dataset].shape[0]
+
 		self.start = start
 		self.end = end
 		self.data = f[dataset]

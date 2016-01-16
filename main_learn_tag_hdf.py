@@ -155,11 +155,13 @@ def run_with_setting(hyperparams, argv):
 	
 	# other constants
 	if hyperparams["tf_type"] == 'cqt':
-		batch_size = 24
-	elif hyperparams["tf_type"] == 'stft':
-		batch_size = 12
-	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 48
+	elif hyperparams["tf_type"] == 'stft':
+		batch_size = 24
+	elif hyperparams["tf_type"] == 'mfcc':
+		batch_size = 96
+	elif hyperparams["tf_type"] == 'melgram':
+		batch_size = 96
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
