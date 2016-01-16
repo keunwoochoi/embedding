@@ -12,7 +12,7 @@ class HDF5Matrix():
 		self.refs = defaultdict(int) # MODI
 		if datapath not in list(self.refs.keys()):
 			# print 'Init with hdf path: %s'%datapath
-			f = h5py.File(datapath)
+			f = h5py.File(datapath, 'r')
 			self.refs[datapath] = f
 		else:
 			f = self.refs[datapath]

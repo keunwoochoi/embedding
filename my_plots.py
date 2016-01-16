@@ -160,6 +160,9 @@ def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerin
 		os.makedirs(save_path + folder_name)
 	files_already_there = os.listdir(save_path + folder_name)
 	files_already_there = [filename for filename in files_already_there if filename.endswith('.png')]
+	if files_already_there == 0:
+		filename = 'weights_' + filename_prefix + 'INIT_' + ('%02.0d_%03.0d.png' % (layerind, len(files_already_there)))
+		imsave(save_path + folder_name + filename, mosaic)
 	
 	# if len(files_already_there) == 0:
 	# 	filename = 'weights_' + filename_prefix + '%02.0d_%03.0d.png' % (layerind, len(files_already_there))

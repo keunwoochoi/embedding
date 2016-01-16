@@ -86,14 +86,7 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 		self.weights_changes = []
 
 	def on_train_begin(self, logs={}):
-		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
-										filename_prefix='global_INIT_', 
-										normalize='global', 
-										mono=True)
-		my_plots.save_model_as_image(self.model, save_path=self.path_to_save, 
-										filename_prefix='local_INIT', 
-										normalize='local', 
-										mono=True)
+		pass
 		
 	def on_train_end(self, logs={}):
 		my_plots.save_weights_changes_plot(self.weights_changes, self.path_to_save)

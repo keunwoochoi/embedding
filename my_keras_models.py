@@ -39,7 +39,7 @@ def build_convnet_model(setting_dict):
 
 	if model_type.startswith('vgg'):
 		# layers = 4,5,6
-		if setting_dict['tf_type'] in ['cqt', 'stft']:
+		if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
 			image_patch_sizes = [[3,3]]*num_layers
 			pool_sizes = [(2,2)]*num_layers
 			if num_layers < 5:
@@ -50,12 +50,8 @@ def build_convnet_model(setting_dict):
 	elif model_type.startswith('flow'):
 		pass # less layers, bigger filter.
 
-	if setting_dict['tf_type'] == 'mfcc':
-		learning_rate = 1e-6
-	elif setting_dict['tf_type'] in ['stft', 'cqt']:
-		learning_rate = 1e-6
-	else:
-		learning_rate = 1e-6
+	
+	learning_rate = setting_dict['learing_rate']
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()

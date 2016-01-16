@@ -3,25 +3,25 @@ same as main_learn_tag but it load data from hdf file, 28 Dec 2015
 """
 #import matplotlib
 #matplotlib.use('Agg')
+import argparse
+import time
+import sys
+import os
+import pdb
+import numpy as np
+import keras
+import hyperparams_manager
+from keras.utils.visualize_util import plot as keras_plot
+import cPickle as cP
+
 from constants import *
 from environments import *
 from training_settings import *
-import argparse
-import os
-import pdb
-
-import numpy as np
-
-import keras
+import my_utils
+import my_plots
 import my_keras_models
 import my_keras_utils
-import hyperparams_manager
-from keras.utils.visualize_util import plot as keras_plot
-import my_utils
-import cPickle as cP
-import time
-import sys
-import my_plots
+
 
 def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
@@ -194,26 +194,37 @@ def run_with_setting(hyperparams, argv):
 	else:
 		callbacks = [weight_image_monitor, early_stopping, checkpointer]
 
-	while True:		
-		history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-											batch_size=batch_size, 
-											nb_epoch=num_epoch, 
-											show_accuracy=hyperparams['isClass'], 
-											verbose=1, 
-											callbacks=callbacks,
-											shuffle='batch')
+	while True:
+		num_sub_epoch = 10
+		for sub_epoch_idx in range(num_sub_epoch):
+			seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
+			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
+			train_x_here = train_x[seg_from:seg_to]
+			train_y_here = train_y[seg_from:seg_to]
+			history=model.fit(train_x_here, train_y_here, validation_data=(valid_x, valid_y), 
+														batch_size=batch_size, 
+														nb_epoch=1, 
+														show_accuracy=hyperparams['isClass'], 
+														verbose=1, 
+														callbacks=callbacks,
+														shuffle='batch')
+			my_utils.append_history(total_history, history.history)
+			
+		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
+		total_epoch += 1
 		
-		total_epoch += num_epoch
-		print '%d-th epoch is complete' % total_epoch
-		my_utils.append_history(total_history, history.history)
+
 		if os.path.exists('will_stop.keunwoo'):
-			if hyperparams["isRegre"]:
-				loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
+			if total_epoch < num_epoch:
+				pass
 			else:
-				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-			break
+				if hyperparams["isRegre"]:
+					loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
+				else:
+					loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+				break
 		else:
-			num_epoch = 1
+			
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
@@ -273,7 +284,7 @@ if __name__ == "__main__":
 	parser.add_argument('-ne', '--n_epoch', type=int, 
 											help='set the number of epoch, \ndefault=30', 
 											required=False)
-	parser.add_argument('-tf', '--tf', help='whether cqt, stft, mfcc, \ndefault=cqt.', 
+	parser.add_argument('-tf', '--tf', help='whether cqt, stft, mfcc, melgram \ndefault=cqt.', 
 								required=False)
 	parser.add_argument('-m', '--model', help='set the model, \ndefault=vgg_sequential.', 
 								   		required=False)
