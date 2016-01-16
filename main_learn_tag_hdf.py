@@ -88,11 +88,11 @@ def run_with_setting(hyperparams, argv):
 	train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
 														num_fold=10, 
 														clips_per_song=3)
-	threshold_label = 0.6
+	threshold_label = 1.0
 	if hyperparams['isClass']:
-		train_y = (train_y>threshold_label).astype(int)
-		valid_y = (valid_y>threshold_label).astype(int)
-		test_y = (test_y>threshold_label).astype(int)
+		train_y = (train_y>=threshold_label).astype(int)
+		valid_y = (valid_y>=threshold_label).astype(int)
+		test_y = (test_y>=threshold_label).astype(int)
 	
 	# print 'temporary came back with numpy loading'
 	# if hyperparams["debug"]:
@@ -215,7 +215,7 @@ def run_with_setting(hyperparams, argv):
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
-	best_batch = np.argmin(total_history['value_to_monitor'])+1
+	best_batch = np.argmin(total_history[value_to_monitor])+1
 	
 	if hyperparams["debug"] == True:
 		pdb.set_trace()
