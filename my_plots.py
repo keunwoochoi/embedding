@@ -140,12 +140,13 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 				W = W[:,ind,:,:]
 			'''
 			save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind)
-			print 'Conv layer: weights with mean:%f std:%f' % (np.mean(W), np.std(W))
+			# print 'Conv layer: weights with mean:%f std:%f' % (np.mean(W), np.std(W))
 		elif g['name'] == 'Dense':
 
 			W = layer.W.get_value(borrow=True) # 
 			save_histogram_as_image(W, save_path, filename_prefix, layerind)
-			print 'Dense layer: weights with mean:%f std:%f' % (np.mean(W), np.std(W))
+			# print 'Dense layer: weights with mean:%f std:%f' % (np.mean(W), np.std(W))
+			
 def save_weight_as_image(W, save_path, filename_prefix, normalize, mono, layerind):
 	'''W:weights
 	save_path: path to save the images

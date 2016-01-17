@@ -15,7 +15,7 @@ TR_CONST["loss_function"] = 'binary_crossentropy' # rmse, mse, mae, binary_cross
 TR_CONST["optimiser"] = 'adagrad'
 TR_CONST['learning_rate'] = 3e-7
 
-TR_CONST["num_layers"] = 3 # can be overriden
+TR_CONST["num_layers"] = 5 # can be overriden
 TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]
 TR_CONST["activations"] = ['prelu']*TR_CONST["num_layers"]
 TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
@@ -35,4 +35,4 @@ TR_CONST["output_activation"] = 'sigmoid'
 TR_CONST["!memo"] = ''
 TR_CONST["is_test"] = False
 
-# TODO: change this to a Clas
+TR_CONST["conv_mode"] = '2D'

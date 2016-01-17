@@ -100,6 +100,7 @@ if isMacbook:
 	PATH_WORK = PATH_HOME + "embedding_tag/"
 else:
 	PATH_WORK = PATH_HOME + "embedding/"
+	
 PATH_DATA = PATH_WORK + "data/"
 PATH_MODEL= PATH_WORK + 'keras_models/'
 PATH_SENTI= PATH_WORK + "sentiment/" 
