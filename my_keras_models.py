@@ -18,6 +18,7 @@ def build_convnet_model(setting_dict):
 	start = time.time()
 	loss_function = setting_dict["loss_function"]
 	optimizer_name = setting_dict["optimiser"].lower() # 'SGD', 'RMSProp', ..
+	learning_rate = setting_dict['learning_rate']
 	#------------------------------------------------------------------#
 	if setting_dict['conv_mode'].lower() == '2d':
 		model = design_2d_convnet_model(setting_dict)
@@ -80,7 +81,6 @@ def design_2d_convnet_model(setting_dict):
 		pass # less layers, bigger filter.
 
 	
-	learning_rate = setting_dict['learning_rate']
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()
@@ -241,7 +241,6 @@ def design_1d_time_convnet_model(setting_dict):
 		image_patch_sizes = [[height,1]]*num_layers
 		pool_sizes = [(1,2)]*num_layers	
 
-	learning_rate = setting_dict['learning_rate']
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()
