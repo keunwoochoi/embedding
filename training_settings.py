@@ -35,4 +35,4 @@ TR_CONST["output_activation"] = 'sigmoid'
 TR_CONST["!memo"] = ''
 TR_CONST["is_test"] = False
 
-TR_CONST["conv_mode"] = '2D'
+TR_CONST["conv_mode"] = '2d'

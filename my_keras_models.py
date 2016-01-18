@@ -19,10 +19,10 @@ def build_convnet_model(setting_dict):
 	loss_function = setting_dict["loss_function"]
 	optimizer_name = setting_dict["optimiser"].lower() # 'SGD', 'RMSProp', ..
 	#------------------------------------------------------------------#
-	if setting_dict['conv_mode'] == '2d':
+	if setting_dict['conv_mode'].lower() == '2d':
 		model = design_2d_convnet_model(setting_dict)
 
-	elif setting_dict['conv_mode'] == '1d_time':
+	elif setting_dict['conv_mode'].lower() == '1d_time':
 		model = design_1d_time_convnet_model(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
