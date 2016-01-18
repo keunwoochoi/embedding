@@ -39,7 +39,7 @@ def build_convnet_model(setting_dict):
 	else:
 		raise RuntimeError('no optimiser? no! - %s' % optimizer_name )
 	print ' ---->>--- ready to compile keras model ---'
-	model.compile(loss=loss_function, optimizer=optimiser) # mean_absolute_error, mean_squared_error, ... want to try mae later!
+	model.compile(loss=loss_function, optimizer=optimiser, class_mode='binary') # mean_absolute_error, mean_squared_error, ... want to try mae later!
 	until = time.time()
  	print "--- keras model was built, took %d seconds ---" % (until-start)
  	
@@ -98,7 +98,7 @@ def design_2d_convnet_model(setting_dict):
 
 		# add conv layer
 		if conv_idx == 0:
-			print ' ---->>First conv layer is being added!'
+			print ' ---->>First conv layer is being added! wigh %d' % num_stacks[conv_idx]
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', 
 									input_shape=(num_channels, height, width), 
@@ -106,7 +106,7 @@ def design_2d_convnet_model(setting_dict):
 									init='he_normal'))
 
 		else:
-			print ' ---->>%d-th conv layer is being added ' % conv_idx
+			print ' ---->>%d-th conv layer is being added with %d units' % (conv_idx, num_stacks[conv_idx])
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same',
 									W_regularizer=W_regularizer,
@@ -131,7 +131,7 @@ def design_2d_convnet_model(setting_dict):
 		
 		
 		if model_type.startswith('vgg_original'):
-			print ' ---->>additional conv layer is added for vgg_original'
+			print ' ---->>additional conv layer is added for vgg_original, %d' % (num_stacks[conv_idx])
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same',
 									W_regularizer=W_regularizer,
@@ -176,11 +176,11 @@ def design_2d_convnet_model(setting_dict):
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
 		# dense layer
 		if not dropouts_fc_layers[fc_idx] == 0.0:
-			print ' ---->>Dense layer is added with dropout of %f.' % dropouts_fc_layers[fc_idx]
+			print ' ---->>Dense layer, %d, is added with dropout of %f.' % (nums_units_fc_layers[fc_idx], dropouts_fc_layers[fc_idx])
 			model.add(Dense(nums_units_fc_layers[fc_idx],init='he_normal'))
 		
 		else:
-			print ' ---->>Dense layer is added with regularizer.'
+			print ' ---->>Dense layer, %d, is added with regularizer.' % nums_units_fc_layers[fc_idx]
 			model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
 													init='he_normal'))
 		
