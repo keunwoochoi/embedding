@@ -63,9 +63,9 @@ def design_2d_convnet_model(setting_dict):
 	activations_fc_layers = setting_dict["activations_fc_layers"]
 	#------------------------------------------------------------------#
 	num_channels=1
-	num_stacks[0] = max(num_stacks[0]/4, 16)
-	num_stacks[1] = max(num_stacks[1]/2, 24)
-	num_stacks[2] = max(num_stacks[2]/2, 24)
+	# num_stacks[0] = max(num_stacks[0]/4, 16)
+	# num_stacks[1] = max(num_stacks[1]/2, 24)
+	# num_stacks[2] = max(num_stacks[2]/2, 24)
 
 	if model_type.startswith('vgg'):
 		# layers = 4,5,6
@@ -144,7 +144,7 @@ def design_2d_convnet_model(setting_dict):
 			if activations[conv_idx] == 'relu':
 				model.add(Activation('relu'))
 			elif activations[conv_idx] == 'lrelu':
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
+				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.2))
 			elif activations[conv_idx] == 'prelu':
 				model.add(keras.layers.advanced_activations.PReLU())
 			elif activations[conv_idx] == 'elu':
@@ -280,7 +280,7 @@ def design_1d_time_convnet_model(setting_dict):
 		if activations[conv_idx] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[conv_idx] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.2))
 		elif activations[conv_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
 		elif activations[conv_idx] == 'elu':
