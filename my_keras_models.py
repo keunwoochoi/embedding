@@ -26,7 +26,7 @@ def build_convnet_model(setting_dict):
 		model = design_1d_time_convnet_model(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
-		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-6, nesterov=True)
+		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-5, nesterov=True)
 	elif optimizer_name == 'rmsprop':
 		optimiser = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-6)
 	elif optimizer_name == 'adagrad':
@@ -62,6 +62,9 @@ def design_2d_convnet_model(setting_dict):
 	activations_fc_layers = setting_dict["activations_fc_layers"]
 	#------------------------------------------------------------------#
 	num_channels=1
+	num_stacks[0] = max(num_stacks[0]/4, 16)
+	num_stacks[1] = max(num_stacks[1]/2, 24)
+	num_stacks[2] = max(num_stacks[2]/2, 24)
 
 	if model_type.startswith('vgg'):
 		# layers = 4,5,6
