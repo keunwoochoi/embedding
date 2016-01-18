@@ -24,9 +24,9 @@ TR_CONST["BN"] = True
 TR_CONST["strides"] = True
 TR_CONST["debug"] = False
 
-TR_CONST["num_fc_layers"] = 1
+TR_CONST["num_fc_layers"] = 2
 TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
-TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
+TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 TR_CONST["activations_fc_layers"] = ['prelu']*TR_CONST["num_fc_layers"]
 # TR_CONST["regulariser_fc_layers"] = [('l2', 0.0007)]*TR_CONST["num_fc_layers"]
 TR_CONST["regulariser_fc_layers"] = [('l2', 5e-4), ('l2', 5e-4)]
