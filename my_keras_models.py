@@ -242,13 +242,13 @@ def design_gnu_convnet_model(setting_dict):
 	#------------------------------------------------------------------#
 	num_channels=1
 
-	image_patch_sizes = [[1,4], [1,4], [1,4]]
-	pool_sizes = [(1,4), (1,4), (2,4)]
-	num_stacks = [48, 48, 48]
+	image_patch_sizes = [[1,3], [1,4], [1,4],[1,4]]
+	pool_sizes = [(1,3), (1,4), (1,4),(2,4)]
+	num_stacks = [48,48,64,64]
 
 	model = Sequential()
 
-	for conv_idx in range(3):
+	for conv_idx in range(len(num_stacks)):
 		if conv_idx == 0:
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 										border_mode='same', 
@@ -259,19 +259,21 @@ def design_gnu_convnet_model(setting_dict):
 										border_mode='same', 
 										init='he_normal'))
 
+		model.add(BatchNormalization())
+		model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
 		model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 
 	model.add(Flatten())
 
-	model.add(Dense(512, init='he_normal'))
+	model.add(Dense(2048, init='he_normal'))
 	model.add(Dropout(0.5))
-	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	model.add(BatchNormalization())
 
-	model.add(Dense(512, init='he_normal'))
+	model.add(Dense(2048, init='he_normal'))
 	model.add(Dropout(0.5))
-	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	model.add(BatchNormalization())
 
 	model.add(Dense(num_labels, activation='sigmoid',
 								init='he_normal')) 
@@ -286,11 +288,11 @@ def design_mfcc_convnet_model(setting_dict):
 	num_channels=1
 	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
 	pool_sizes = [(1,3), (1,4), (1,4), (1,4)]
-	num_stacks = [48, 48, 48]
+	num_stacks = [48, 48, 64, 64]
 
 	model = Sequential()
 
-	for conv_idx in range(3):
+	for conv_idx in range(len(num_stacks)):
 		if conv_idx == 0:
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='valid', 
@@ -301,20 +303,22 @@ def design_mfcc_convnet_model(setting_dict):
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', 
 									init='he_normal'))
-	
-	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+		model.add(BatchNormalization())
+		model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+		model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 	
 	model.add(Flatten())
 
 	model.add(Dense(2048, init='he_normal'))
 	model.add(Dropout(0.5))
-	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	model.add(BatchNormalization())
 
 	model.add(Dense(2048, init='he_normal'))
 	model.add(Dropout(0.5))
-	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	model.add(BatchNormalization())
+
 	model.add(Dense(num_labels, activation='sigmoid',
 								init='he_normal')) 
 	return model
