@@ -135,12 +135,20 @@ def design_2d_convnet_model(setting_dict):
 			print ' ---->>No activation here? No!'
 		
 		
-		if model_type.startswith('vgg_original'):
+		if model_type == 'vgg_original':
 			print ' ---->>additional conv layer is added for vgg_original, %d' % (num_stacks[conv_idx])
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same',
 									W_regularizer=W_regularizer,
 									init='he_normal'))
+		elif model_type == 'vgg_modi_1x1':
+			print ' ---->>additional conv layer is added for vgg_modi_1x1, %d' % (num_stacks[conv_idx])
+			model.add(Convolution2D(num_stacks[conv_idx], 1, 1, 
+									border_mode='same',
+									W_regularizer=W_regularizer,
+									init='he_normal'))
+
+		if model_type in ['vgg_original', 'vgg_modi_1x1']:
 			if setting_dict['BN']:
 				print ' ---->>and BN,'
 				model.add(BatchNormalization())
@@ -158,7 +166,7 @@ def design_2d_convnet_model(setting_dict):
 				print ' ---->>No activation here? No!'
 			
 		# add pooling
-		if model_type.startswith('vgg_original'):
+		if model_type in ['vgg_original', 'vgg_modi_1x1']:
 			print ' ---->>MP with (2,2) strides is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx], strides=(2, 2)))
 		elif model_type.startswith('vgg_simple'):
