@@ -22,11 +22,14 @@ def build_convnet_model(setting_dict):
 	optimizer_name = setting_dict["optimiser"].lower() # 'SGD', 'RMSProp', ..
 	learning_rate = setting_dict['learning_rate']
 	#------------------------------------------------------------------#
-	if setting_dict['conv_mode'].lower() == '2d':
+	model_type = setting_dict["model_type"]
+	if model_types.startswith('vgg'):
 		model = design_2d_convnet_model(setting_dict)
-
-	elif setting_dict['conv_mode'].lower() == '1d_time':
-		model = design_1d_time_convnet_model(setting_dict)
+	elif model_types.startswith('gnu'):
+		if model_types == 'gnu_1d':
+			model = design_gnu_convnet_model(setting_dict)
+		elif model_types == 'gnu_mfcc':
+			model = design_mfcc_convnet_model(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-5, nesterov=True)
@@ -217,6 +220,103 @@ def design_2d_convnet_model(setting_dict):
 
 	return model	
 
+
+def design_gnu_convnet_model(setting_dict):
+	'''It's a hybrid type model - perhaps something like Sander proposed?
+	Mainly convnet is done as 1d time-axis, then 
+	'''
+	is_test = setting_dict["is_test"]
+	height = setting_dict["height_image"]
+	width = setting_dict["width_image"]
+	dropouts = setting_dict["dropouts"]
+	num_labels = setting_dict["dim_labels"]
+	num_layers = setting_dict["num_layers"]
+	activations = setting_dict["activations"] #
+	model_type = setting_dict["model_type"] # not used now.
+	num_stacks = setting_dict["num_feat_maps"]
+
+	num_fc_layers = setting_dict["num_fc_layers"]
+	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
+	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
+	activations_fc_layers = setting_dict["activations_fc_layers"]
+	#------------------------------------------------------------------#
+	num_channels=1
+
+	image_patch_sizes = [[1,4], [1,4], [1,4]]
+	pool_sizes = [(1,4), (1,4), (2,4)]
+	num_stacks = [48, 48, 48]
+
+	model = Sequential()
+	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same', 
+									input_shape=(1, height, width), 
+									init='he_normal'))
+	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same', 
+									init='he_normal'))
+	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same', 
+									init='he_normal'))
+	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+	model.add(Flatten())
+
+	model.add(Dense(512, init='he_normal'))
+	model.add(BatchNormalization())
+	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+
+	model.add(Dense(512, init='he_normal'))
+	model.add(BatchNormalization())
+	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	model.add(Dense(num_labels, activation='sigmoid',
+								init='he_normal')) 
+	return model
+		
+
+def design_mfcc_convnet_model(setting_dict):
+	height = setting_dict["height_image"]
+	width = setting_dict["width_image"]
+	num_labels = setting_dict["dim_labels"]
+	#------------------------------------------------------------------#
+	num_channels=1
+	image_patch_sizes = [[height/3,1], [1,1], [1,1]]
+	pool_sizes = [(1,4), (1,4), (1,4)]
+	num_stacks = [48, 48, 48]
+
+	model = Sequential()
+	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same', 
+									input_shape=(1, height, width), 
+									subsample=(height/3, 1),
+									init='he_normal'))
+	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same', 
+									init='he_normal'))
+	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same', 
+									init='he_normal'))
+	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+	model.add(Flatten())
+
+	model.add(Dense(512, init='he_normal'))
+	model.add(BatchNormalization())
+	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+
+	model.add(Dense(512, init='he_normal'))
+	model.add(BatchNormalization())
+	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	model.add(Dense(num_labels, activation='sigmoid',
+								init='he_normal')) 
+	return model
+	
+
+
+
+
+#--------------------------------------------#
 
 def design_1d_time_convnet_model(setting_dict):
 	is_test = setting_dict["is_test"]
