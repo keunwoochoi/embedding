@@ -264,12 +264,15 @@ def design_gnu_convnet_model(setting_dict):
 	model.add(Flatten())
 
 	model.add(Dense(512, init='he_normal'))
+	model.add(Dropout(0.5))
 	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
 
 	model.add(Dense(512, init='he_normal'))
+	model.add(Dropout(0.5))
 	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+
 	model.add(Dense(num_labels, activation='sigmoid',
 								init='he_normal')) 
 	return model
@@ -281,8 +284,8 @@ def design_mfcc_convnet_model(setting_dict):
 	num_labels = setting_dict["dim_labels"]
 	#------------------------------------------------------------------#
 	num_channels=1
-	image_patch_sizes = [[height/3,1], [1,1], [1,1]]
-	pool_sizes = [(1,4), (1,4), (1,4)]
+	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
+	pool_sizes = [(1,3), (1,4), (1,4), (1,4)]
 	num_stacks = [48, 48, 48]
 
 	model = Sequential()
@@ -303,11 +306,13 @@ def design_mfcc_convnet_model(setting_dict):
 	
 	model.add(Flatten())
 
-	model.add(Dense(512, init='he_normal'))
+	model.add(Dense(2048, init='he_normal'))
+	model.add(Dropout(0.5))
 	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
 
-	model.add(Dense(512, init='he_normal'))
+	model.add(Dense(2048, init='he_normal'))
+	model.add(Dropout(0.5))
 	model.add(BatchNormalization())
 	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
 	model.add(Dense(num_labels, activation='sigmoid',
