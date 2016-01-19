@@ -290,7 +290,7 @@ def design_mfcc_convnet_model(setting_dict):
 	for conv_idx in range(3):
 		if conv_idx == 0:
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same', 
+									border_mode='valid', 
 									input_shape=(1, height, width), 
 									subsample=(height/3, 1),
 									init='he_normal'))
