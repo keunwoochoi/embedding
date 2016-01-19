@@ -186,13 +186,13 @@ def design_2d_convnet_model(setting_dict):
 		
 		# Activations
 		print ' ---->>%s activation is added' % activations[fc_idx]
-		if activations[fc_idx] == 'relu':
+		if activations_fc_layers[fc_idx] == 'relu':
 			model.add(Activation('relu'))
-		elif activations[fc_idx] == 'lrelu':
+		elif activations_fc_layers[fc_idx] == 'lrelu':
 			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.3))
-		elif activations[fc_idx] == 'prelu':
+		elif activations_fc_layers[fc_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations[fc_idx] == 'elu':
+		elif activations_fc_layers[fc_idx] == 'elu':
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print ' ---->>No activation here? No!'
@@ -317,13 +317,13 @@ def design_1d_time_convnet_model(setting_dict):
 		
 		# Activations
 		print ' ---->>%s activation is added' % activations[fc_idx]
-		if activations[fc_idx] == 'relu':
+		if activations_fc_layers[fc_idx] == 'relu':
 			model.add(Activation('relu'))
-		elif activations[fc_idx] == 'lrelu':
+		elif activations_fc_layers[fc_idx] == 'lrelu':
 			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.3))
-		elif activations[fc_idx] == 'prelu':
+		elif activations_fc_layers[fc_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations[fc_idx] == 'elu':
+		elif activations_fc_layers[fc_idx] == 'elu':
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print ' ---->>No activation here? No!'
