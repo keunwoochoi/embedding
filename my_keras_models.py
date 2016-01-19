@@ -23,12 +23,12 @@ def build_convnet_model(setting_dict):
 	learning_rate = setting_dict['learning_rate']
 	#------------------------------------------------------------------#
 	model_type = setting_dict["model_type"]
-	if model_types.startswith('vgg'):
+	if model_type.startswith('vgg'):
 		model = design_2d_convnet_model(setting_dict)
-	elif model_types.startswith('gnu'):
-		if model_types == 'gnu_1d':
+	elif model_type.startswith('gnu'):
+		if model_type == 'gnu_1d':
 			model = design_gnu_convnet_model(setting_dict)
-		elif model_types == 'gnu_mfcc':
+		elif model_type == 'gnu_mfcc':
 			model = design_mfcc_convnet_model(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
