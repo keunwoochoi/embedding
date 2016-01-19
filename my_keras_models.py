@@ -247,19 +247,20 @@ def design_gnu_convnet_model(setting_dict):
 	num_stacks = [48, 48, 48]
 
 	model = Sequential()
-	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same', 
-									input_shape=(1, height, width), 
-									init='he_normal'))
-	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
-	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same', 
-									init='he_normal'))
-	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
-	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same', 
-									init='he_normal'))
-	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+
+	for conv_idx in range(3):
+		if conv_idx == 0:
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+										border_mode='same', 
+										input_shape=(1, height, width), 
+										init='he_normal'))
+		else:
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+										border_mode='same', 
+										init='he_normal'))
+
+		model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+
 	model.add(Flatten())
 
 	model.add(Dense(512, init='he_normal'))
@@ -285,20 +286,21 @@ def design_mfcc_convnet_model(setting_dict):
 	num_stacks = [48, 48, 48]
 
 	model = Sequential()
-	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+
+	for conv_idx in range(3):
+		if conv_idx == 0:
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', 
 									input_shape=(1, height, width), 
 									subsample=(height/3, 1),
 									init='he_normal'))
-	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
-	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+		else:
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', 
 									init='he_normal'))
+	
 	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
-	model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same', 
-									init='he_normal'))
-	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+	
 	model.add(Flatten())
 
 	model.add(Dense(512, init='he_normal'))
