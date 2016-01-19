@@ -155,7 +155,7 @@ def run_with_setting(hyperparams, argv):
 	
 	# other constants
 	if hyperparams["tf_type"] == 'cqt':
-		batch_size = 48
+		batch_size = 24
 	elif hyperparams["tf_type"] == 'stft':
 		batch_size = 24
 	elif hyperparams["tf_type"] == 'mfcc':
@@ -164,8 +164,8 @@ def run_with_setting(hyperparams, argv):
 		batch_size = 96
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
-	if hyperparams['model_type'] == 'vgg_original':
-		batch_size = (batch_size * 3)/5
+	# if hyperparams['model_type'] == 'vgg_original':
+	# 	batch_size = (batch_size * 3)/5
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	if hyperparams['debug'] == True:
@@ -440,7 +440,15 @@ if __name__ == "__main__":
 	TR_CONST['isRegre'] = False
 	# TR_CONST['loss_function'] = 'categorical_crossentropy'
 	# TR_CONST["output_activation"] = 'sigmoid'
-
+	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
+	TR_CONST["activations_fc_layers"] = ['lrelu']
+	TR_CONST["BN"] = True
+	TR_CONST["BN_fc_layers"] = True
+	
+	TR_CONST["!memo"] = 'batch size is 1, it is a stochastic gradient descent.'
+	TR_CONST["dropouts_fc_layers"] = [0.5]
+	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
+	TR_CONST["num_layers"] = 4
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
