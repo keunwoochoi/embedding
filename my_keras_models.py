@@ -121,7 +121,7 @@ def design_2d_convnet_model(setting_dict):
 		if activations[conv_idx] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[conv_idx] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.3))
 		elif activations[conv_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
 		elif activations[conv_idx] == 'elu':
@@ -144,7 +144,7 @@ def design_2d_convnet_model(setting_dict):
 			if activations[conv_idx] == 'relu':
 				model.add(Activation('relu'))
 			elif activations[conv_idx] == 'lrelu':
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.2))
+				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.3))
 			elif activations[conv_idx] == 'prelu':
 				model.add(keras.layers.advanced_activations.PReLU())
 			elif activations[conv_idx] == 'elu':
@@ -189,7 +189,7 @@ def design_2d_convnet_model(setting_dict):
 		if activations[fc_idx] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[fc_idx] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.3))
 		elif activations[fc_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
 		elif activations[fc_idx] == 'elu':
@@ -280,7 +280,7 @@ def design_1d_time_convnet_model(setting_dict):
 		if activations[conv_idx] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[conv_idx] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.2))
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.3))
 		elif activations[conv_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
 		elif activations[conv_idx] == 'elu':
@@ -320,7 +320,7 @@ def design_1d_time_convnet_model(setting_dict):
 		if activations[fc_idx] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[fc_idx] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.3))
 		elif activations[fc_idx] == 'prelu':
 			model.add(keras.layers.advanced_activations.PReLU())
 		elif activations[fc_idx] == 'elu':
