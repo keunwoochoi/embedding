@@ -185,7 +185,7 @@ def design_2d_convnet_model(setting_dict):
 													init='he_normal'))
 		
 		# Activations
-		print ' ---->>%s activation is added' % activations[fc_idx]
+		print ' ---->>%s activation is added' % activations_fc_layers[fc_idx]
 		if activations_fc_layers[fc_idx] == 'relu':
 			model.add(Activation('relu'))
 		elif activations_fc_layers[fc_idx] == 'lrelu':
@@ -316,7 +316,7 @@ def design_1d_time_convnet_model(setting_dict):
 													init='he_normal'))
 		
 		# Activations
-		print ' ---->>%s activation is added' % activations[fc_idx]
+		print ' ---->>%s activation is added' % activations_fc_layers[fc_idx]
 		if activations_fc_layers[fc_idx] == 'relu':
 			model.add(Activation('relu'))
 		elif activations_fc_layers[fc_idx] == 'lrelu':
