@@ -5,7 +5,7 @@ import keras
 import os
 import pdb
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.layers.core import Dense, Dropout, Activation, Flatten, MaxoutDense
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import RMSprop, SGD
 from keras.layers.normalization import BatchNormalization
@@ -83,8 +83,6 @@ def design_2d_convnet_model(setting_dict):
 			pool_sizes = [(1,2)]*num_layers
 	elif model_type.startswith('flow'):
 		pass # less layers, bigger filter.
-
-	
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()
@@ -179,35 +177,39 @@ def design_2d_convnet_model(setting_dict):
 	#[Fully Connected Layers]
 	model.add(Flatten())
 	for fc_idx in xrange(num_fc_layers):
-		if setting_dict['regulariser_fc_layers'][fc_idx] is None:
-			W_regularizer = None
+		if setting_dict['maxout']:
+			model.add(MaxoutDense(nums_units_fc_layers[fc_idx]))
+			print ' --->>MaxoutDense added with %d output units' % nums_units_fc_layers[fc_idx]
 		else:
-			if setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l2':
-				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][fc_idx][1])
-			elif setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l1':
-				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
-		# dense layer
-		if not dropouts_fc_layers[fc_idx] == 0.0:
-			print ' ---->>Dense layer, %d, is added with dropout of %f.' % (nums_units_fc_layers[fc_idx], dropouts_fc_layers[fc_idx])
-			model.add(Dense(nums_units_fc_layers[fc_idx],init='he_normal'))
-		
-		else:
-			print ' ---->>Dense layer, %d, is added with regularizer.' % nums_units_fc_layers[fc_idx]
-			model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
-													init='he_normal'))
-		
-		# Activations
-		print ' ---->>%s activation is added' % activations_fc_layers[fc_idx]
-		if activations_fc_layers[fc_idx] == 'relu':
-			model.add(Activation('relu'))
-		elif activations_fc_layers[fc_idx] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-		elif activations_fc_layers[fc_idx] == 'prelu':
-			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations_fc_layers[fc_idx] == 'elu':
-			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
-		else:
-			print ' ---->>No activation here? No!'
+			if setting_dict['regulariser_fc_layers'][fc_idx] is None:
+				W_regularizer = None
+			else:
+				if setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l2':
+					W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][fc_idx][1])
+				elif setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l1':
+					W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
+			# dense layer
+			if not dropouts_fc_layers[fc_idx] == 0.0:
+				print ' ---->>Dense layer, %d, is added with dropout of %f.' % (nums_units_fc_layers[fc_idx], dropouts_fc_layers[fc_idx])
+				model.add(Dense(nums_units_fc_layers[fc_idx],init='he_normal'))
+			
+			else:
+				print ' ---->>Dense layer, %d, is added with regularizer.' % nums_units_fc_layers[fc_idx]
+				model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
+														init='he_normal'))
+			
+			# Activations
+			print ' ---->>%s activation is added' % activations_fc_layers[fc_idx]
+			if activations_fc_layers[fc_idx] == 'relu':
+				model.add(Activation('relu'))
+			elif activations_fc_layers[fc_idx] == 'lrelu':
+				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+			elif activations_fc_layers[fc_idx] == 'prelu':
+				model.add(keras.layers.advanced_activations.PReLU())
+			elif activations_fc_layers[fc_idx] == 'elu':
+				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+			else:
+				print ' ---->>No activation here? No!'
 		# Dropout
 		if not dropouts_fc_layers[fc_idx] == 0.0:
 			model.add(Dropout(dropouts_fc_layers[fc_idx]))
