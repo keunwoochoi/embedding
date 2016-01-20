@@ -36,8 +36,7 @@ def build_convnet_model(setting_dict):
 	elif optimizer_name == 'rmsprop':
 		optimiser = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-6)
 	elif optimizer_name == 'adagrad':
-		optimiser
-		 = keras.optimizers.Adagrad(lr=0.01, epsilon=1e-06)
+		optimiser = keras.optimizers.Adagrad(lr=0.01, epsilon=1e-06)
 	elif optimizer_name == 'adadelta':
 		optimiser = keras.optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-06)
 	elif optimizer_name == 'adam':
@@ -78,7 +77,7 @@ def design_2d_convnet_model(setting_dict):
 		if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
 			image_patch_sizes = [[3,3]]*num_layers
 			pool_sizes = [(2,2)]*num_layers
-			
+
 		elif setting_dict['tf_type'] == 'mfcc':
 			image_patch_sizes = [[height,1]]*num_layers
 			pool_sizes = [(1,2)]*num_layers
