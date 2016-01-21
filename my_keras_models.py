@@ -67,7 +67,7 @@ def design_2d_convnet_model(setting_dict):
 	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
 	activations_fc_layers = setting_dict["activations_fc_layers"]
 	#------------------------------------------------------------------#
-	vgg_modi_weight = [[48./32, 1], [2,48./32], [4, 3], [6, 4]] # 48-32, 64-48, 128-96 feature maps
+	vgg_modi_weight = [[48./32, 1], [1.5,48./32], [3, 1.5], [4, 2.5]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
 	# num_stacks[0] = max(num_stacks[0]/4, 16)
 	# num_stacks[1] = max(num_stacks[1]/2, 24)
