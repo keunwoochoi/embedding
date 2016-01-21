@@ -95,7 +95,7 @@ def design_2d_convnet_model(setting_dict):
 			if setting_dict['regulariser'][conv_idx][0] == 'l2':
 				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][conv_idx][1])
 				print ' ---->>prepare l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
-			elif setting_dict['regulariser'][i][0] == 'l1':
+			elif setting_dict['regulariser'][conv_idx][0] == 'l1':
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][conv_idx][1])
 				print ' ---->>prepare l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 
@@ -380,7 +380,7 @@ def design_1d_time_convnet_model(setting_dict):
 			if setting_dict['regulariser'][conv_idx][0] == 'l2':
 				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][conv_idx][1])
 				print ' ---->>prepare l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
-			elif setting_dict['regulariser'][i][0] == 'l1':
+			elif setting_dict['regulariser'][conv_idx][0] == 'l1':
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][conv_idx][1])
 				print ' ---->>prepare l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 
