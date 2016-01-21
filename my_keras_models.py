@@ -89,6 +89,7 @@ def design_2d_convnet_model(setting_dict):
 	model = Sequential()
 	#[Convolutional Layers]
 	for conv_idx in xrange(num_layers):
+		# prepare regularizer if needed.
 		if setting_dict['regulariser'][conv_idx] in [None, 0.0]:
 			W_regularizer = None
 		else:
@@ -132,6 +133,12 @@ def design_2d_convnet_model(setting_dict):
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		else:
 			print ' ---->>No activation here? No!'
+
+		if model_type in ['vgg_original', 'vgg_modi_1x1']:
+			# add dropout if it's one of the complex models
+			if not dropouts[conv_idx] == 0.0:
+				model.add(Dropout(dropouts[conv_idx]))
+				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 		
 		# [second conv layers] for vgg_original or vgg_modi
 		if model_type == 'vgg_modi_1x1':
@@ -172,10 +179,11 @@ def design_2d_convnet_model(setting_dict):
 		elif model_type.startswith('vgg_simple'):
 			print ' ---->>MP is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
-		# add dropout
-		if not dropouts[conv_idx] == 0.0:
-			model.add(Dropout(dropouts[conv_idx]))
-			print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
+		if model_type == 'vgg_simple':
+			# add dropout
+			if not dropouts[conv_idx] == 0.0:
+				model.add(Dropout(dropouts[conv_idx]))
+				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 		
 	#[Fully Connected Layers]
 	model.add(Flatten())
