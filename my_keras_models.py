@@ -118,7 +118,7 @@ def design_2d_convnet_model(setting_dict):
 		# add BN
 		if setting_dict['BN']:
 			print ' ---->>BN is added for conv layer'
-			model.add(BatchNormalization())
+			model.add(BatchNormalization(axis=1))
 
 		# add activation
 		print ' ---->>%s activation is added.' % activations[conv_idx]
@@ -144,14 +144,14 @@ def design_2d_convnet_model(setting_dict):
 			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 		elif model_type == 'vgg_modi_1x1':
-			print ' ---->>additional conv layer is added for vgg_modi_1x1, %d' % (num_stacks[conv_idx])
+			print ' ---->>additional conv layer is added for vgg_modi_1x1, %d' % (n_feat_here)
 			model.add(Convolution2D(n_feat_here, 1, 1, 
 									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 
 		if model_type in ['vgg_original', 'vgg_modi_1x1']:
 			if setting_dict['BN']:
 				print ' ---->>and BN,'
-				model.add(BatchNormalization())
+				model.add(BatchNormalization(axis=1))
 			# add activation
 			print ' ---->>and %s activaion.' % activations[conv_idx]
 			if activations[conv_idx] == 'relu':
