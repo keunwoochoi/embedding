@@ -67,7 +67,7 @@ def design_2d_convnet_model(setting_dict):
 	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
 	activations_fc_layers = setting_dict["activations_fc_layers"]
 	#------------------------------------------------------------------#
-	vgg_modi_weight = [[48/32, 1], [2,48/32], [4, 3], [6, 4]] # 48-32, 64-48, 128-96 feature maps
+	vgg_modi_weight = [[48./32, 1], [2,48./32], [4, 3], [6, 4]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
 	# num_stacks[0] = max(num_stacks[0]/4, 16)
 	# num_stacks[1] = max(num_stacks[1]/2, 24)
@@ -101,7 +101,7 @@ def design_2d_convnet_model(setting_dict):
 
 		# add conv layer
 		if model_type == 'vgg_modi_1x1':
-			n_feat_here = num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0]
+			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 		else:
 			n_feat_here = num_stacks[conv_idx]
 		if conv_idx == 0:
@@ -135,7 +135,7 @@ def design_2d_convnet_model(setting_dict):
 		
 		# [second conv layers] for vgg_original or vgg_modi
 		if model_type == 'vgg_modi_1x1':
-			n_feat_here = num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1]
+			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
 		else:
 			n_feat_here = num_stacks[conv_idx]
 
