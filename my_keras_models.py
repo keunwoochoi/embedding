@@ -67,6 +67,7 @@ def design_2d_convnet_model(setting_dict):
 	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
 	activations_fc_layers = setting_dict["activations_fc_layers"]
 	#------------------------------------------------------------------#
+	vgg_modi_weight = [[48/32, 1], [2,48/32], [4, 3], [6, 4]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
 	# num_stacks[0] = max(num_stacks[0]/4, 16)
 	# num_stacks[1] = max(num_stacks[1]/2, 24)
@@ -99,19 +100,20 @@ def design_2d_convnet_model(setting_dict):
 				print ' ---->>prepare l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 
 		# add conv layer
+		if model_type == 'vgg_modi_1x1':
+			n_feat_here = num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0]
+		else:
+			n_feat_here = num_stacks[conv_idx]
 		if conv_idx == 0:
-			print ' ---->>First conv layer is being added! wigh %d' % num_stacks[conv_idx]
-			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same', 
-									input_shape=(num_channels, height, width), 
-									W_regularizer=W_regularizer,
-									init='he_normal'))
+			print ' ---->>First conv layer is being added! wigh %d' % n_feat_here
+			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same', input_shape=(num_channels, height, width), 
+									W_regularizer=W_regularizer, init='he_normal'))
 
 		else:
-			print ' ---->>%d-th conv layer is being added with %d units' % (conv_idx, num_stacks[conv_idx])
-			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same',
-									W_regularizer=W_regularizer,
+			print ' ---->>%d-th conv layer is being added with %d units' % (conv_idx, n_feat_here)
+			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same',	W_regularizer=W_regularizer,
 									init='he_normal'))
 		# add BN
 		if setting_dict['BN']:
@@ -131,19 +133,20 @@ def design_2d_convnet_model(setting_dict):
 		else:
 			print ' ---->>No activation here? No!'
 		
-		
+		# [second conv layers] for vgg_original or vgg_modi
+		if model_type == 'vgg_modi_1x1':
+			n_feat_here = num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1]
+		else:
+			n_feat_here = num_stacks[conv_idx]
+
 		if model_type == 'vgg_original':
-			print ' ---->>additional conv layer is added for vgg_original, %d' % (num_stacks[conv_idx])
-			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same',
-									W_regularizer=W_regularizer,
-									init='he_normal'))
+			print ' ---->>additional conv layer is added for vgg_original, %d' % (n_feat_here)
+			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 		elif model_type == 'vgg_modi_1x1':
 			print ' ---->>additional conv layer is added for vgg_modi_1x1, %d' % (num_stacks[conv_idx])
-			model.add(Convolution2D(num_stacks[conv_idx], 1, 1, 
-									border_mode='same',
-									W_regularizer=W_regularizer,
-									init='he_normal'))
+			model.add(Convolution2D(n_feat_here, 1, 1, 
+									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 
 		if model_type in ['vgg_original', 'vgg_modi_1x1']:
 			if setting_dict['BN']:
@@ -210,6 +213,7 @@ def design_2d_convnet_model(setting_dict):
 				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 			else:
 				print ' ---->>No activation here? No!'
+		
 		# Dropout
 		if not dropouts_fc_layers[fc_idx] == 0.0:
 			model.add(Dropout(dropouts_fc_layers[fc_idx]))
@@ -217,7 +221,8 @@ def design_2d_convnet_model(setting_dict):
 		# BN
 		if setting_dict['BN_fc_layers']:
 			print ' ---->>BN for dense is added'
-			model.add(BatchNormalization())
+			model.add(BatchNormalization()) ## BN vs Dropout - who's first?
+		
 
 	#[Output layer]
 	if setting_dict["output_activation"]:
