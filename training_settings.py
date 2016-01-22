@@ -38,3 +38,5 @@ TR_CONST["is_test"] = False
 TR_CONST["maxout"] = False
 
 TR_CONST["conv_mode"] = '2d'
+
+TR_CONST["do_not_learn"] = False # if true, prediction only after resuming.

@@ -188,18 +188,21 @@ def design_2d_convnet_model(setting_dict):
 	#[Fully Connected Layers]
 	model.add(Flatten())
 	for fc_idx in xrange(num_fc_layers):
+		# setup regulariser
+		if setting_dict['regulariser_fc_layers'][fc_idx] is None:
+			W_regularizer = None
+		else:
+			if setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l2':
+				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][fc_idx][1])
+			elif setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l1':
+				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
+		# maxout...
 		if setting_dict['maxout']:
-			model.add(MaxoutDense(nums_units_fc_layers[fc_idx]))
+			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer))
 			print ' --->>MaxoutDense added with %d output units' % nums_units_fc_layers[fc_idx]
 		else:
-			if setting_dict['regulariser_fc_layers'][fc_idx] is None:
-				W_regularizer = None
-			else:
-				if setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l2':
-					W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][fc_idx][1])
-				elif setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l1':
-					W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
-			# dense layer
+			
+			# ..or, dense layer
 			if not dropouts_fc_layers[fc_idx] == 0.0:
 				print ' ---->>Dense layer, %d, is added with dropout of %f.' % (nums_units_fc_layers[fc_idx], dropouts_fc_layers[fc_idx])
 				model.add(Dense(nums_units_fc_layers[fc_idx],init='he_normal'))
