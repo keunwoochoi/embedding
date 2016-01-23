@@ -118,6 +118,7 @@ def save_weights_changes_plot(weight_changes, save_path):
 	lgd = ax.legend([('layer_%d'%idx) for idx in xrange(num_layer)], loc='best')
 	ax.set_title('average weight changes amounts')
 	fig.savefig(save_path + 'average_weight_changes.png')
+	plt.close()
 
 
 def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='local', mono=True):

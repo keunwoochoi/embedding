@@ -16,6 +16,11 @@ import keras.regularizers
 
 leakage = 0.03
 
+#------------- Element functions ------------- #
+
+
+#-------------
+
 def build_convnet_model(setting_dict):
 	start = time.time()
 	loss_function = setting_dict["loss_function"]
@@ -66,6 +71,7 @@ def design_2d_convnet_model(setting_dict):
 	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
 	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
 	activations_fc_layers = setting_dict["activations_fc_layers"]
+	mp_strides = [(2,2)]*setting_dict['num_layers']
 	#------------------------------------------------------------------#
 	vgg_modi_weight = [[48./32, 1], [1.5,48./32], [3, 1.5], [4, 2.5]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
@@ -74,9 +80,25 @@ def design_2d_convnet_model(setting_dict):
 
 	if model_type.startswith('vgg'):
 		# layers = 4,5,6
-		if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
-			image_patch_sizes = [[3,3]]*num_layers
-			pool_sizes = [(2,2)]*num_layers
+		if model_type.startswith('vgg_modi_'): # vgg_modi_1x1, vgg_modi_3x3
+			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
+				image_patch_sizes = [[3,3]]*num_layers
+				pool_sizes = [(2,2)]*num_layers
+				if num_layers == 4: # so that height(128) becomes 2 
+					mp_strides[0] = (1,1)
+					mp_strides[1] = (1,1)
+					
+				elif num_layers == 5:
+					mp_strides[0] = (1,1)
+					mp_strides[1] = (1,1)
+					mp_strides[1] = (1,1)
+					mp_strides[1] = (1,1) #
+			else:
+				raise RuntimeError('with vgg_modi, no mfcc.')
+		else:
+			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
+				image_patch_sizes = [[3,3]]*num_layers
+				pool_sizes = [(2,2)]*num_layers
 
 		elif setting_dict['tf_type'] == 'mfcc':
 			image_patch_sizes = [[height,1]]*num_layers
@@ -152,24 +174,24 @@ def design_2d_convnet_model(setting_dict):
 				n_feat_here = num_stacks[conv_idx]
 
 			if model_type == 'vgg_original':
-				print ' ---->>additional conv layer is added for vgg_original, %d' % (n_feat_here)
+				print ' ---->>  additional conv layer is added for vgg_original, %d' % (n_feat_here)
 				model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 										border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 			elif model_type == 'vgg_modi_1x1':
-				print ' ---->>additional conv layer is added for vgg_modi_1x1, %d' % (n_feat_here)
+				print ' ---->>  additional conv layer is added for vgg_modi_1x1, %d' % (n_feat_here)
 				model.add(Convolution2D(n_feat_here, 1, 1, 
 										border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 			elif model_type == 'vgg_modi_3x3':
-				print ' ---->>additional conv layer is added for vgg_modi_3x3, %d' % (n_feat_here)
+				print ' ---->>  additional conv layer is added for vgg_modi_3x3, %d' % (n_feat_here)
 				model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 										border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 
 			if setting_dict['BN']:
-				print ' ---->>and BN,'
+				print ' ---->>  and BN,'
 				model.add(BatchNormalization(axis=1))
 			# add activation
 			
-			print ' ---->>%s activation is added.' % activations[0]
+			print ' ---->>  %s activation is added.' % activations[0]
 			if activations[0] == 'relu':
 				model.add(Activation('relu'))
 			elif activations[0] == 'lrelu':
@@ -182,11 +204,11 @@ def design_2d_convnet_model(setting_dict):
 		#[third conv layer] for vgg_modi_3x3
 		if model_type == 'vgg_modi_3x3':
 			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
-			print ' ---->>3rd 1x1 conv layer is added for vgg_modi_3x3, %d' % (n_feat_here)
+			print ' ---->>     one more additional 1x1 conv layer is added for vgg_modi_3x3, %d' % (n_feat_here)
 			model.add(Convolution2D(n_feat_here, 1, 1, 
 									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 			if setting_dict['BN']:
-				print ' ---->>and BN,'
+				print ' ---->>    and BN + elu'
 				model.add(BatchNormalization(axis=1))
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 
