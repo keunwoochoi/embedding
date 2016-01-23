@@ -91,8 +91,8 @@ def design_2d_convnet_model(setting_dict):
 				elif num_layers == 5:
 					mp_strides[0] = (1,1)
 					mp_strides[1] = (1,1)
-					mp_strides[1] = (1,1)
-					mp_strides[1] = (1,1) #
+					mp_strides[2] = (1,1)
+					mp_strides[3] = (1,1) #
 			else:
 				raise RuntimeError('with vgg_modi, no mfcc.')
 		else:
@@ -214,8 +214,8 @@ def design_2d_convnet_model(setting_dict):
 
 		# add pooling
 		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
-			print ' ---->>MP with (2,2) strides is added', pool_sizes[conv_idx]
-			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx], strides=(2, 2)))
+			print ' ---->>MP with (2,2) strides is added', pool_sizes[conv_idx], mp_strides[conv_idx]
+			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx], strides=mp_strides[conv_idx]))
 		elif model_type.startswith('vgg_simple'):
 			print ' ---->>MP is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
