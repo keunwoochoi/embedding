@@ -69,6 +69,7 @@ def design_2d_convnet_model(setting_dict):
 	#------------------------------------------------------------------#
 	vgg_modi_weight = [[48./32, 1], [1.5,48./32], [3, 1.5], [4, 2.5]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
+	sigma = 0.3
 	# num_stacks[0] = max(num_stacks[0]/4, 16)
 	# num_stacks[1] = max(num_stacks[1]/2, 24)
 	# num_stacks[2] = max(num_stacks[2]/2, 24)
@@ -87,6 +88,10 @@ def design_2d_convnet_model(setting_dict):
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()
+
+	# additive gaussian noise
+	model.add(keras.layers.noise.GaussianNoise(sigma, input_shape=(num_channels, height, width)))
+
 	#[Convolutional Layers]
 	for conv_idx in xrange(num_layers):
 		# prepare regularizer if needed.
@@ -105,7 +110,7 @@ def design_2d_convnet_model(setting_dict):
 			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 		else:
 			n_feat_here = num_stacks[conv_idx]
-		if conv_idx == 0:
+		if conv_idx == 0 and not setting_dict['gaussian_noise']:
 			print ' ---->>First conv layer is being added! wigh %d' % n_feat_here
 			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', input_shape=(num_channels, height, width), 

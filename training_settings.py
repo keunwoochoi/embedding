@@ -16,7 +16,7 @@ TR_CONST["optimiser"] = 'adagrad'
 TR_CONST['learning_rate'] = 3e-7
 
 TR_CONST["num_layers"] = 5 # can be overriden
-TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]
+TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]s
 TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
 TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
 TR_CONST["regulariser"] = [('l2', 5e-4)]*TR_CONST["num_layers"] # use [None] not to use.
