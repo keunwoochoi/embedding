@@ -35,7 +35,7 @@ def build_convnet_model(setting_dict):
 			model = design_gnu_convnet_model(setting_dict)
 		elif model_type == 'gnu_mfcc':
 			model = design_mfcc_convnet_model(setting_dict)
-	elif model_type == 'residual'
+	elif model_type == 'residual':
 		model = design_residual_model(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
@@ -288,6 +288,7 @@ def design_2d_convnet_model(setting_dict):
 
 def design_residual_model(setting_dict):
 	'''residual net using graph'''
+	pass
 
 
 
