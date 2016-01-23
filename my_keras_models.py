@@ -96,7 +96,9 @@ def design_2d_convnet_model(setting_dict):
 	model = Sequential()
 
 	# additive gaussian noise
-	model.add(keras.layers.noise.GaussianNoise(sigma, input_shape=(num_channels, height, width)))
+	if setting_dict['gaussian_noise']:
+		print 'add gaussian noise '
+		model.add(keras.layers.noise.GaussianNoise(sigma, input_shape=(num_channels, height, width)))
 
 	#[Convolutional Layers]
 	for conv_idx in xrange(num_layers):
