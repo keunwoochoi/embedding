@@ -69,7 +69,7 @@ def design_2d_convnet_model(setting_dict):
 	#------------------------------------------------------------------#
 	vgg_modi_weight = [[48./32, 1], [1.5,48./32], [3, 1.5], [4, 2.5]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
-	sigma = 0.3
+	sigma = setting_dict['gn_sigma']
 	# num_stacks[0] = max(num_stacks[0]/4, 16)
 	# num_stacks[1] = max(num_stacks[1]/2, 24)
 	# num_stacks[2] = max(num_stacks[2]/2, 24)

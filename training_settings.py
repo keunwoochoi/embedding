@@ -40,3 +40,5 @@ TR_CONST["maxout"] = False
 TR_CONST["conv_mode"] = '2d'
 
 TR_CONST["do_not_learn"] = False # if true, prediction only after resuming.
+TR_CONST["gaussian_noise"] = False
+TR_CONST["gn_sigma"] = 0.3
