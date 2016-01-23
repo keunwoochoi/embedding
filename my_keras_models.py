@@ -100,9 +100,9 @@ def design_2d_convnet_model(setting_dict):
 				image_patch_sizes = [[3,3]]*num_layers
 				pool_sizes = [(2,2)]*num_layers
 
-		elif setting_dict['tf_type'] == 'mfcc':
-			image_patch_sizes = [[height,1]]*num_layers
-			pool_sizes = [(1,2)]*num_layers
+			elif setting_dict['tf_type'] == 'mfcc':
+				image_patch_sizes = [[height,1]]*num_layers
+				pool_sizes = [(1,2)]*num_layers
 	elif model_type.startswith('flow'):
 		pass # less layers, bigger filter.
 	#-------------------------------#
