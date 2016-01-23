@@ -69,10 +69,16 @@ def design_2d_convnet_model(setting_dict):
 	#------------------------------------------------------------------#
 	vgg_modi_weight = [[48./32, 1], [1.5,48./32], [3, 1.5], [4, 2.5]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
-	sigma = setting_dict['gn_sigma']
-	# num_stacks[0] = max(num_stacks[0]/4, 16)
-	# num_stacks[1] = max(num_stacks[1]/2, 24)
-	# num_stacks[2] = max(num_stacks[2]/2, 24)
+	sigma = setting_dict['gn_sigma']	
+	if activations[0] == 'relu':
+		activation = Activation('relu')
+	elif activations[0] == 'lrelu':
+		activation = keras.layers.advanced_activations.LeakyReLU(alpha=leakage)
+	elif activations[0] == 'prelu':
+		activation = keras.layers.advanced_activations.PReLU()
+	elif activations[0] == 'elu':
+		activation = keras.layers.advanced_activations.ELU(alpha=1.0)
+	#-----------------------
 
 	if model_type.startswith('vgg'):
 		# layers = 4,5,6
@@ -106,7 +112,7 @@ def design_2d_convnet_model(setting_dict):
 				print ' ---->>prepare l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
 
 		# add conv layer
-		if model_type == 'vgg_modi_1x1':
+		if model_type.startswith('vgg_modi'):
 			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 		else:
 			n_feat_here = num_stacks[conv_idx]
@@ -127,58 +133,54 @@ def design_2d_convnet_model(setting_dict):
 			model.add(BatchNormalization(axis=1))
 
 		# add activation
-		print ' ---->>%s activation is added.' % activations[conv_idx]
-		if activations[conv_idx] == 'relu':
-			model.add(Activation('relu'))
-		elif activations[conv_idx] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-		elif activations[conv_idx] == 'prelu':
-			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations[conv_idx] == 'elu':
-			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
-		else:
-			print ' ---->>No activation here? No!'
-
-		if model_type in ['vgg_original', 'vgg_modi_1x1']:
-			# add dropout if it's one of the complex models
-			if not dropouts[conv_idx] == 0.0:
-				model.add(Dropout(dropouts[conv_idx]))
-				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
+		print ' ---->>%s activation is added.' % activations[0]
+		model.add(activation)
 		
+		if not dropouts[conv_idx] == 0.0:
+			model.add(Dropout(dropouts[conv_idx]))
+			print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
+	
 		# [second conv layers] for vgg_original or vgg_modi
-		if model_type == 'vgg_modi_1x1':
-			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
-		else:
-			n_feat_here = num_stacks[conv_idx]
+		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
 
-		if model_type == 'vgg_original':
-			print ' ---->>additional conv layer is added for vgg_original, %d' % (n_feat_here)
-			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
-		elif model_type == 'vgg_modi_1x1':
-			print ' ---->>additional conv layer is added for vgg_modi_1x1, %d' % (n_feat_here)
-			model.add(Convolution2D(n_feat_here, 1, 1, 
-									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
+			if model_type == 'vgg_modi_1x1':
+				n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
+			else:
+				n_feat_here = num_stacks[conv_idx]
 
-		if model_type in ['vgg_original', 'vgg_modi_1x1']:
+			if model_type == 'vgg_original':
+				print ' ---->>additional conv layer is added for vgg_original, %d' % (n_feat_here)
+				model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+										border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
+			elif model_type == 'vgg_modi_1x1':
+				print ' ---->>additional conv layer is added for vgg_modi_1x1, %d' % (n_feat_here)
+				model.add(Convolution2D(n_feat_here, 1, 1, 
+										border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
+			elif model_type == 'vgg_modi_3x3':
+				print ' ---->>additional conv layer is added for vgg_modi_3x3, %d' % (n_feat_here)
+				model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+										border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
+
 			if setting_dict['BN']:
 				print ' ---->>and BN,'
 				model.add(BatchNormalization(axis=1))
 			# add activation
-			print ' ---->>and %s activaion.' % activations[conv_idx]
-			if activations[conv_idx] == 'relu':
-				model.add(Activation('relu'))
-			elif activations[conv_idx] == 'lrelu':
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=0.1))
-			elif activations[conv_idx] == 'prelu':
-				model.add(keras.layers.advanced_activations.PReLU())
-			elif activations[conv_idx] == 'elu':
-				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
-			else:
-				print ' ---->>No activation here? No!'
-			
+			print ' ---->>%s activation is added.' % activations[0]
+			model.add(activation)
+		
+		#[third conv layer] for vgg_modi_3x3
+		if model_type == 'vgg_modi_3x3':
+			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
+			print ' ---->>3rd 1x1 conv layer is added for vgg_modi_3x3, %d' % (n_feat_here)
+			model.add(Convolution2D(n_feat_here, 1, 1, 
+									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
+			if setting_dict['BN']:
+				print ' ---->>and BN,'
+				model.add(BatchNormalization(axis=1))
+			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+
 		# add pooling
-		if model_type in ['vgg_original', 'vgg_modi_1x1']:
+		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
 			print ' ---->>MP with (2,2) strides is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx], strides=(2, 2)))
 		elif model_type.startswith('vgg_simple'):
@@ -218,17 +220,8 @@ def design_2d_convnet_model(setting_dict):
 														init='he_normal'))
 			
 			# Activations
-			print ' ---->>%s activation is added' % activations_fc_layers[fc_idx]
-			if activations_fc_layers[fc_idx] == 'relu':
-				model.add(Activation('relu'))
-			elif activations_fc_layers[fc_idx] == 'lrelu':
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-			elif activations_fc_layers[fc_idx] == 'prelu':
-				model.add(keras.layers.advanced_activations.PReLU())
-			elif activations_fc_layers[fc_idx] == 'elu':
-				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
-			else:
-				print ' ---->>No activation here? No!'
+			print ' ---->>%s activation is added.' % activations[0]
+			model.add(activation)
 		
 		# Dropout
 		if not dropouts_fc_layers[fc_idx] == 0.0:
