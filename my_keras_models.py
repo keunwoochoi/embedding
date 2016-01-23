@@ -70,14 +70,6 @@ def design_2d_convnet_model(setting_dict):
 	vgg_modi_weight = [[48./32, 1], [1.5,48./32], [3, 1.5], [4, 2.5]] # 48-32, 64-48, 128-96 feature maps
 	num_channels=1
 	sigma = setting_dict['gn_sigma']	
-	if activations[0] == 'relu':
-		activation = Activation('relu')
-	elif activations[0] == 'lrelu':
-		activation = keras.layers.advanced_activations.LeakyReLU(alpha=leakage)
-	elif activations[0] == 'prelu':
-		activation = keras.layers.advanced_activations.PReLU()
-	elif activations[0] == 'elu':
-		activation = keras.layers.advanced_activations.ELU(alpha=1.0)
 	#-----------------------
 
 	if model_type.startswith('vgg'):
@@ -118,6 +110,7 @@ def design_2d_convnet_model(setting_dict):
 			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 		else:
 			n_feat_here = num_stacks[conv_idx]
+
 		if conv_idx == 0 and not setting_dict['gaussian_noise']:
 			print ' ---->>First conv layer is being added! wigh %d' % n_feat_here
 			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
@@ -136,7 +129,15 @@ def design_2d_convnet_model(setting_dict):
 
 		# add activation
 		print ' ---->>%s activation is added.' % activations[0]
-		model.add(activation)
+		if activations[0] == 'relu':
+			model.add(Activation('relu'))
+		elif activations[0] == 'lrelu':
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+		elif activations[0] == 'prelu':
+			model.add(keras.layers.advanced_activations.PReLU())
+		elif activations[0] == 'elu':
+			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+	
 		
 		if not dropouts[conv_idx] == 0.0:
 			model.add(Dropout(dropouts[conv_idx]))
@@ -167,8 +168,16 @@ def design_2d_convnet_model(setting_dict):
 				print ' ---->>and BN,'
 				model.add(BatchNormalization(axis=1))
 			# add activation
+			
 			print ' ---->>%s activation is added.' % activations[0]
-			model.add(activation)
+			if activations[0] == 'relu':
+				model.add(Activation('relu'))
+			elif activations[0] == 'lrelu':
+				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+			elif activations[0] == 'prelu':
+				model.add(keras.layers.advanced_activations.PReLU())
+			elif activations[0] == 'elu':
+				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		
 		#[third conv layer] for vgg_modi_3x3
 		if model_type == 'vgg_modi_3x3':
@@ -223,7 +232,14 @@ def design_2d_convnet_model(setting_dict):
 			
 			# Activations
 			print ' ---->>%s activation is added.' % activations[0]
-			model.add(activation)
+			if activations[0] == 'relu':
+				model.add(Activation('relu'))
+			elif activations[0] == 'lrelu':
+				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+			elif activations[0] == 'prelu':
+				model.add(keras.layers.advanced_activations.PReLU())
+			elif activations[0] == 'elu':
+				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		
 		# Dropout
 		if not dropouts_fc_layers[fc_idx] == 0.0:
@@ -234,7 +250,6 @@ def design_2d_convnet_model(setting_dict):
 			print ' ---->>BN for dense is added'
 			model.add(BatchNormalization()) ## BN vs Dropout - who's first?
 		
-
 	#[Output layer]
 	if setting_dict["output_activation"]:
 		print ' ---->>Output dense and activation is: %s with %d units' % (setting_dict["output_activation"], num_labels)
