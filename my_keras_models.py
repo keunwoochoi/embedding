@@ -35,6 +35,8 @@ def build_convnet_model(setting_dict):
 			model = design_gnu_convnet_model(setting_dict)
 		elif model_type == 'gnu_mfcc':
 			model = design_mfcc_convnet_model(setting_dict)
+	elif model_type == 'residual'
+		model = design_residual_model(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-5, nesterov=True)
@@ -85,11 +87,11 @@ def design_2d_convnet_model(setting_dict):
 				image_patch_sizes = [[3,3]]*num_layers
 				pool_sizes = [(2,2)]*num_layers
 				if num_layers == 4: # so that height(128) becomes 2 
-					mp_strides[0] = (1,1)
+					mp_strides[0] = (1,2)
 					mp_strides[1] = (1,1)
 					
 				elif num_layers == 5:
-					mp_strides[0] = (1,1)
+					mp_strides[0] = (1,2)
 					mp_strides[1] = (1,1)
 					mp_strides[2] = (1,1)
 					mp_strides[3] = (1,1) #
@@ -282,6 +284,11 @@ def design_2d_convnet_model(setting_dict):
 		model.add(Dense(num_labels, activation='linear')) 
 
 	return model	
+
+
+def design_residual_model(setting_dict):
+	'''residual net using graph'''
+
 
 
 def design_gnu_convnet_model(setting_dict):
