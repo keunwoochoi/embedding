@@ -103,12 +103,12 @@ def design_2d_convnet_model(setting_dict):
 					# mp_strides[3] = (3,3)
 					
 				elif num_layers == 5:
-					vgg_modi_weight = [[3, 2], [4, 3], [6, 4], [8, 6], [12, 8]] 
+					vgg_modi_weight = [[3, 2], [4, 3], [6, 4], [8, 6], [12, 8]] # final layer: 8x32=256 featue maps, 
 					pool_sizes[0] = (2,3) # mel input: 128x252
 					pool_sizes[1] = (2,3)
 					pool_sizes[2] = (2,2)
 					pool_sizes[3] = (2,2)
-					pool_sizes[4] = (2,2) # --> output: (4x3)
+					pool_sizes[4] = (2,2) # --> output: (4x3) --> 12 * 256 = 3072 values.
 					# mp_strides[0] = (1,1)
 					# mp_strides[1] = (1,1)
 					# mp_strides[2] = (1,1)
@@ -187,7 +187,7 @@ def design_2d_convnet_model(setting_dict):
 		# [second conv layers] for vgg_original or vgg_modi
 		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
 
-			if model_type == 'vgg_modi_1x1':
+			if model_type.startswith('vgg_modi'):
 				n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
 			else:
 				n_feat_here = num_stacks[conv_idx]
@@ -233,7 +233,7 @@ def design_2d_convnet_model(setting_dict):
 
 		# add pooling
 		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
-			print ' ---->>MP with (2,2) strides is added', pool_sizes[conv_idx]
+			print ' ---->>MP is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 		elif model_type.startswith('vgg_simple'):
 			print ' ---->>MP is added', pool_sizes[conv_idx]
