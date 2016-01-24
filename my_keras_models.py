@@ -188,7 +188,7 @@ def design_2d_convnet_model(setting_dict):
 		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
 
 			if model_type.startswith('vgg_modi'):
-				n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
+				n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 			else:
 				n_feat_here = num_stacks[conv_idx]
 
