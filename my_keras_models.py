@@ -85,24 +85,30 @@ def design_2d_convnet_model(setting_dict):
 			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
 				image_patch_sizes = [[3,3]]*num_layers
 				pool_sizes = [(2,2)]*num_layers
-				if num_layers == 4: # so that height(128) becomes 2 
-					vgg_modi_weight = [[2, 1], [4,2], [6, 4], [8, 6]] 
+				if num_layers == 3:
+					vgg_modi_weight = [[4, 2], [8, 4], [12, 8]] 
+					pool_sizes[0] = (2,5)
+					pool_sizes[1] = (4,5)
+					pool_sizes[2] = (4,3) # --> output: (4x2)
+
+				elif num_layers == 4: # so that height(128) becomes 2 
+					vgg_modi_weight = [[3, 2], [6, 4], [8, 6], [12, 8]] 
 					pool_sizes[0] = (2,4)
 					pool_sizes[1] = (2,4)
 					pool_sizes[2] = (2,3)
-					pool_sizes[3] = (4,2)
+					pool_sizes[3] = (4,2) # --> output: (4x2)
 					# mp_strides[0] = (2,3)
 					# mp_strides[1] = (2,3)
 					# mp_strides[2] = (2,3)
 					# mp_strides[3] = (3,3)
 					
 				elif num_layers == 5:
-					vgg_modi_weight = [[2, 1], [4,2], [6, 4], [8, 6], [12, 8]] 
-					pool_sizes[0] = (2,3)
+					vgg_modi_weight = [[3, 2], [4, 3], [6, 4], [8, 6], [12, 8]] 
+					pool_sizes[0] = (2,3) # mel input: 128x252
 					pool_sizes[1] = (2,3)
 					pool_sizes[2] = (2,2)
 					pool_sizes[3] = (2,2)
-					pool_sizes[4] = (2,2)
+					pool_sizes[4] = (2,2) # --> output: (4x3)
 					# mp_strides[0] = (1,1)
 					# mp_strides[1] = (1,1)
 					# mp_strides[2] = (1,1)
