@@ -93,10 +93,10 @@ def design_2d_convnet_model(setting_dict):
 
 				elif num_layers == 4: # so that height(128) becomes 2 
 					vgg_modi_weight = [[3, 2], [6, 4], [8, 6], [12, 8]] 
-					pool_sizes[0] = (2,4)
-					pool_sizes[1] = (2,4)
-					pool_sizes[2] = (2,3)
-					pool_sizes[3] = (4,2) # --> output: (4x2)
+					pool_sizes[0] = (2,2)
+					pool_sizes[1] = (2,2)
+					pool_sizes[2] = (2,2)
+					pool_sizes[3] = (2,2) # --> output: (4x2)
 					# mp_strides[0] = (2,3)
 					# mp_strides[1] = (2,3)
 					# mp_strides[2] = (2,3)
