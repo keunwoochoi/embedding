@@ -10,9 +10,15 @@ from scipy.misc import imsave
 from numpngw import write_png
 import numpy.ma as ma
 
-def export_list_png(lst, out_filename='auc.png'):
-	'''export any list as plot'''
+def export_list_png(lst, out_filename='auc.png', title=None):
+	'''export any list as plot
+	title; string for the image
+	'''
 	f = plt.plot(lst)
+	plt.ylim([0,1])
+
+	if title:
+		plt.set_title(title)
 	plt.savefig(out_filename)
 	plt.close()
 
