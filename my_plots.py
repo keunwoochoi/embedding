@@ -10,6 +10,12 @@ from scipy.misc import imsave
 from numpngw import write_png
 import numpy.ma as ma
 
+def export_list_png(lst, out_filename='auc.png'):
+	'''export any list as plot'''
+	f = plt.plot(lst)
+	plt.savefig(out_filename)
+	plt.close()
+
 def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history.png'):
 	'''
 	subplots of loss and acc

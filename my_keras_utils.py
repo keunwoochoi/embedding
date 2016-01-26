@@ -75,7 +75,6 @@ class History_Regression_Val(keras.callbacks.Callback):
 		self.val_losses = []
 
 	def on_epoch_end(self, batch, logs={}):
-		pdb.set_trace()
 		self.losses.append(logs.get('loss'))
 		self.val_losses.append(logs.get('val_loss'))
 

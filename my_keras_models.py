@@ -14,7 +14,7 @@ import time
 
 import keras.regularizers
 
-leakage = 0.03
+leakage = 0.03 
 
 #------------- Element functions ------------- #
 
@@ -130,7 +130,7 @@ def design_2d_convnet_model(setting_dict):
 
 	# additive gaussian noise
 	if setting_dict['gaussian_noise']:
-		print 'add gaussian noise '
+		print ' ---->>add gaussian noise '
 		model.add(keras.layers.noise.GaussianNoise(sigma, input_shape=(num_channels, height, width)))
 
 	#[Convolutional Layers]
