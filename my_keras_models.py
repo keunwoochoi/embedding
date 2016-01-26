@@ -96,19 +96,19 @@ def design_2d_convnet_model(setting_dict):
 					pool_sizes[0] = (2,4)
 					pool_sizes[1] = (2,4)
 					pool_sizes[2] = (2,3)
-					pool_sizes[3] = (4,2) # --> output: 2x4
+					pool_sizes[3] = (4,2) # --> output: 2x2
 					# mp_strides[0] = (2,3)
 					# mp_strides[1] = (2,3)
 					# mp_strides[2] = (2,3)
 					# mp_strides[3] = (3,3)
 					
 				elif num_layers == 5:
-					vgg_modi_weight = [[3, 2], [4, 3], [6, 4], [8, 6], [12, 8]] # final layer: 8x32=256 featue maps, 
-					pool_sizes[0] = (2,2) # mel input: 128x252
-					pool_sizes[1] = (2,2)
+					vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,12]] # final layer: 8x32=256 featue maps, 
+					pool_sizes[0] = (2,3) # mel input: 128x252
+					pool_sizes[1] = (2,3)
 					pool_sizes[2] = (2,2)
-					pool_sizes[3] = (2,3)
-					pool_sizes[4] = (2,3) # --> output: (4x3) --> 12 * 256 = 3072 values.
+					pool_sizes[3] = (4,2)
+					pool_sizes[4] = (4,3) # --> 2x2
 					# mp_strides[0] = (1,1)
 					# mp_strides[1] = (1,1)
 					# mp_strides[2] = (1,1)
