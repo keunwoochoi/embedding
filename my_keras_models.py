@@ -95,8 +95,8 @@ def design_2d_convnet_model(setting_dict):
 					vgg_modi_weight = [[2,1], [4,2], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
 					pool_sizes[0] = (2,2)
 					pool_sizes[1] = (2,2)
-					pool_sizes[2] = (2,4)
-					pool_sizes[3] = (4,4) # --> output: 4x4 melgram
+					pool_sizes[2] = (4,4)
+					pool_sizes[3] = (4,4) # --> output: 2x4 melgram
 					# mp_strides[0] = (2,3)
 					# mp_strides[1] = (2,3)
 					# mp_strides[2] = (2,3)
