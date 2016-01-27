@@ -93,26 +93,34 @@ def design_2d_convnet_model(setting_dict):
 
 				elif num_layers == 4: # so that height(128) becomes 2 
 					vgg_modi_weight = [[2,1], [4,2], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
-					pool_sizes[0] = (2,4)
-					pool_sizes[1] = (2,4)
-					pool_sizes[2] = (2,3)
-					pool_sizes[3] = (4,2) # --> output: 2x2
+					pool_sizes[0] = (2,2)
+					pool_sizes[1] = (2,2)
+					pool_sizes[2] = (2,4)
+					pool_sizes[3] = (4,4) # --> output: 4x4 melgram
 					# mp_strides[0] = (2,3)
 					# mp_strides[1] = (2,3)
 					# mp_strides[2] = (2,3)
 					# mp_strides[3] = (3,3)
 					
 				elif num_layers == 5:
-					vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,12]] # final layer: 8x32=256 featue maps, 
-					pool_sizes[0] = (2,3) # mel input: 128x252
-					pool_sizes[1] = (2,3)
+					vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8]] # final layer: 8x32=256 featue maps, 
+					pool_sizes[0] = (2,2) # mel input: 128x252
+					pool_sizes[1] = (2,2)
 					pool_sizes[2] = (2,2)
-					pool_sizes[3] = (4,2)
-					pool_sizes[4] = (4,3) # --> 2x2
+					pool_sizes[3] = (2,4)
+					pool_sizes[4] = (4,4) # --> 2x2
 					# mp_strides[0] = (1,1)
 					# mp_strides[1] = (1,1)
 					# mp_strides[2] = (1,1)
 					# mp_strides[3] = (1,2) #
+				elif num_layers == 6:
+					vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8], [16,12]] # final layer: 8x32=256 featue maps, 
+					pool_sizes[0] = (2,2) # mel input: 128x252
+					pool_sizes[1] = (2,2)
+					pool_sizes[2] = (2,2)
+					pool_sizes[3] = (2,2)
+					pool_sizes[4] = (2,4) 
+					pool_sizes[5] = (4,4) # --> 1x1
 			
 		else:
 			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
@@ -127,6 +135,8 @@ def design_2d_convnet_model(setting_dict):
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()
+	# zero-adding
+	model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), dim_ordering='th'))
 
 	# additive gaussian noise
 	if setting_dict['gaussian_noise']:
