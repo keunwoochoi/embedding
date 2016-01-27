@@ -257,8 +257,9 @@ def design_2d_convnet_model(setting_dict):
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
 		# maxout...
 		if setting_dict['maxout']:
-			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer))
-			print ' --->>MaxoutDense added with %d output units' % nums_units_fc_layers[fc_idx]
+			nb_feature = 8
+			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_feature ,W_regularizer=W_regularizer))
+			print ' --->>MaxoutDense added with %d output units, %d features' % (nums_units_fc_layers[fc_idx], nb_feature)
 		else:
 			
 			# ..or, dense layer
