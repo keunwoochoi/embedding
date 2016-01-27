@@ -120,7 +120,7 @@ def design_2d_convnet_model(setting_dict):
 					pool_sizes[2] = (2,2)
 					pool_sizes[3] = (2,2)
 					pool_sizes[4] = (2,4) 
-					pool_sizes[5] = (4,4) # --> 1x1
+					pool_sizes[5] = (2,4) # --> 1x1
 			
 		else:
 			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
@@ -267,7 +267,7 @@ def design_2d_convnet_model(setting_dict):
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
 		# maxout...
 		if setting_dict['maxout']:
-			nb_feature = 6
+			nb_feature = 4
 			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_feature ,W_regularizer=W_regularizer))
 			print ' --->>MaxoutDense added with %d output units, %d features' % (nums_units_fc_layers[fc_idx], nb_feature)
 		else:
