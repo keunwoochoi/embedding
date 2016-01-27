@@ -136,12 +136,12 @@ def design_2d_convnet_model(setting_dict):
 	# prepre modules
 	model = Sequential()
 	# zero-adding
-	model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), dim_ordering='th'))
+	model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), dim_ordering='th', input_shape=(num_channels, height, width)))
 
 	# additive gaussian noise
 	if setting_dict['gaussian_noise']:
 		print ' ---->>add gaussian noise '
-		model.add(keras.layers.noise.GaussianNoise(sigma, input_shape=(num_channels, height, width)))
+		model.add(keras.layers.noise.GaussianNoise(sigma))
 
 	#[Convolutional Layers]
 	for conv_idx in xrange(num_layers):
@@ -165,7 +165,7 @@ def design_2d_convnet_model(setting_dict):
 		if conv_idx == 0 and not setting_dict['gaussian_noise']:
 			print ' ---->>First conv layer is being added! wigh %d' % n_feat_here
 			model.add(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
-									border_mode='same', input_shape=(num_channels, height, width), 
+									border_mode='same',  # no input shape after adding zero-padding
 									W_regularizer=W_regularizer, init='he_normal'))
 
 		else:
