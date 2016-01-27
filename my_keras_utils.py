@@ -106,7 +106,7 @@ class Weight_Image_Saver(keras.callbacks.Callback):
 												mono=True)
 		average_change_per_layer = self.get_weights_change()
 		print 'average change per layer:'
-		print [('%5.3' % change) for change in average_change_per_layer]
+		print [('%5.3f' % change) for change in average_change_per_layer]
 		self.weights_changes.append(average_change_per_layer)
 
 	def load_weights(self):
