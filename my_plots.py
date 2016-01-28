@@ -15,8 +15,8 @@ def export_list_png(lst, out_filename='auc.png', title=None):
 	title; string for the image
 	'''
 	f = plt.plot(lst)
-	plt.ylim([0,1])
-
+	plt.ylim([0.5,1])
+	plt.grid()
 	if title:
 		plt.title(title)
 	plt.savefig(out_filename)
