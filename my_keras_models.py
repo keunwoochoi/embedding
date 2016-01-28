@@ -18,6 +18,7 @@ leakage = 0.03
 
 #------------- Element functions ------------- #
 def get_NIN_weights(num_layers):
+	pool_sizes = [None]*num_layers
 	if num_layers == 3:
 		vgg_modi_weight = [[4, 2], [8, 4], [12, 8]] 
 		pool_sizes[0] = (2,5)
