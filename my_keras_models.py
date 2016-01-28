@@ -4,7 +4,7 @@ import numpy as np
 import keras
 import os
 import pdb
-from keras.models import Sequential
+from keras.models import Sequential, Graph
 from keras.layers.core import Dense, Dropout, Activation, Flatten, MaxoutDense
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import RMSprop, SGD
