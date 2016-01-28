@@ -17,8 +17,44 @@ import keras.regularizers
 leakage = 0.03 
 
 #------------- Element functions ------------- #
+def get_NIN_weights(num_layers):
+	if num_layers == 3:
+		vgg_modi_weight = [[4, 2], [8, 4], [12, 8]] 
+		pool_sizes[0] = (2,5)
+		pool_sizes[1] = (4,5)
+		pool_sizes[2] = (4,3) # --> output: (4x2)
 
-
+	elif num_layers == 4: # so that height(128) becomes 2 
+		vgg_modi_weight = [[2,1], [4,2], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
+		pool_sizes[0] = (2,2)
+		pool_sizes[1] = (2,2)
+		pool_sizes[2] = (4,4)
+		pool_sizes[3] = (4,4) # --> output: 2x4 melgram
+		# mp_strides[0] = (2,3)
+		# mp_strides[1] = (2,3)
+		# mp_strides[2] = (2,3)
+		# mp_strides[3] = (3,3)
+		
+	elif num_layers == 5:
+		vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8]] # final layer: 8x32=256 featue maps, 
+		pool_sizes[0] = (2,2) # mel input: 128x252
+		pool_sizes[1] = (2,2)
+		pool_sizes[2] = (2,2)
+		pool_sizes[3] = (2,4)
+		pool_sizes[4] = (4,4) # --> 2x2
+		# mp_strides[0] = (1,1)
+		# mp_strides[1] = (1,1)
+		# mp_strides[2] = (1,1)
+		# mp_strides[3] = (1,2) #
+	elif num_layers == 6:
+		vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8], [16,12]] # final layer: 8x32=256 featue maps, 
+		pool_sizes[0] = (2,2) # mel input: 128x252
+		pool_sizes[1] = (2,2)
+		pool_sizes[2] = (2,2)
+		pool_sizes[3] = (2,2)
+		pool_sizes[4] = (2,4) 
+		pool_sizes[5] = (2,4) # --> 2x1
+	return vgg_modi_weight, pool_sizes
 #-------------
 
 def build_convnet_model(setting_dict):
@@ -77,6 +113,9 @@ def design_2d_convnet_model(setting_dict):
 	#------------------------------------------------------------------#
 	num_channels=1
 	sigma = setting_dict['gn_sigma']	
+
+	setting_dict['regulariser_fc_layers'][num_fc_layers-1] = ('l1', setting_dict['regulariser_fc_layers'][0][1])
+	print 'Force l1 reg in the last fc layer, %f' % setting_dict['regulariser_fc_layers'][0][1]
 	#-----------------------
 
 	if model_type.startswith('vgg'):
@@ -85,42 +124,7 @@ def design_2d_convnet_model(setting_dict):
 			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
 				image_patch_sizes = [[3,3]]*num_layers
 				pool_sizes = [(2,2)]*num_layers
-				if num_layers == 3:
-					vgg_modi_weight = [[4, 2], [8, 4], [12, 8]] 
-					pool_sizes[0] = (2,5)
-					pool_sizes[1] = (4,5)
-					pool_sizes[2] = (4,3) # --> output: (4x2)
-
-				elif num_layers == 4: # so that height(128) becomes 2 
-					vgg_modi_weight = [[2,1], [4,2], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
-					pool_sizes[0] = (2,2)
-					pool_sizes[1] = (2,2)
-					pool_sizes[2] = (4,4)
-					pool_sizes[3] = (4,4) # --> output: 2x4 melgram
-					# mp_strides[0] = (2,3)
-					# mp_strides[1] = (2,3)
-					# mp_strides[2] = (2,3)
-					# mp_strides[3] = (3,3)
-					
-				elif num_layers == 5:
-					vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8]] # final layer: 8x32=256 featue maps, 
-					pool_sizes[0] = (2,2) # mel input: 128x252
-					pool_sizes[1] = (2,2)
-					pool_sizes[2] = (2,2)
-					pool_sizes[3] = (2,4)
-					pool_sizes[4] = (4,4) # --> 2x2
-					# mp_strides[0] = (1,1)
-					# mp_strides[1] = (1,1)
-					# mp_strides[2] = (1,1)
-					# mp_strides[3] = (1,2) #
-				elif num_layers == 6:
-					vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8], [16,12]] # final layer: 8x32=256 featue maps, 
-					pool_sizes[0] = (2,2) # mel input: 128x252
-					pool_sizes[1] = (2,2)
-					pool_sizes[2] = (2,2)
-					pool_sizes[3] = (2,2)
-					pool_sizes[4] = (2,4) 
-					pool_sizes[5] = (2,4) # --> 1x1
+				vgg_modi_weight, pool_sizes = get_NIN_weights(num_layers=num_layers)
 			
 		else:
 			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
@@ -266,7 +270,7 @@ def design_2d_convnet_model(setting_dict):
 			elif setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l1':
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
 		# maxout...
-		if setting_dict['maxout']:
+		if setting_dict['maxout'] and not fc_idx == (len(num_fc_layes)-1):
 			nb_feature = 4
 			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_feature ,W_regularizer=W_regularizer))
 			print ' --->>MaxoutDense added with %d output units, %d features' % (nums_units_fc_layers[fc_idx], nb_feature)
@@ -312,6 +316,121 @@ def design_2d_convnet_model(setting_dict):
 		model.add(Dense(num_labels, activation='linear')) 
 
 	return model	
+
+
+def design_2d_convnet_graph(setting_dict):
+
+	is_test = setting_dict["is_test"]
+	height = setting_dict["height_image"]
+	width = setting_dict["width_image"]
+	dropouts = setting_dict["dropouts"]
+	num_labels = setting_dict["dim_labels"]
+	num_layers = setting_dict["num_layers"]
+	activations = setting_dict["activations"] #
+	model_type = setting_dict["model_type"] # not used now.
+	num_stacks = setting_dict["num_feat_maps"]
+
+	num_fc_layers = setting_dict["num_fc_layers"]
+	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
+	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
+	activations_fc_layers = setting_dict["activations_fc_layers"]
+	# mp_strides = [(2,2)]*setting_dict['num_layers']
+	#------------------------------------------------------------------#
+	num_channels=1
+	image_patch_sizes = [[3,3]]*num_layers
+	vgg_modi_weight, pool_sizes = get_NIN_weights(num_layers=num_layers)
+	#------------------------------------------------------------------#
+	model = Graph()
+	model.add_input(name='input', input_shape=(num_channels, height, width), dtype=float)
+	model.add_node(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), 
+					dim_ordering='th'),
+					input='input',
+					name = 'zeropad')
+	last_node_name = 'zero_pad'
+	for conv_idx in xrange(num_layers):
+		n_feat_here = num_stacks[conv_idx]
+		# conv 0
+		this_node_name = 'conv_%d_0' % conv_idx
+		model.add_node(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+						border_mode='same',  # no input shape after adding zero-padding
+						init='he_normal'),
+						input=last_node_name,
+						name=this_node_name)
+		last_node_name = this_node_name
+
+		this_node_name = 'bn_%d_0' % conv_idx
+		model.add_node(BatchNormalization(axis=1),
+										input=last_node_name
+										name=this_node_name)
+		last_node_name = this_node_name
+
+		this_node_name = 'elu_%d_0' % conv_idx
+		model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
+										input=last_node_name
+										name=this_node_name)
+		last_node_name = this_node_name
+		# conv 1
+		this_node_name = 'conv_%d_1' % conv_idx
+		model.add_node(Convolution2D(n_feat_here, 1,1, 
+						border_mode='same',  # no input shape after adding zero-padding
+						init='he_normal'),
+						input=last_node_name,
+						name=this_node_name))
+		last_node_name = this_node_name		
+
+		this_node_name = 'bn_conv_%d_1' % conv_idx
+		model.add_node(BatchNormalization(axis=1),
+										input=last_node_name
+										name=this_node_name))
+		last_node_name = this_node_name
+
+		this_node_name = 'elu_conv_%d_1' % conv_idx
+		model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
+										input=last_node_name
+										name=this_node_name)
+		last_node_name = this_node_name
+	# end of conv
+
+	this_node_name = 'flatten'
+	model.add_node(Flatten(), input=last_node_name,
+								name=this_node_name)
+	last_node_name = this_node_name
+	model.add()
+	for fc_idx in xrange(num_fc_layers-1):
+
+		this_node_name = 'maxout_%d' % fc_idx
+		nb_feature = 4
+		model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], 
+								nb_feature=nb_feature),
+								input=last_node_name,
+								name=this_node_name))
+		last_node_name = this_node_name
+
+		this_node_name = 'bn_fc_%d_1' % conv_idx
+		model.add_node(BatchNormalization(axis=1),
+										input=last_node_name
+										name=this_node_name)
+		last_node_name = this_node_name
+
+	# 50 dense layers
+
+	for dense_idx in xrange(setting_dict['dim_labels']):
+		sparse_node_name = 'sparse_dense_%d' % dense_idx
+		num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
+		model.add_node(Dense(num_sparse_units, activation='sigmoid'), 
+						input=last_node_name,
+						name=sparse_node_name)
+
+		output_node_name = 'output_%d' % dense_idx
+		model.add_node(name=output_node_name,
+						input=sparse_node_name)
+
+	return model
+
+
+
+
+
 
 
 def design_residual_model(setting_dict):
@@ -426,6 +545,7 @@ def design_mfcc_convnet_model(setting_dict):
 
 
 
+'''
 #--------------------------------------------#
 
 def design_1d_time_convnet_model(setting_dict):
@@ -557,4 +677,4 @@ def design_1d_time_convnet_model(setting_dict):
 		model.add(Dense(num_labels, activation='linear')) 
 
 	return model
-
+'''
