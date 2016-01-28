@@ -377,13 +377,13 @@ def design_2d_convnet_graph(setting_dict):
 						border_mode='same',  # no input shape after adding zero-padding
 						init='he_normal'),
 						input=last_node_name,
-						name=this_node_name))
+						name=this_node_name)
 		last_node_name = this_node_name		
 
 		this_node_name = 'bn_conv_%d_1' % conv_idx
 		model.add_node(BatchNormalization(axis=1),
 										input=last_node_name,
-										name=this_node_name))
+										name=this_node_name)
 		last_node_name = this_node_name
 
 		this_node_name = 'elu_conv_%d_1' % conv_idx
@@ -405,7 +405,7 @@ def design_2d_convnet_graph(setting_dict):
 		model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], 
 								nb_feature=nb_feature),
 								input=last_node_name,
-								name=this_node_name))
+								name=this_node_name)
 		last_node_name = this_node_name
 
 		this_node_name = 'bn_fc_%d' % conv_idx
