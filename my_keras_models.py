@@ -360,13 +360,13 @@ def design_2d_convnet_graph(setting_dict):
 
 		this_node_name = 'bn_%d_0' % conv_idx
 		model.add_node(BatchNormalization(axis=1),
-										input=last_node_name
+										input=last_node_name,
 										name=this_node_name)
 		last_node_name = this_node_name
 
 		this_node_name = 'elu_%d_0' % conv_idx
 		model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
-										input=last_node_name
+										input=last_node_name,
 										name=this_node_name)
 		last_node_name = this_node_name
 		# conv 1
@@ -380,13 +380,13 @@ def design_2d_convnet_graph(setting_dict):
 
 		this_node_name = 'bn_conv_%d_1' % conv_idx
 		model.add_node(BatchNormalization(axis=1),
-										input=last_node_name
+										input=last_node_name,
 										name=this_node_name))
 		last_node_name = this_node_name
 
 		this_node_name = 'elu_conv_%d_1' % conv_idx
 		model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
-										input=last_node_name
+										input=last_node_name,
 										name=this_node_name)
 		last_node_name = this_node_name
 	# end of conv
@@ -406,16 +406,16 @@ def design_2d_convnet_graph(setting_dict):
 								name=this_node_name))
 		last_node_name = this_node_name
 
-		this_node_name = 'bn_fc_%d_1' % conv_idx
+		this_node_name = 'bn_fc_%d' % conv_idx
 		model.add_node(BatchNormalization(axis=1),
-										input=last_node_name
+										input=last_node_name,
 										name=this_node_name)
 		last_node_name = this_node_name
 
 	# 50 dense layers
 
 	for dense_idx in xrange(setting_dict['dim_labels']):
-		sparse_node_name = 'sparse_dense_%d' % dense_idx
+		sparse_node_name = 'sparse_dense_0_%d' % dense_idx
 		num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
 		model.add_node(Dense(num_sparse_units, activation='sigmoid'), 
 						input=last_node_name,
