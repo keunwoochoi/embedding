@@ -73,6 +73,8 @@ def build_convnet_model(setting_dict):
 			model = design_mfcc_convnet_model(setting_dict)
 	elif model_type == 'residual':
 		model = design_residual_model(setting_dict)
+	elif model_type == 'multi_task':
+		model = design_2d_convnet_graph(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-5, nesterov=True)
