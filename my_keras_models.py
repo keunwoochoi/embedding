@@ -90,7 +90,15 @@ def build_convnet_model(setting_dict):
 	else:
 		raise RuntimeError('no optimiser? no! - %s' % optimizer_name )
 	print ' ---->>--- ready to compile keras model ---'
-	model.compile(loss=loss_function, optimizer=optimiser, class_mode='binary') # mean_absolute_error, mean_squared_error, ... want to try mae later!
+	if model_type not in ['multi_task']:
+		model.compile(loss=loss_function, optimizer=optimiser, class_mode='binary') 
+	else:
+		loss_dict = {}
+		for dense_idx in xrange(setting_dict['dim_labels']):
+			output_node_name = 'output_%d' % dense_idx
+			loss_dict[output_node_name] = loss_function
+
+		model.compile(loss=loss_dict, optimizer=optimiser) 
 	until = time.time()
  	print "--- keras model was built, took %d seconds ---" % (until-start)
  	
