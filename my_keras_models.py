@@ -432,7 +432,7 @@ def design_2d_convnet_graph(setting_dict):
 						name=sparse_node_name)
 
 		output_node_name = 'output_%d' % dense_idx
-		model.add_node(name=output_node_name,
+		model.add_output(name=output_node_name,
 						input=sparse_node_name)
 
 	return model
