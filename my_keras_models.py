@@ -349,7 +349,7 @@ def design_2d_convnet_graph(setting_dict):
 					dim_ordering='th'),
 					input='input',
 					name = 'zeropad')
-	last_node_name = 'zero_pad'
+	last_node_name = 'zeropad'
 	for conv_idx in xrange(num_layers):
 		n_feat_here = num_stacks[conv_idx]
 		# conv 0
