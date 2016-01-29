@@ -398,7 +398,7 @@ def design_2d_convnet_graph(setting_dict):
 	model.add_node(Flatten(), input=last_node_name,
 								name=this_node_name)
 	last_node_name = this_node_name
-	model.add()
+	
 	for fc_idx in xrange(num_fc_layers-1):
 
 		this_node_name = 'maxout_%d' % fc_idx
