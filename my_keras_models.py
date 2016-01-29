@@ -298,14 +298,14 @@ def design_2d_convnet_model(setting_dict):
 														init='he_normal'))
 			
 			# Activations
-			print ' ---->>%s activation is added.' % activations[0]
-			if activations[0] == 'relu':
+			print ' ---->>%s activation is added.' % activations_fc_layers[0]
+			if activations_fc_layers[0] == 'relu':
 				model.add(Activation('relu'))
-			elif activations[0] == 'lrelu':
+			elif activations_fc_layers[0] == 'lrelu':
 				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-			elif activations[0] == 'prelu':
+			elif activations_fc_layers[0] == 'prelu':
 				model.add(keras.layers.advanced_activations.PReLU())
-			elif activations[0] == 'elu':
+			elif activations_fc_layers[0] == 'elu':
 				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 		
 		# Dropout
