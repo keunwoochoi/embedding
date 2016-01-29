@@ -344,13 +344,16 @@ def design_2d_convnet_graph(setting_dict):
 	vgg_modi_weight, pool_sizes = get_NIN_weights(num_layers=num_layers)
 	#------------------------------------------------------------------#
 	model = Graph()
+	print 'Add zero padding '
 	model.add_input(name='input', input_shape=(num_channels, height, width), dtype='float')
 	model.add_node(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), 
 					dim_ordering='th'),
 					input='input',
 					name = 'zeropad')
 	last_node_name = 'zeropad'
+
 	for conv_idx in xrange(num_layers):
+		print 'Add conv layer %d' % conv_idx
 		n_feat_here = num_stacks[conv_idx]
 		# conv 0
 		this_node_name = 'conv_%d_0' % conv_idx
@@ -393,14 +396,14 @@ def design_2d_convnet_graph(setting_dict):
 										name=this_node_name)
 		last_node_name = this_node_name
 	# end of conv
-
+	print 'Add flatten layer'
 	this_node_name = 'flatten'
 	model.add_node(Flatten(), input=last_node_name,
 								name=this_node_name)
 	last_node_name = this_node_name
 	
 	for fc_idx in xrange(num_fc_layers-1):
-
+		print 'Add fc layer %d' % fc_idx
 		this_node_name = 'maxout_%d' % fc_idx
 		nb_feature = 4
 		model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], 
@@ -416,10 +419,11 @@ def design_2d_convnet_graph(setting_dict):
 		last_node_name = this_node_name
 
 	# 50 dense layers
-
+	num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
+	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	for dense_idx in xrange(setting_dict['dim_labels']):
 		sparse_node_name = 'sparse_dense_0_%d' % dense_idx
-		num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
+		
 		model.add_node(Dense(num_sparse_units, activation='sigmoid'), 
 						input=last_node_name,
 						name=sparse_node_name)
