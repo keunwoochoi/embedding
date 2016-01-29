@@ -344,7 +344,7 @@ def design_2d_convnet_graph(setting_dict):
 	vgg_modi_weight, pool_sizes = get_NIN_weights(num_layers=num_layers)
 	#------------------------------------------------------------------#
 	model = Graph()
-	model.add_input(name='input', input_shape=(num_channels, height, width), dtype=float)
+	model.add_input(name='input', input_shape=(num_channels, height, width), dtype='float')
 	model.add_node(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), 
 					dim_ordering='th'),
 					input='input',
