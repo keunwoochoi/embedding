@@ -342,6 +342,8 @@ def design_2d_convnet_graph(setting_dict):
 	num_channels=1
 	image_patch_sizes = [[3,3]]*num_layers
 	vgg_modi_weight, pool_sizes = get_NIN_weights(num_layers=num_layers)
+	print vgg_modi_weight
+	print pool_sizes
 	#------------------------------------------------------------------#
 	model = Graph()
 	print 'Add zero padding '
@@ -422,6 +424,7 @@ def design_2d_convnet_graph(setting_dict):
 	num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	for dense_idx in xrange(setting_dict['dim_labels']):
+		print 'add sparse node: %d' % dense_idx
 		sparse_node_name = 'sparse_dense_0_%d' % dense_idx
 		
 		model.add_node(Dense(num_sparse_units, activation='sigmoid'), 
