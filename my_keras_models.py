@@ -26,7 +26,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (4,3) # --> output: (4x2)
 
 	elif num_layers == 4: # so that height(128) becomes 2 
-		vgg_modi_weight = [[2,1], [4,2], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
+		vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
 		pool_sizes[0] = (2,2)
 		pool_sizes[1] = (2,2)
 		pool_sizes[2] = (4,4)
@@ -37,7 +37,7 @@ def get_NIN_weights(num_layers):
 		# mp_strides[3] = (3,3)
 		
 	elif num_layers == 5:
-		vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8]] # final layer: 8x32=256 featue maps, 
+		vgg_modi_weight = [[2,2], [4,3], [6, 4], [8, 6], [12,8]] # final layer: 8x32=256 featue maps, 
 		pool_sizes[0] = (2,2) # mel input: 128x252
 		pool_sizes[1] = (2,2)
 		pool_sizes[2] = (2,2)
@@ -48,7 +48,7 @@ def get_NIN_weights(num_layers):
 		# mp_strides[2] = (1,1)
 		# mp_strides[3] = (1,2) #
 	elif num_layers == 6:
-		vgg_modi_weight = [[2,1], [4,2], [6, 4], [8, 6], [12,8], [16,12]] # final layer: 8x32=256 featue maps, 
+		vgg_modi_weight = [[2,2], [4,3], [6, 4], [8, 6], [12,8], [16,12]] # final layer: 8x32=256 featue maps, 
 		pool_sizes[0] = (2,2) # mel input: 128x252
 		pool_sizes[1] = (2,2)
 		pool_sizes[2] = (2,2)
@@ -447,6 +447,121 @@ def design_2d_convnet_graph(setting_dict):
 
 
 
+def design_simple_graph(setting_dict):
+
+	is_test = setting_dict["is_test"]
+	height = setting_dict["height_image"]
+	width = setting_dict["width_image"]
+	dropouts = setting_dict["dropouts"]
+	num_labels = setting_dict["dim_labels"]
+	num_layers = setting_dict["num_layers"]
+	activations = setting_dict["activations"] #
+	model_type = setting_dict["model_type"] # not used now.
+	num_stacks = setting_dict["num_feat_maps"]
+
+	num_fc_layers = setting_dict["num_fc_layers"]
+	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
+	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
+	activations_fc_layers = setting_dict["activations_fc_layers"]
+	# mp_strides = [(2,2)]*setting_dict['num_layers']
+	#------------------------------------------------------------------#
+	num_channels=1
+	image_patch_sizes = [[3,3]]*num_layers
+	vgg_modi_weight, pool_sizes = get_NIN_weights(num_layers=num_layers)
+	print vgg_modi_weight
+	print pool_sizes
+	#------------------------------------------------------------------#
+	model = Graph()
+	print 'Add zero padding '
+	model.add_input(name='input', input_shape=(num_channels, height, width), dtype='float')
+	model.add_node(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), 
+					dim_ordering='th'),
+					input='input',
+					name = 'zeropad')
+	last_node_name = 'zeropad'
+
+	conv_idx = 0
+	print 'Add conv layer %d' % conv_idx
+	n_feat_here = num_stacks[conv_idx]
+	# conv 0
+	this_node_name = 'conv_%d_0' % conv_idx
+	model.add_node(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+						border_mode='same',  # no input shape after adding zero-padding
+						init='he_normal'),
+						input=last_node_name,
+						name=this_node_name)
+	last_node_name = this_node_name
+
+	this_node_name = 'bn_%d_0' % conv_idx
+	model.add_node(BatchNormalization(axis=1),
+									input=last_node_name,
+									name=this_node_name)
+	last_node_name = this_node_name
+
+	this_node_name = 'elu_%d_0' % conv_idx
+	model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
+										input=last_node_name,
+										name=this_node_name)
+	# last_node_name = this_node_name
+	# 	# conv 1
+	# this_node_name = 'conv_%d_1' % conv_idx
+	# model.add_node(Convolution2D(n_feat_here, 1,1, 
+	# 					border_mode='same',  # no input shape after adding zero-padding
+	# 					init='he_normal'),
+	# 					input=last_node_name,
+	# 					name=this_node_name)
+	# last_node_name = this_node_name		
+
+	# this_node_name = 'bn_conv_%d_1' % conv_idx
+	# model.add_node(BatchNormalization(axis=1),
+	# 									input=last_node_name,
+	# 									name=this_node_name)
+	# last_node_name = this_node_name
+
+	# this_node_name = 'elu_conv_%d_1' % conv_idx
+	# model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
+	# 									input=last_node_name,
+	# 									name=this_node_name)
+	# last_node_name = this_node_name
+	# end of conv
+	print 'Add flatten layer'
+	this_node_name = 'flatten'
+	model.add_node(Flatten(), input=last_node_name,
+								name=this_node_name)
+	last_node_name = this_node_name
+	
+	fc_idx = 0
+	print 'Add fc layer %d' % fc_idx
+	this_node_name = 'maxout_%d' % fc_idx
+	nb_feature = 4
+	model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], 
+								nb_feature=nb_feature),
+								input=last_node_name,
+								name=this_node_name)
+	last_node_name = this_node_name
+
+	this_node_name = 'bn_fc_%d' % conv_idx
+	model.add_node(BatchNormalization(axis=1),
+									input=last_node_name,
+									name=this_node_name)
+	last_node_name = this_node_name
+
+	# 50 dense layers
+	num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
+	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
+	for dense_idx in xrange(setting_dict['dim_labels']):
+		
+		sparse_node_name = 'sparse_dense_0_%d' % dense_idx
+		
+		model.add_node(Dense(num_sparse_units, activation='sigmoid'), 
+						input=last_node_name,
+						name=sparse_node_name)
+
+		output_node_name = 'output_%d' % dense_idx
+		model.add_output(name=output_node_name,
+						input=sparse_node_name)
+	print 'add sparse node: Done '
+	return model
 
 
 
