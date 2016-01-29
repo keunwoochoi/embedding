@@ -432,7 +432,7 @@ def design_2d_convnet_graph(setting_dict):
 	num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	for dense_idx in xrange(setting_dict['dim_labels']):
-		print 'add sparse node: %d' % dense_idx
+		
 		sparse_node_name = 'sparse_dense_0_%d' % dense_idx
 		
 		model.add_node(Dense(num_sparse_units, activation='sigmoid'), 
@@ -442,7 +442,7 @@ def design_2d_convnet_graph(setting_dict):
 		output_node_name = 'output_%d' % dense_idx
 		model.add_output(name=output_node_name,
 						input=sparse_node_name)
-
+	print 'add sparse node: Done '
 	return model
 
 

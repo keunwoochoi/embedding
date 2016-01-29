@@ -142,6 +142,8 @@ def save_model_as_image(model, save_path = '', filename_prefix = '', normalize='
 			
 	
 	#print model.layers[0].W.get_value(borrow=True)[0,0,:,:]
+	if not hasattr(model, 'layers'):
+		return
 	for layerind, layer in enumerate(model.layers):
 		g = layer.get_config()
 		if g['name'] == 'Convolution2D':
