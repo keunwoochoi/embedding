@@ -151,7 +151,12 @@ def design_2d_convnet_model(setting_dict):
 	# prepre modules
 	model = Sequential()
 	# zero-adding
-	model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), dim_ordering='th', input_shape=(num_channels, height, width)))
+	if setting_dict['tf_type'] == 'melgram':
+		model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,3), dim_ordering='th', input_shape=(num_channels, height, width)))
+	elif setting_dict['tf_type'] == 'cqt':
+		model.add(keras.layers.convolutional.ZeroPadding2D(padding=(2,3), dim_ordering='th', input_shape=(num_channels, height, width)))
+	else:
+		model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,3), dim_ordering='th', input_shape=(num_channels, height, width)))
 
 	# additive gaussian noise
 	if setting_dict['gaussian_noise']:
