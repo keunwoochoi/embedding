@@ -53,8 +53,8 @@ def get_NIN_weights(num_layers):
 		pool_sizes[1] = (2,2)
 		pool_sizes[2] = (2,2)
 		pool_sizes[3] = (2,2)
-		pool_sizes[4] = (2,4) 
-		pool_sizes[5] = (2,4) # --> 2x1
+		pool_sizes[4] = (2,2) 
+		pool_sizes[5] = (2,4) # --> 2x2
 	return vgg_modi_weight, pool_sizes
 #-------------
 
