@@ -645,6 +645,7 @@ def design_mfcc_convnet_model(setting_dict):
 	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
 	pool_sizes = [(1,3), (1,4), (1,4), (1,4)]
 	num_stacks = [48, 48, 64, 96]
+	nb_maxout_feature = setting_dict['nb_maxout_feature']
 	activations = setting_dict["activations"] #
 	num_fc_layers = setting_dict["num_fc_layers"]
 	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
@@ -682,7 +683,7 @@ def design_mfcc_convnet_model(setting_dict):
 	for fc_idx in range(num_fc_layers):
 		print ' ---->>Maxout dense'
 		model.add(MaxoutDense(nums_units_fc_layers[fc_idx], 
-							nb_feature=nb_feature))
+							nb_feature=nb_maxout_feature))
 
 		# Dropout
 		if not dropouts_fc_layers[fc_idx] == 0.0:
