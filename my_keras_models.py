@@ -26,7 +26,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (4,3) # --> output: (4x2)
 
 	elif num_layers == 4: # so that height(128) becomes 2 
-		vgg_modi_weight = [[2,1], [4,2], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
+		vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
 		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,2)
@@ -38,11 +38,11 @@ def get_NIN_weights(num_layers):
 		
 	elif num_layers == 5:
 		vgg_modi_weight = [[3,2], [4,3], [6, 4], [8, 6], [12,8]] # final layer: 8x32=256 featue maps, 
-		pool_sizes[0] = (2,2) # mel input: 128x252
-		pool_sizes[1] = (2,2)
+		pool_sizes[0] = (2,4) # mel input: 128x252
+		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,2)
-		pool_sizes[3] = (2,4)
-		pool_sizes[4] = (4,4) # --> 2x2
+		pool_sizes[3] = (2,2)
+		pool_sizes[4] = (4,2) # --> 2x2
 		# mp_strides[0] = (1,1)
 		# mp_strides[1] = (1,1)
 		# mp_strides[2] = (1,1)
@@ -124,7 +124,7 @@ def design_2d_convnet_model(setting_dict):
 	#------------------------------------------------------------------#
 	num_channels=1
 	sigma = setting_dict['gn_sigma']	
-
+	nb_maxout_feature = setting_dict['nb_maxout_feature']
 	setting_dict['regulariser_fc_layers'][num_fc_layers-1] = ('l1', setting_dict['regulariser_fc_layers'][0][1])
 	print 'Force l1 reg in the last fc layer, %f' % setting_dict['regulariser_fc_layers'][0][1]
 	#-----------------------
@@ -287,8 +287,8 @@ def design_2d_convnet_model(setting_dict):
 				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
 		# maxout...
 		if setting_dict['maxout']:
-			nb_feature = 4
-			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_feature ,W_regularizer=W_regularizer))
+			nb_maxout_feature = 
+			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_maxout_feature ,W_regularizer=W_regularizer))
 			print ' --->>MaxoutDense added with %d output units, %d features' % (nums_units_fc_layers[fc_idx], nb_feature)
 		else:
 			
