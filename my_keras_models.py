@@ -650,6 +650,7 @@ def design_mfcc_convnet_model(setting_dict):
 	num_fc_layers = setting_dict["num_fc_layers"]
 	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
 	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
+	activations_fc_layers = setting_dict["activations_fc_layers"]
 	model = Sequential()
 
 	for conv_idx in range(len(num_stacks)):
@@ -677,7 +678,7 @@ def design_mfcc_convnet_model(setting_dict):
 	
 	model.add(Flatten())
 	if setting_dict['maxout']:
-		
+
 		for fc_idx in range(num_fc_layers):
 			print ' ---->>Maxout dense'
 			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], 
