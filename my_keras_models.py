@@ -676,21 +676,35 @@ def design_mfcc_convnet_model(setting_dict):
 		model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 	
 	model.add(Flatten())
+	if setting_dict['maxout']:
+		
+		for fc_idx in range(num_fc_layers):
+			print ' ---->>Maxout dense'
+			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], 
+								nb_feature=nb_maxout_feature))
 
-	# model.add(Dense(2048, init='he_normal'))
-	# model.add(Dropout(0.5))
-	# model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-	for fc_idx in range(num_fc_layers):
-		print ' ---->>Maxout dense'
-		model.add(MaxoutDense(nums_units_fc_layers[fc_idx], 
-							nb_feature=nb_maxout_feature))
+			# Dropout
+			if not dropouts_fc_layers[fc_idx] == 0.0:
+				model.add(Dropout(dropouts_fc_layers[fc_idx]))
+				print ' ---->>Dropout for fc layer, %f' % dropouts_fc_layers[fc_idx]
+				
+			model.add(BatchNormalization())
+	else:
+		for fc_idx in range(num_fc_layers):
+			model.add(Dense(nums_units_fc_layers[fc_idx], init='he_normal'))
+			model.add(Dropout(0.5))
+			print ' ---->>%s activation is added.' % activations_fc_layers[0]
+			if activations_fc_layers[0] == 'relu':
+				model.add(Activation('relu'))
+			elif activations_fc_layers[0] == 'lrelu':
+				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+			elif activations_fc_layers[0] == 'prelu':
+				model.add(keras.layers.advanced_activations.PReLU())
+			elif activations_fc_layers[0] == 'elu':
+				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
 
-		# Dropout
-		if not dropouts_fc_layers[fc_idx] == 0.0:
-			model.add(Dropout(dropouts_fc_layers[fc_idx]))
-			print ' ---->>Dropout for fc layer, %f' % dropouts_fc_layers[fc_idx]
-			
-		model.add(BatchNormalization())
+			model.add(BatchNormalization())			
+	
 
 	# model.add(Dense(2048, init='he_normal'))
 	# model.add(Dropout(0.5))
