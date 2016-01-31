@@ -30,7 +30,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,2)
-		pool_sizes[3] = (4,2) # --> output: 2x4 melgram
+		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram
 		# mp_strides[0] = (2,3)
 		# mp_strides[1] = (2,3)
 		# mp_strides[2] = (2,3)
@@ -42,7 +42,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,2)
 		pool_sizes[3] = (2,2)
-		pool_sizes[4] = (4,2) # --> 2x2
+		pool_sizes[4] = (4,2) # --> 2x2=4 melgram
 		# mp_strides[0] = (1,1)
 		# mp_strides[1] = (1,1)
 		# mp_strides[2] = (1,1)
@@ -644,7 +644,10 @@ def design_mfcc_convnet_model(setting_dict):
 	num_channels=1
 	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
 	pool_sizes = [(1,3), (1,4), (1,4), (1,4)]
-	num_stacks = [48, 48, 64, 64]
+	num_stacks = [48, 48, 64, 96]
+	activations = setting_dict["activations"] #
+	num_fc_layers = setting_dict["num_fc_layers"]
+	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
 
 	model = Sequential()
 
@@ -660,29 +663,43 @@ def design_mfcc_convnet_model(setting_dict):
 									border_mode='same', 
 									init='he_normal'))
 		model.add(BatchNormalization())
-		model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+		if activations[0] == 'relu':
+			model.add(Activation('relu'))
+		elif activations[0] == 'lrelu':
+			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+		elif activations[0] == 'prelu':
+			model.add(keras.layers.advanced_activations.PReLU())
+		elif activations[0] == 'elu':
+			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))		
+
 		model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 	
 	model.add(Flatten())
 
-	model.add(Dense(2048, init='he_normal'))
-	model.add(Dropout(0.5))
-	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-	model.add(BatchNormalization())
+	# model.add(Dense(2048, init='he_normal'))
+	# model.add(Dropout(0.5))
+	# model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	for fc_idx in range(num_fc_layers):
+		print ' ---->>Maxout dense'
+		model.add(MaxoutDense(nums_units_fc_layers[fc_idx], 
+							nb_feature=nb_feature))
 
-	model.add(Dense(2048, init='he_normal'))
-	model.add(Dropout(0.5))
-	model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-	model.add(BatchNormalization())
+		# Dropout
+		if not dropouts_fc_layers[fc_idx] == 0.0:
+			model.add(Dropout(dropouts_fc_layers[fc_idx]))
+			print ' ---->>Dropout for fc layer, %f' % dropouts_fc_layers[fc_idx]
+			
+		model.add(BatchNormalization())
+
+	# model.add(Dense(2048, init='he_normal'))
+	# model.add(Dropout(0.5))
+	# model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
+	# model.add(BatchNormalization())
 
 	model.add(Dense(num_labels, activation='sigmoid',
 								init='he_normal')) 
 	return model
 	
-
-
-
-
 '''
 #--------------------------------------------#
 
