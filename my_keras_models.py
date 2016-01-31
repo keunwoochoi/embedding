@@ -648,7 +648,7 @@ def design_mfcc_convnet_model(setting_dict):
 	activations = setting_dict["activations"] #
 	num_fc_layers = setting_dict["num_fc_layers"]
 	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
-
+	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
 	model = Sequential()
 
 	for conv_idx in range(len(num_stacks)):
