@@ -642,9 +642,9 @@ def design_mfcc_convnet_model(setting_dict):
 	num_labels = setting_dict["dim_labels"]
 	#------------------------------------------------------------------#
 	num_channels=1
-	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
+	image_patch_sizes = [[height/3,1], [height/3,1], [1,1], [1,1]]
 	pool_sizes = [(1,3), (1,4), (1,4), (1,4)]
-	num_stacks = [48, 48, 64, 96]
+	num_stacks = [64, 64, 64, 96]
 	nb_maxout_feature = setting_dict['nb_maxout_feature']
 	activations = setting_dict["activations"] #
 	num_fc_layers = setting_dict["num_fc_layers"]
@@ -658,6 +658,11 @@ def design_mfcc_convnet_model(setting_dict):
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='valid', 
 									input_shape=(1, height, width), 
+									subsample=(height/3, 1),
+									init='he_normal'))
+		elif conv_idx == 1:
+			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
+									border_mode='valid', 
 									subsample=(height/3, 1),
 									init='he_normal'))
 		else:
