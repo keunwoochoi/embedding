@@ -645,6 +645,7 @@ def design_mfcc_convnet_model(setting_dict):
 	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
 	pool_sizes = [(1,3), (1,4), (1,4), (1,4)]
 	num_stacks = [128, 128, 256, 256]
+	num_stacks = [48, 48, 64, 96]
 	nb_maxout_feature = setting_dict['nb_maxout_feature']
 	activations = setting_dict["activations"] #
 	num_fc_layers = setting_dict["num_fc_layers"]
