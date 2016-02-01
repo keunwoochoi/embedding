@@ -665,7 +665,9 @@ def design_mfcc_convnet_model(setting_dict):
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', 
 									init='he_normal'))
-		model.add(BatchNormalization())
+		if conv_idx == 0:
+			model.add(BatchNormalization())
+
 		if activations[0] == 'relu':
 			model.add(Activation('relu'))
 		elif activations[0] == 'lrelu':
@@ -675,6 +677,9 @@ def design_mfcc_convnet_model(setting_dict):
 		elif activations[0] == 'elu':
 			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))		
 
+		if not conv_idx == 0:
+			model.add(BatchNormalization())
+			
 		model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 	
 	model.add(Flatten())
