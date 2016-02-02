@@ -301,6 +301,7 @@ def design_2d_convnet_model(setting_dict):
 	for fc_idx in xrange(num_fc_layers):
 		# setup regulariser
 		W_regularizer = get_regulariser(setting_dict['regulariser_fc_layers'][fc_idx])
+		act_regularizer = get_regulariser(setting_dict['act_regulariser_fc_layres'][fc_idx])
 		
 		if setting_dict['maxout']:
 			# maxout...	
@@ -309,8 +310,9 @@ def design_2d_convnet_model(setting_dict):
 		else:
 			
 			# ..or, dense layer
-			print ' ---->>Dense layer, %d, is added with regularizer.' % nums_units_fc_layers[fc_idx]
+			print ' ---->>Dense layer, %d, is added' % nums_units_fc_layers[fc_idx]
 			model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
+														activity_regularizer=act_regularizer,
 														init='he_normal'))
 			# Activations
 			model.add(get_activation(activations_fc_layers[0]))
