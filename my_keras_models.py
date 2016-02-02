@@ -58,6 +58,40 @@ def get_NIN_weights(num_layers):
 	return vgg_modi_weight, pool_sizes
 #-------------
 
+def get_activation(activation_name):
+	'''input: keras model, string.
+	output: keras activation instance'''
+	print ' ---->>%s activation is added.' % activation_name
+	if activations[0] == 'relu':
+		return Activation('relu')
+	elif activations[0] == 'lrelu':
+		return keras.layers.advanced_activations.LeakyReLU(alpha=leakage)
+	elif activations[0] == 'prelu':
+		return keras.layers.advanced_activations.PReLU()
+	elif activations[0] == 'elu':
+		return keras.layers.advanced_activations.ELU(alpha=1.0)
+
+def get_regulariser(tuple_input):
+	if tuple_input in [None, 0.0]:
+		return None
+	name, value = tuple_input
+	if value == 0.0:
+		return None
+	print ' ---->> add %s regulariser with %f' % (name, value)
+	if name == 'l1':
+		W_regularizer=keras.regularizers.l1(value)
+	elif name == 'l2':
+		W_regularizer=keras.regularizers.l2(value)
+	elif name == 'l1l2':
+		W_regularizer=keras.regularizers.l1l2(value, value)
+	elif name == 'activity_l1':
+		W_regularizer=keras.regularizers.activity_l1(value)
+	elif name == 'activity_l2':
+		W_regularizer=keras.regularizers.activity_l2(value)
+	elif name == 'activity_l1l2':
+		W_regularizer=keras.regularizers.activity_l1l2(value, value)
+	return W_regularizer
+
 def build_convnet_model(setting_dict):
 	start = time.time()
 	loss_function = setting_dict["loss_function"]
@@ -166,16 +200,8 @@ def design_2d_convnet_model(setting_dict):
 	#[Convolutional Layers]
 	for conv_idx in xrange(num_layers):
 		# prepare regularizer if needed.
-		if setting_dict['regulariser'][conv_idx] in [None, 0.0]:
-			W_regularizer = None
-		else:
-			if setting_dict['regulariser'][conv_idx][0] == 'l2':
-				W_regularizer=keras.regularizers.l2(setting_dict['regulariser'][conv_idx][1])
-				print ' ---->>prepare l2 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
-			elif setting_dict['regulariser'][conv_idx][0] == 'l1':
-				W_regularizer=keras.regularizers.l1(setting_dict['regulariser'][conv_idx][1])
-				print ' ---->>prepare l1 regulariser of %f for %d-th conv layer' % (setting_dict['regulariser'][conv_idx][1], conv_idx)
-
+		W_regularizer = get_regulariser(setting_dict['regulariser'][conv_idx])
+			
 		# add conv layer
 		if model_type.startswith('vgg_modi'):
 			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
@@ -199,16 +225,7 @@ def design_2d_convnet_model(setting_dict):
 			model.add(BatchNormalization(axis=1))
 
 		# add activation
-		print ' ---->>%s activation is added.' % activations[0]
-		if activations[0] == 'relu':
-			model.add(Activation('relu'))
-		elif activations[0] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-		elif activations[0] == 'prelu':
-			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations[0] == 'elu':
-			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
-	
+		model.add(get_activation(activations[0]))
 		
 		if not dropouts[conv_idx] == 0.0:
 			model.add(Dropout(dropouts[conv_idx]))
@@ -221,6 +238,8 @@ def design_2d_convnet_model(setting_dict):
 				n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 			else:
 				n_feat_here = num_stacks[conv_idx]
+
+			W_regularizer = get_regulariser(setting_dict['regulariser'][conv_idx])
 
 			if model_type == 'vgg_original':
 				print ' ---->>  additional conv layer is added for vgg_original, %d' % (n_feat_here)
@@ -239,27 +258,19 @@ def design_2d_convnet_model(setting_dict):
 				print ' ---->>  and BN,'
 				model.add(BatchNormalization(axis=1))
 			# add activation
-			
-			print ' ---->>  %s activation is added.' % activations[0]
-			if activations[0] == 'relu':
-				model.add(Activation('relu'))
-			elif activations[0] == 'lrelu':
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-			elif activations[0] == 'prelu':
-				model.add(keras.layers.advanced_activations.PReLU())
-			elif activations[0] == 'elu':
-				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+			model.add(get_activation(activations[0]))
 		
 		#[third conv layer] for vgg_modi_3x3
 		if model_type == 'vgg_modi_3x3':
 			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][1])
+			W_regularizer = get_regulariser(setting_dict['regulariser'][conv_idx])
 			print ' ---->>     one more additional 1x1 conv layer is added for vgg_modi_3x3, %d' % (n_feat_here)
 			model.add(Convolution2D(n_feat_here, 1, 1, 
 									border_mode='same',	W_regularizer=W_regularizer, init='he_normal'))
 			if setting_dict['BN']:
 				print ' ---->>    and BN + elu'
 				model.add(BatchNormalization(axis=1))
-			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+			model.add(get_activation(activations[0]))
 
 		# add pooling
 		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
@@ -278,13 +289,7 @@ def design_2d_convnet_model(setting_dict):
 	model.add(Flatten())
 	for fc_idx in xrange(num_fc_layers):
 		# setup regulariser
-		if setting_dict['regulariser_fc_layers'][fc_idx] is None:
-			W_regularizer = None
-		else:
-			if setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l2':
-				W_regularizer=keras.regularizers.l2(setting_dict['regulariser_fc_layers'][fc_idx][1])
-			elif setting_dict['regulariser_fc_layers'][fc_idx][0] == 'l1':
-				W_regularizer=keras.regularizers.l1(setting_dict['regulariser_fc_layers'][fc_idx][1])
+		W_regularizer = get_regulariser(setting_dict['regulariser_fc_layers'][fc_idx])
 		# maxout...
 		if setting_dict['maxout']:
 			
@@ -303,15 +308,7 @@ def design_2d_convnet_model(setting_dict):
 														init='he_normal'))
 			
 			# Activations
-			print ' ---->>%s activation is added.' % activations_fc_layers[0]
-			if activations_fc_layers[0] == 'relu':
-				model.add(Activation('relu'))
-			elif activations_fc_layers[0] == 'lrelu':
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-			elif activations_fc_layers[0] == 'prelu':
-				model.add(keras.layers.advanced_activations.PReLU())
-			elif activations_fc_layers[0] == 'elu':
-				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
+			model.add(get_activation(activations_fc_layers[0]))
 		
 		# Dropout
 		if not dropouts_fc_layers[fc_idx] == 0.0:
