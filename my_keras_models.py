@@ -299,7 +299,7 @@ def design_2d_convnet_model(setting_dict):
 	for fc_idx in xrange(num_fc_layers):
 		# setup regulariser
 		W_regularizer = get_regulariser(setting_dict['regulariser_fc_layers'][fc_idx])
-		act_regularizer = get_regulariser(setting_dict['act_regulariser_fc_layres'][fc_idx])
+		act_regularizer = get_regulariser(setting_dict['act_regulariser_fc_layers'][fc_idx])
 		
 		if setting_dict['maxout']:
 			# maxout...	
