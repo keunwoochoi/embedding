@@ -27,10 +27,18 @@ def get_NIN_weights(num_layers):
 
 	elif num_layers == 4: # so that height(128) becomes 2 
 		vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
+		
 		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,2)
-		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram
+		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram -->  red_pig
+
+
+		# pool_sizes[0] = (1,4)
+		# pool_sizes[1] = (2,4)
+		# pool_sizes[2] = (2,4)
+		# pool_sizes[3] = (4,2) # --> output: 8x2=16 melgram -->  more freq resolution. 
+		
 		# mp_strides[0] = (2,3)
 		# mp_strides[1] = (2,3)
 		# mp_strides[2] = (2,3)
@@ -73,6 +81,9 @@ def get_activation(activation_name):
 
 def get_regulariser(tuple_input):
 	if tuple_input in [None, 0.0]:
+		return None
+	if None in tuple_input:
+		print ' ---->> None is in tuple input, ', tuple_input
 		return None
 	name, value = tuple_input
 	if value == 0.0:
@@ -306,7 +317,6 @@ def design_2d_convnet_model(setting_dict):
 				print ' ---->>Dense layer, %d, is added with regularizer.' % nums_units_fc_layers[fc_idx]
 				model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
 														init='he_normal'))
-			
 			# Activations
 			model.add(get_activation(activations_fc_layers[0]))
 		
