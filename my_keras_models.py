@@ -170,8 +170,6 @@ def design_2d_convnet_model(setting_dict):
 	num_channels=1
 	sigma = setting_dict['gn_sigma']	
 	nb_maxout_feature = setting_dict['nb_maxout_feature']
-	setting_dict['regulariser_fc_layers'][num_fc_layers-1] = ('l1', setting_dict['regulariser_fc_layers'][0][1])
-	print 'Force l1 reg in the last fc layer, %f' % setting_dict['regulariser_fc_layers'][0][1]
 	#-----------------------
 
 	if model_type.startswith('vgg'):
