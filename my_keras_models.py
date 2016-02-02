@@ -62,13 +62,13 @@ def get_activation(activation_name):
 	'''input: keras model, string.
 	output: keras activation instance'''
 	print ' ---->>%s activation is added.' % activation_name
-	if activations[0] == 'relu':
+	if activation_name[0] == 'relu':
 		return Activation('relu')
-	elif activations[0] == 'lrelu':
+	elif activation_name[0] == 'lrelu':
 		return keras.layers.advanced_activations.LeakyReLU(alpha=leakage)
-	elif activations[0] == 'prelu':
+	elif activation_name[0] == 'prelu':
 		return keras.layers.advanced_activations.PReLU()
-	elif activations[0] == 'elu':
+	elif activation_name[0] == 'elu':
 		return keras.layers.advanced_activations.ELU(alpha=1.0)
 
 def get_regulariser(tuple_input):
