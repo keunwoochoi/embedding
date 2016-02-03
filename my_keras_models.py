@@ -443,7 +443,7 @@ def design_2d_convnet_graph(setting_dict):
 
 	# 50 dense layers
 	# num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
-	num_sparse_units = 16
+	num_sparse_units = 8
 	print 'num sparse units: %d' % num_sparse_units
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	for dense_idx in xrange(setting_dict['dim_labels']):
