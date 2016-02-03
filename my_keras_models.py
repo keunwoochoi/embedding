@@ -192,7 +192,8 @@ def design_2d_convnet_model(setting_dict):
 				pool_sizes = [(1,2)]*num_layers
 	elif model_type.startswith('flow'):
 		pass # less layers, bigger filter.
-		setting_dict['pool_sizes'] = pool_sizes
+	
+	setting_dict['pool_sizes'] = pool_sizes
 
 	#-------------------------------#
 	# prepre modules
