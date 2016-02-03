@@ -48,10 +48,10 @@ def get_NIN_weights(num_layers):
 	elif num_layers == 5:
 		vgg_modi_weight = [[3,2], [4,3], [6, 4], [8, 6], [12,8]] # final layer: 8x32=256 featue maps, 
 		pool_sizes[0] = (2,4) # mel input: 128x252
-		pool_sizes[1] = (2,4)
+		pool_sizes[1] = (2,2)
 		pool_sizes[2] = (2,2)
 		pool_sizes[3] = (2,2)
-		pool_sizes[4] = (4,2) # --> 2x2=4 melgram
+		pool_sizes[4] = (2,2) # --> 4x4 same as red_pig
 		# mp_strides[0] = (1,1)
 		# mp_strides[1] = (1,1)
 		# mp_strides[2] = (1,1)
@@ -63,7 +63,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (2,2)
 		pool_sizes[3] = (2,2)
 		pool_sizes[4] = (2,2) 
-		pool_sizes[5] = (2,4) # --> 2x2
+		pool_sizes[5] = (2,2) # --> 2x4 similar as red_pig
 	return vgg_modi_weight, pool_sizes
 #-------------
 
@@ -443,7 +443,7 @@ def design_2d_convnet_graph(setting_dict):
 
 	# 50 dense layers
 	# num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
-	num_sparse_units = 8
+	num_sparse_units = 16
 	print 'num sparse units: %d' % num_sparse_units
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	for dense_idx in xrange(setting_dict['dim_labels']):
