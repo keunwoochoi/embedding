@@ -28,16 +28,17 @@ def get_NIN_weights(num_layers):
 	elif num_layers == 4: # so that height(128) becomes 2 
 		vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
 		
-		# pool_sizes[0] = (2,4)
-		# pool_sizes[1] = (2,4)
-		# pool_sizes[2] = (2,2)
-		# pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram -->  red_pig
-
-
-		pool_sizes[0] = (1,4)
+		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
-		pool_sizes[2] = (2,4)
-		pool_sizes[3] = (4,2) # --> output: 8x2=16 melgram -->  more freq resolution. 
+		pool_sizes[2] = (2,2)
+		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram -->  red_pig
+
+
+
+		# pool_sizes[0] = (1,4)
+		# pool_sizes[1] = (2,4)
+		# pool_sizes[2] = (2,4)
+		# pool_sizes[3] = (4,2) # --> output: 8x2=16 melgram -->  more freq resolution. 
 		
 		# mp_strides[0] = (2,3)
 		# mp_strides[1] = (2,3)
@@ -88,7 +89,7 @@ def get_regulariser(tuple_input):
 	name, value = tuple_input
 	if value == 0.0:
 		return None
-	print ' ---->> add %s regulariser with %f' % (name, value)
+	print ' ---->> prepare %s regulariser with %f' % (name, value)
 	if name == 'l1':
 		W_regularizer=keras.regularizers.l1(value)
 	elif name == 'l2':
@@ -179,6 +180,7 @@ def design_2d_convnet_model(setting_dict):
 				image_patch_sizes = [[3,3]]*num_layers
 				pool_sizes = [(2,2)]*num_layers
 				vgg_modi_weight, pool_sizes = get_NIN_weights(num_layers=num_layers)
+				setting_dict['vgg_modi_weight'] = vgg_modi_weight
 			
 		else:
 			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
@@ -190,6 +192,8 @@ def design_2d_convnet_model(setting_dict):
 				pool_sizes = [(1,2)]*num_layers
 	elif model_type.startswith('flow'):
 		pass # less layers, bigger filter.
+		setting_dict['pool_sizes'] = pool_sizes
+
 	#-------------------------------#
 	# prepre modules
 	model = Sequential()
@@ -309,6 +313,7 @@ def design_2d_convnet_model(setting_dict):
 			
 			# ..or, dense layer
 			print ' ---->>Dense layer, %d, is added' % nums_units_fc_layers[fc_idx]
+			print '       with regulariser if it was ready.'
 			model.add(Dense(nums_units_fc_layers[fc_idx], W_regularizer=W_regularizer,
 														activity_regularizer=act_regularizer,
 														init='he_normal'))
