@@ -49,7 +49,7 @@ def do_mfcc(src, track_id):
 
 	np.save(PATH_MFCC + str(track_id) + '.npy', np.dstack((mfcc_left, mfcc_right, mfcc_mono)))
 	print "Done: %s, mfcc" % str(track_id)
-
+ 
 def do_stft(src, track_id):
 	SRC_L = librosa.stft(src[0,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
 	SRC_R = librosa.stft(src[1,:], n_fft = N_FFT, hop_length=HOP_LEN, win_length = WIN_LEN)
@@ -57,8 +57,8 @@ def do_stft(src, track_id):
 	print "Done: %s" % str(track_id)
 
 def do_melgram(src, track_id):
-	SRC = librosa.feature.melspectrogram(y=src[0,:]+src[1,:], n_fft=N_FFT, hop_length=HOP_LEN, n_mels=128) # MONO!
-	np.save(PATH_MELGRAM + str(track_id) + '.npy', np.dstack((SRC)))
+	SRC = librosa.feature.melspectrogram(y=src[0,:]+src[1,:], sr=CQT_CONST["sr"], n_fft=N_FFT, hop_length=HOP_LEN, n_mels=128) # MONO!
+	np.save(PATH_MELGRAM + str(track_id) + '.npy', librosa.logamplitude(SRC**2), ref_power=1.0)
 	print "Done: %s" % str(track_id)	
 
 def do_cqt(src, track_id):
@@ -378,7 +378,7 @@ if __name__=="__main__":
 	
 	print '## structure segmentation. add any argument to test it.'
 	# structural segmentation
-	if False or 'after understand input arguments of msaf':
+	if False and 'after understand input arguments of msaf':
 		
 		if len(sys.argv) == 1:
 			print 'msaf for the whole song!'
@@ -386,7 +386,7 @@ if __name__=="__main__":
 		else:
 			preprocessors.get_boundaries_all(isTest=True)
 	# pick the most important segments
-	if False or 'after segmentation, select segments.':
+	if False and 'after segmentation, select segments.':
 		preprocessors.postprocess_boundaries()
 		
 
