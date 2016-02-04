@@ -69,7 +69,7 @@ def get_boundaries_all(isTest=False):
 	return
 
 
-def postprocess_boundaries():
+def postprocess_boundaries(tf_type='cqt'):
 	'''load segmentation dictionary, process labels so that
 	- consider only segmentation longer than 6-s
 	- same label --> merge??????? (not sure)
@@ -98,7 +98,7 @@ def postprocess_boundaries():
 		if idx < begin_idx:
 			continue
 		# load cqt
-		CQT = 10**(0.05*file_manager.load_cqt(idx))
+		CQT = 10**(0.05*file_manager.load(idx, tf_type))
 		CQT = CQT ** 2 # energy.
 		CQT = np.sum(CQT, axis=2) # downmix
 		frame_energies = np.sum(CQT, axis=0) # sum of energy in each frame

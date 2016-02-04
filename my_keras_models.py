@@ -652,8 +652,8 @@ def design_mfcc_convnet_model(setting_dict):
 	#------------------------------------------------------------------#
 	num_channels=1
 	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
-	pool_sizes = [(1,3), (1,4), (1,4), (1,4)]
-	num_stacks = [128, 128, 256, 256]
+	pool_sizes = [(1,4), (1,4), (1,4), (1,4)]
+	num_stacks = [128, 256, 512, 512]
 	# num_stacks = [48, 48, 64, 96]
 	nb_maxout_feature = setting_dict['nb_maxout_feature']
 	activations = setting_dict["activations"] #
@@ -663,11 +663,11 @@ def design_mfcc_convnet_model(setting_dict):
 	activations_fc_layers = setting_dict["activations_fc_layers"]
 	model = Sequential()
 
+	model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,3), dim_ordering='th', input_shape=(1, height, width)))
 	for conv_idx in range(len(num_stacks)):
 		if conv_idx == 0:
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='valid', 
-									input_shape=(1, height, width), 
 									subsample=(height/3, 1),
 									init='he_normal'))
 		else:
@@ -677,15 +677,8 @@ def design_mfcc_convnet_model(setting_dict):
 		if conv_idx == 0:
 			model.add(BatchNormalization())
 
-		if activations[0] == 'relu':
-			model.add(Activation('relu'))
-		elif activations[0] == 'lrelu':
-			model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-		elif activations[0] == 'prelu':
-			model.add(keras.layers.advanced_activations.PReLU())
-		elif activations[0] == 'elu':
-			model.add(keras.layers.advanced_activations.ELU(alpha=1.0))		
-
+		model.add(get_activation(activations[0]))
+		
 		if not conv_idx == 0:
 			model.add(BatchNormalization())
 			
@@ -709,23 +702,10 @@ def design_mfcc_convnet_model(setting_dict):
 		for fc_idx in range(num_fc_layers):
 			model.add(Dense(nums_units_fc_layers[fc_idx], init='he_normal'))
 			model.add(Dropout(0.5))
-			print ' ---->>%s activation is added.' % activations_fc_layers[0]
-			if activations_fc_layers[0] == 'relu':
-				model.add(Activation('relu'))
-			elif activations_fc_layers[0] == 'lrelu':
-				model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-			elif activations_fc_layers[0] == 'prelu':
-				model.add(keras.layers.advanced_activations.PReLU())
-			elif activations_fc_layers[0] == 'elu':
-				model.add(keras.layers.advanced_activations.ELU(alpha=1.0))
-
+			
+			model.add(get_activation(activations_fc_layers[0]))
+			
 			model.add(BatchNormalization())			
-	
-
-	# model.add(Dense(2048, init='he_normal'))
-	# model.add(Dropout(0.5))
-	# model.add(keras.layers.advanced_activations.LeakyReLU(alpha=leakage))
-	# model.add(BatchNormalization())
 
 	model.add(Dense(num_labels, activation='sigmoid',
 								init='he_normal')) 
