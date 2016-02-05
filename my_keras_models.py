@@ -666,29 +666,36 @@ def design_mfcc_convnet_model(setting_dict):
 	model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,3), dim_ordering='th', input_shape=(1, height, width)))
 	for conv_idx in range(len(num_stacks)):
 		if conv_idx == 0:
+			print '--> Conv layer for the first layer'
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='valid', 
 									subsample=(height/3, 1),
 									init='he_normal'))
 		else:
+			print '--> Conv layer for the following layer'
 			model.add(Convolution2D(num_stacks[conv_idx], image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
 									border_mode='same', 
 									init='he_normal'))
-		if conv_idx == 0:
+		if conv_idx == 0: # for first layer
+			print '  --> BN for the first layer'
 			model.add(BatchNormalization())
-
+		print '  --> activation'
 		model.add(get_activation(activations[0]))
 		
 		if not conv_idx == 0:
+			if not dropouts[conv_idx] == 0.0:
+				model.add(Dropout(dropouts[conv_idx]))
+				print '  --> Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
+			print '  --> BN'
 			model.add(BatchNormalization())
-			
+		print '  --> MP'
 		model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 	
 	model.add(Flatten())
 	if setting_dict['maxout']:
 
 		for fc_idx in range(num_fc_layers):
-			print ' ---->>Maxout dense'
+			print '--> Maxout dense'
 			model.add(MaxoutDense(nums_units_fc_layers[fc_idx], 
 								nb_feature=nb_maxout_feature))
 
@@ -696,15 +703,17 @@ def design_mfcc_convnet_model(setting_dict):
 			if not dropouts_fc_layers[fc_idx] == 0.0:
 				model.add(Dropout(dropouts_fc_layers[fc_idx]))
 				print ' ---->>Dropout for fc layer, %f' % dropouts_fc_layers[fc_idx]
-				
+			print '  --> BN'
 			model.add(BatchNormalization())
 	else:
 		for fc_idx in range(num_fc_layers):
+			print '--> Dense'
 			model.add(Dense(nums_units_fc_layers[fc_idx], init='he_normal'))
-			model.add(Dropout(0.5))
-			
+			print '  --> Dropout'
+			model.add(Dropout(dropouts_fc_layers[fc_idx]))
+			print '  --> Activation'
 			model.add(get_activation(activations_fc_layers[0]))
-			
+			print '  --> BN'
 			model.add(BatchNormalization())			
 
 	model.add(Dense(num_labels, activation='sigmoid',
