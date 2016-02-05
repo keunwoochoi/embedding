@@ -64,7 +64,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[3] = (2,2)
 		pool_sizes[4] = (2,2) 
 		pool_sizes[5] = (2,2) # --> 2x4 similar as red_pig
-	elif num_layers = 7:
+	elif num_layers == 7:
 		vgg_modi_weight = [[3,2], [4,3], [6, 4], [8, 6], [12,8], [16,12], [20, 16]] # final layer: 8x32=256 featue maps, 
 		pool_sizes[0] = (2,2) # mel input: 128x252
 		pool_sizes[1] = (2,2)
@@ -73,7 +73,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[4] = (2,2) 
 		pool_sizes[5] = (2,2)
 		pool_sizes[6] = (2,2)  # 1x2 output
-	elif num_layers = 8:
+	elif num_layers == 8:
 		vgg_modi_weight = [[3,2], [4,3], [6, 4], [8, 6], [12,8], [16,12], [24, 20], [40, 32]] # final layer: 8x32=256 featue maps, 
 		pool_sizes[0] = (2,2) # mel input: 128x252
 		pool_sizes[1] = (2,2)
@@ -83,7 +83,7 @@ def get_NIN_weights(num_layers):
 		pool_sizes[5] = (2,2)
 		pool_sizes[6] = (2,2)  # 1x2 output
 		pool_sizes[7] = (1,2)  # 1x2 output
-		
+
 	return vgg_modi_weight, pool_sizes
 #-------------
 
