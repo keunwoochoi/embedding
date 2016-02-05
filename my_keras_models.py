@@ -443,7 +443,7 @@ def design_2d_convnet_graph(setting_dict):
 
 	# 50 dense layers
 	# num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
-	num_sparse_units = 16
+	num_sparse_units = 4
 	print 'num sparse units: %d' % num_sparse_units
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	for dense_idx in xrange(setting_dict['dim_labels']):
@@ -653,7 +653,7 @@ def design_mfcc_convnet_model(setting_dict):
 	num_channels=1
 	image_patch_sizes = [[height/3,1], [1,1], [1,1], [1,1]]
 	pool_sizes = [(1,4), (1,4), (1,4), (1,4)]
-	num_stacks = [128, 256, 512, 512]
+	num_stacks = [128, 256, 512, 1024]
 	# num_stacks = [48, 48, 64, 96]
 	dropouts = setting_dict["dropouts"]
 	nb_maxout_feature = setting_dict['nb_maxout_feature']
