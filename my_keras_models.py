@@ -655,6 +655,7 @@ def design_mfcc_convnet_model(setting_dict):
 	pool_sizes = [(1,4), (1,4), (1,4), (1,4)]
 	num_stacks = [128, 256, 512, 512]
 	# num_stacks = [48, 48, 64, 96]
+	dropouts = setting_dict["dropouts"]
 	nb_maxout_feature = setting_dict['nb_maxout_feature']
 	activations = setting_dict["activations"] #
 	num_fc_layers = setting_dict["num_fc_layers"]
