@@ -226,7 +226,7 @@ def design_2d_convnet_model(setting_dict):
 	elif setting_dict['tf_type'] == 'stft':
 		model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,3), dim_ordering='th', input_shape=(num_channels, height, width)))
 	else:
-		Raise RuntimeError('Unknown tf_type:%s' % setting_dict['tf_type'])
+		raise RuntimeError('Unknown tf_type:%s' % setting_dict['tf_type'])
 
 	# average pooling (down sample) for stft: 257 --> 128
 	if setting_dict['tf_type'] == 'stft':
