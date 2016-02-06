@@ -50,7 +50,12 @@ def export_history(loss, val_loss, acc=None, val_acc=None, out_filename='history
 	plt.close()
 	
 	f = plt.plot(val_loss)
-	plt.savefig('%s_val_loss_%2.4f.png' % (out_filename.split('.')[0], np.min(val_loss)))
+	if val_loss == [] or val_loss == None:
+		plt.savefig('%s_val_loss_unknown.png' % (out_filename.split('.')[0]))
+	else:
+		plt.savefig('%s_val_loss_%2.4f.png' % (out_filename.split('.')[0], np.min(val_loss)))
+	
+		
 	plt.savefig(out_filename.split('.')[0] + '_val_loss.png')
 	plt.close()
 
