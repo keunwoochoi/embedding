@@ -223,8 +223,15 @@ def design_2d_convnet_model(setting_dict):
 		model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,3), dim_ordering='th', input_shape=(num_channels, height, width)))
 	elif setting_dict['tf_type'] == 'cqt':
 		model.add(keras.layers.convolutional.ZeroPadding2D(padding=(2,3), dim_ordering='th', input_shape=(num_channels, height, width)))
-	else:
+	elif setting_dict['tf_type'] == 'stft':
 		model.add(keras.layers.convolutional.ZeroPadding2D(padding=(0,3), dim_ordering='th', input_shape=(num_channels, height, width)))
+	else:
+		Raise RuntimeError('Unknown tf_type:%s' % setting_dict['tf_type'])
+
+	# average pooling (down sample) for stft: 257 --> 128
+	if setting_dict['tf_type'] == 'stft':
+		print 'STFT --> downsampled by 2'
+		model.add(keras.layers.convolutional.AveragePooling2D(pool_size=(2, 1), border_mode='valid', dim_ordering='th'))
 
 	# additive gaussian noise
 	if setting_dict['gaussian_noise']:
