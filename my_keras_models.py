@@ -445,6 +445,13 @@ def design_2d_convnet_graph(setting_dict):
 										input=last_node_name,
 										name=this_node_name)
 		last_node_name = this_node_name
+
+		this_node_name = 'mp_%d' % conv_idx
+		model.add_node(MaxPooling2D(pool_size=pool_sizes[conv_idx]),
+									input=last_node_name,
+									name=this_node_name)
+		last_node_name = this_node_name		
+
 	# end of conv
 	print 'Add flatten layer'
 	this_node_name = 'flatten'
