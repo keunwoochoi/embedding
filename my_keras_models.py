@@ -459,7 +459,7 @@ def design_2d_convnet_graph(setting_dict):
 								name=this_node_name)
 	last_node_name = this_node_name
 	
-	for fc_idx in xrange(num_fc_layers-1):
+	for fc_idx in xrange(num_fc_layers):
 		print 'Add fc layer %d' % fc_idx
 		this_node_name = 'maxout_%d' % fc_idx
 		nb_feature = 4
@@ -477,25 +477,35 @@ def design_2d_convnet_graph(setting_dict):
 
 	# 50 dense layers
 	# num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
-	num_sparse_units = 32
+	num_sparse_units = 64
 	print 'num sparse units: %d' % num_sparse_units
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	for dense_idx in xrange(setting_dict['dim_labels']):
 		
 		sparse_node_name = 'sparse_dense_0_%d' % dense_idx
 		
-		model.add_node(Dense(num_sparse_units, activation='relu'), # use relu for simplicity.
+		model.add_node(Dense(num_sparse_units), # use relu for simplicity.
 						input=last_node_name,
 						name=sparse_node_name)
 
+		elu_node_name = 'elu_%d' % dense_idx
+		model.add_node(get_activation('elu'),
+						input=sparse_node_name,
+						name=elu_node_name)
+
 		dropout_node_name = 'dropout_%d' % dense_idx
 		model.add_node(Dropout(0.25),
-						input=sparse_node_name,
+						input=elu_node_name,
 						name=dropout_node_name)
+
+		bn_node_name = 'batch_nor_%d' % dense_idx
+		model.add_node(BatchNormalization(),
+						input=dropout_node_name,
+						name=bn_node_name)
 
 		output_gate_node_name = 'output_gate_%d' % dense_idx
 		model.add_node(Dense(1, activation='sigmoid'),
-						input=dropout_node_name,
+						input=bn_node_name,
 						name=output_gate_node_name)
 
 		output_node_name = 'output_%d' % dense_idx
