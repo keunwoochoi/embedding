@@ -484,16 +484,22 @@ def design_2d_convnet_graph(setting_dict):
 		
 		sparse_node_name = 'sparse_dense_0_%d' % dense_idx
 		
-		model.add_node(Dense(num_sparse_units, activation='sigmoid'), 
+		model.add_node(Dense(num_sparse_units, activation='relu'), # use relu for simplicity.
 						input=last_node_name,
 						name=sparse_node_name)
 
+		output_gate_node_name = 'output_gate_%d' % dense_idx
+		model.add_mode(Dense(1, activation='sigmoid'),
+						input=sparse_node_name,
+						name=output_gate_node_name)
+
 		output_node_name = 'output_%d' % dense_idx
 		model.add_output(name=output_node_name,
-						input=sparse_node_name)
+						input=output_gate_node_name)
+
 	print 'add sparse node: Done '
 	return model
-
+'''
 
 def design_simple_graph(setting_dict):
 
@@ -617,7 +623,7 @@ def design_simple_graph(setting_dict):
 	return model
 
 
-
+'''
 
 def design_residual_model(setting_dict):
 	'''residual net using graph'''
