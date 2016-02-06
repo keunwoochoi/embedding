@@ -489,7 +489,7 @@ def design_2d_convnet_graph(setting_dict):
 						name=sparse_node_name)
 
 		output_gate_node_name = 'output_gate_%d' % dense_idx
-		model.add_mode(Dense(1, activation='sigmoid'),
+		model.add_node(Dense(1, activation='sigmoid'),
 						input=sparse_node_name,
 						name=output_gate_node_name)
 
