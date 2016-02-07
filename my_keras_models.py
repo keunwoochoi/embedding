@@ -504,11 +504,11 @@ def design_2d_convnet_graph(setting_dict):
 
 			else:
 				if sparse_idx == 0:
-					model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_maxout_feature ),
+					model.add_node(MaxoutDense(num_sparse_units, nb_feature=nb_maxout_feature ),
 									input=last_node_name,
 									name=sparse_node_name)
 				else:
-					model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_maxout_feature ),
+					model.add_node(MaxoutDense(num_sparse_units, nb_feature=nb_maxout_feature ),
 									input=bn_node_name,
 									name=sparse_node_name)
 					node_before_dropout = sparse_node_name
