@@ -483,7 +483,7 @@ def design_2d_convnet_graph(setting_dict):
 	
 	for dense_idx in xrange(setting_dict['dim_labels']):
 		# 1	
-		for sparse_idx in xrange(setting_dict['num_sparse_layer'])):
+		for sparse_idx in xrange(setting_dict['num_sparse_layer']):
 			sparse_node_name = 'sparse_dense_%d_%d' % (sparse_idx, dense_idx) # (0,0) to (1,50)
 			if not setting_dict['maxout_sparse_layer']:
 				if sparse_idx == 0:
