@@ -497,7 +497,7 @@ def design_2d_convnet_graph(setting_dict):
 									name=sparse_node_name)
 
 
-				elu_node_name = 'elu_%d_%d' % (0, dense_idx)
+				elu_node_name = 'elu_%d_%d' % (sparse_idx, dense_idx)
 				model.add_node(get_activation('elu'),
 								input=sparse_node_name,
 								name=elu_node_name)
@@ -514,12 +514,12 @@ def design_2d_convnet_graph(setting_dict):
 									name=sparse_node_name)
 				node_before_dropout = sparse_node_name
 
-			dropout_node_name = 'dropout_%d_%d' % (0, dense_idx)
+			dropout_node_name = 'dropout_%d_%d' % (sparse_idx, dense_idx)
 			model.add_node(Dropout(0.5),
 							input=node_before_dropout,
 							name=dropout_node_name)
 
-			bn_node_name = 'batch_nor_%d_%d' % (0, dense_idx)
+			bn_node_name = 'batch_nor_%d_%d' % (sparse_idx, dense_idx)
 			model.add_node(BatchNormalization(),
 							input=dropout_node_name,
 							name=bn_node_name)
