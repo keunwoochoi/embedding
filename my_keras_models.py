@@ -512,7 +512,7 @@ def design_2d_convnet_graph(setting_dict):
 					model.add_node(MaxoutDense(num_sparse_units, nb_feature=nb_maxout_feature ),
 									input=bn_node_name,
 									name=sparse_node_name)
-					node_before_dropout = sparse_node_name
+				node_before_dropout = sparse_node_name
 
 			dropout_node_name = 'dropout_%d_%d' % (0, dense_idx)
 			model.add_node(Dropout(0.5),
