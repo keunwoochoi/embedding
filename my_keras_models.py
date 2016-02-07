@@ -481,12 +481,17 @@ def design_2d_convnet_graph(setting_dict):
 	nb_maxout_feature = setting_dict['nb_maxout_feature']
 	print 'num sparse units: %d' % num_sparse_units
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
-	
+	if setting_dict['maxout_sparse_layer']:
+		print 'use Maxout in sparse layer'
+	else:
+		print 'use dense in sparse layer'
+
 	for dense_idx in xrange(setting_dict['dim_labels']):
 		# 1	
 		for sparse_idx in xrange(setting_dict['num_sparse_layer']):
-			sparse_node_name = 'sparse_dense_%d_%d' % (sparse_idx, dense_idx) # (0,0) to (1,50)
+			sparse_node_namwe = 'sparse_dense_%d_%d' % (sparse_idx, dense_idx) # (0,0) to (1,50)
 			if not setting_dict['maxout_sparse_layer']:
+
 				if sparse_idx == 0:
 					model.add_node(Dense(num_sparse_units), # use relu for simplicity.
 									input=last_node_name,
@@ -515,7 +520,7 @@ def design_2d_convnet_graph(setting_dict):
 				node_before_dropout = sparse_node_name
 
 			dropout_node_name = 'dropout_%d_%d' % (sparse_idx, dense_idx)
-			model.add_node(Dropout(0.5),
+			model.add_node(Dropout(0.6),
 							input=node_before_dropout,
 							name=dropout_node_name)
 
