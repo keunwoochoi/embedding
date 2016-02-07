@@ -477,51 +477,51 @@ def design_2d_convnet_graph(setting_dict):
 
 	# 50 dense layers
 	# num_sparse_units = int(nums_units_fc_layers[num_fc_layers-1]/setting_dict['dim_labels'])
-	num_sparse_units = 64
+	num_sparse_units = setting_dict['num_sparse_units']
 	print 'num sparse units: %d' % num_sparse_units
 	print 'Add dense layers, %d x %d' % (setting_dict['dim_labels'], num_sparse_units)
 	
 	for dense_idx in xrange(setting_dict['dim_labels']):
-		# 1				
-		sparse_node_name = 'sparse_dense_%d_%d' % (0, dense_idx)
-		model.add_node(Dense(num_sparse_units), # use relu for simplicity.
-						input=last_node_name,
-						name=sparse_node_name)
+		# 1	
+		for sparse_idx in xrange(setting_dict['num_sparse_layer'])):
+			sparse_node_name = 'sparse_dense_%d_%d' % (sparse_idx, dense_idx) # (0,0) to (1,50)
+			if not setting_dict['maxout_sparse_layer']:
+				if sparse_idx == 0:
+					model.add_node(Dense(num_sparse_units), # use relu for simplicity.
+									input=last_node_name,
+									name=sparse_node_name)
+				else:
+					model.add_node(Dense(num_sparse_units), # use relu for simplicity.
+									input=bn_node_name,
+									name=sparse_node_name)
 
-		elu_node_name = 'elu_%d_%d' % (0, dense_idx)
-		model.add_node(get_activation('elu'),
-						input=sparse_node_name,
-						name=elu_node_name)
 
-		dropout_node_name = 'dropout_%d_%d' % (0, dense_idx)
-		model.add_node(Dropout(0.5),
-						input=elu_node_name,
-						name=dropout_node_name)
+				elu_node_name = 'elu_%d_%d' % (0, dense_idx)
+				model.add_node(get_activation('elu'),
+								input=sparse_node_name,
+								name=elu_node_name)
+				node_before_dropout = elu_node_name
 
-		bn_node_name = 'batch_nor_%d_%d' % (0, dense_idx)
-		model.add_node(BatchNormalization(),
-						input=dropout_node_name,
-						name=bn_node_name)
-		# 2
-		sparse_node_name = 'sparse_dense_%d_%d' % (1, dense_idx)
-		model.add_node(Dense(num_sparse_units), # use relu for simplicity.
-						input=bn_node_name,
-						name=sparse_node_name)
+			else:
+				if sparse_idx == 0:
+					model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_maxout_feature ),
+									input=last_node_name,
+									name=sparse_node_name)
+				else:
+					model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], nb_feature=nb_maxout_feature ),
+									input=bn_node_name,
+									name=sparse_node_name)
+					node_before_dropout = sparse_node_name
 
-		elu_node_name = 'elu_%d_%d' % (1, dense_idx)
-		model.add_node(get_activation('elu'),
-						input=sparse_node_name,
-						name=elu_node_name)
+			dropout_node_name = 'dropout_%d_%d' % (0, dense_idx)
+			model.add_node(Dropout(0.5),
+							input=node_before_dropout,
+							name=dropout_node_name)
 
-		dropout_node_name = 'dropout_%d_%d' % (1, dense_idx)
-		model.add_node(Dropout(0.5),
-						input=elu_node_name,
-						name=dropout_node_name)
-
-		bn_node_name = 'batch_nor_%d_%d' % (1, dense_idx)
-		model.add_node(BatchNormalization(),
-						input=dropout_node_name,
-						name=bn_node_name)
+			bn_node_name = 'batch_nor_%d_%d' % (0, dense_idx)
+			model.add_node(BatchNormalization(),
+							input=dropout_node_name,
+							name=bn_node_name)
 		# output
 		output_gate_node_name = 'output_gate_%d' % dense_idx
 		model.add_node(Dense(1, activation='sigmoid'),

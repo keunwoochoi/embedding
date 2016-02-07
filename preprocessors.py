@@ -98,7 +98,7 @@ def postprocess_boundaries(tf_type='cqt'):
 		if idx < begin_idx:
 			continue
 		# load cqt
-		CQT = 10**(0.05*file_manager.load(idx, tf_type))
+		tf_type = CQT = 10**(0.05*file_manager.load(idx, tf_type))
 		CQT = CQT ** 2 # energy.
 		CQT = np.sum(CQT, axis=2) # downmix
 		frame_energies = np.sum(CQT, axis=0) # sum of energy in each frame
