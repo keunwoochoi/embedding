@@ -489,7 +489,7 @@ def design_2d_convnet_graph(setting_dict):
 	for dense_idx in xrange(setting_dict['dim_labels']):
 		# 1	
 		for sparse_idx in xrange(setting_dict['num_sparse_layer']):
-			sparse_node_name = 'sparse_dense_%d_%d' % (sparse_idx, dense_idx) # (0,0) to (1,50)
+			sparse_node_name = 'dense_sparse_%d_%d' % (sparse_idx, dense_idx) # (0,0) to (1,50)
 			if not setting_dict['maxout_sparse_layer']:
 
 				if sparse_idx == 0:
@@ -502,7 +502,7 @@ def design_2d_convnet_graph(setting_dict):
 									name=sparse_node_name)
 
 
-				elu_node_name = 'elu_%d_%d' % (sparse_idx, dense_idx)
+				elu_node_name = 'elu_sparse_%d_%d' % (sparse_idx, dense_idx)
 				model.add_node(get_activation('elu'),
 								input=sparse_node_name,
 								name=elu_node_name)
@@ -519,12 +519,12 @@ def design_2d_convnet_graph(setting_dict):
 									name=sparse_node_name)
 				node_before_dropout = sparse_node_name
 
-			dropout_node_name = 'dropout_%d_%d' % (sparse_idx, dense_idx)
+			dropout_node_name = 'dropout_sparse_%d_%d' % (sparse_idx, dense_idx)
 			model.add_node(Dropout(0.6),
 							input=node_before_dropout,
 							name=dropout_node_name)
 
-			bn_node_name = 'batch_nor_%d_%d' % (sparse_idx, dense_idx)
+			bn_node_name = 'batch_nor_sparse_%d_%d' % (sparse_idx, dense_idx)
 			model.add_node(BatchNormalization(),
 							input=dropout_node_name,
 							name=bn_node_name)
