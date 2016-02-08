@@ -26,12 +26,15 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (4,3) # --> output: (4x2)
 
 	elif num_layers == 4: # so that height(128) becomes 2 
-		vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!
+		# vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!the most popular setting
+
+		# 08 feb
+		vgg_modi_weight = [[2,2], [4,4], [8,8], [16,16]]		
 		
 		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,2)
-		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram -->  red_pig
+		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram -->  red_pig, the most popular setting
 
 
 
@@ -74,15 +77,15 @@ def get_NIN_weights(num_layers):
 		pool_sizes[5] = (2,2)
 		pool_sizes[6] = (2,2)  # 1x2 output
 	elif num_layers == 8:
-		vgg_modi_weight = [[3,2], [4,3], [6, 4], [8, 6], [12,8], [16,12], [24, 20], [40, 32]] # final layer: 8x32=256 featue maps, 
-		pool_sizes[0] = (2,2) # mel input: 128x252
-		pool_sizes[1] = (2,2)
-		pool_sizes[2] = (2,2)
-		pool_sizes[3] = (2,2)
-		pool_sizes[4] = (2,2) 
-		pool_sizes[5] = (2,2)
-		pool_sizes[6] = (2,2)  # 1x2 output
-		pool_sizes[7] = (1,2)  # 1x2 output
+		vgg_modi_weight = [[3,2], [4,3], [6, 4], [8, 8], [16,16], [32,32], [64, 64], [128, 128]] # final layer: 8x32=256 featue maps, 
+		pool_sizes[0] = (2,2) # mel input: 128x252, output 64x128
+		pool_sizes[1] = (2,2) # 32x64
+		pool_sizes[2] = (2,2) # 16x32
+		pool_sizes[3] = (2,2) # 8x16
+		pool_sizes[4] = (2,2) # 4x8
+		pool_sizes[5] = (2,2) # 2x4
+		pool_sizes[6] = (2,2) # 1x2 output
+		pool_sizes[7] = (1,2) # 1x1 output
 
 	return vgg_modi_weight, pool_sizes
 #-------------
