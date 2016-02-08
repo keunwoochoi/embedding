@@ -26,11 +26,8 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (4,3) # --> output: (4x2)
 
 	elif num_layers == 4: # so that height(128) becomes 2 
-		# vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!the most popular setting
+		vgg_modi_weight = [[2,2], [4,3], [6,4], [8,6]]  # similar to red_pig. 'rich' setting --> later!the most popular setting
 
-		# 08 feb
-		vgg_modi_weight = [[2,2], [4,4], [8,8], [16,16]]		
-		
 		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,2)
