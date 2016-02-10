@@ -409,14 +409,14 @@ def design_2d_convnet_graph(setting_dict):
 					input='input',
 					name = 'zeropad')
 	last_node_name = 'zeropad'
-	if 'input_normalisation' in setting_dict:
-		if setting_dict['input_normalisation']:
-			print 'add 1x1 conv for input normalisation.'
-			this_node_name = 'input_cv1x1_normalsation'
-			model.add_node(Convolution2D(1, 1, 1, border_mode='same', init='he_normal'),
-							input=last_node_name,
-							name=this_node_name)
-			last_node_name = this_node_name
+	# if 'input_normalisation' in setting_dict:
+	# 	if setting_dict['input_normalisation']:
+	# 		print 'add 1x1 conv for input normalisation.'
+	# 		this_node_name = 'input_cv1x1_normalsation'
+	# 		model.add_node(Convolution2D(1, 1, 1, border_mode='same', init='he_normal'),
+	# 						input=last_node_name,
+	# 						name=this_node_name)
+	# 		last_node_name = this_node_name
 
 	for conv_idx in xrange(num_layers):
 		print 'Add conv layer %d' % conv_idx
