@@ -404,7 +404,7 @@ def design_2d_convnet_graph(setting_dict):
 	model = Graph()
 	print 'Add zero padding '
 	model.add_input(name='input', input_shape=(num_channels, height, width), dtype='float')
-	model.add_node(keras.layers.convolutional.ZeroPadding2D(padding=(0,2), 
+	model.add_node(keras.layers.convolutional.ZeroPadding2D(padding=(0,3),  # melgram.
 					dim_ordering='th'),
 					input='input',
 					name = 'zeropad')
