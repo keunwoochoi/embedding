@@ -34,12 +34,12 @@ def get_NIN_weights(num_layers):
 		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram -->  red_pig, the most popular setting
 
 		# 09 Feb. more temporal pooling, add more feature maps
-		
-		vgg_modi_weight = [[2,2], [4,4], [8,8], [12,12]] 
+
+		vgg_modi_weight = [[2,2], [4,4], [8,8], [16,16]]  # 512 feature maps
 		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,4)
-		pool_sizes[3] = (2,4) # --> output: 8x1=8 melgram -->  red_pig, the most popular setting
+		pool_sizes[3] = (2,4) # --> output: 4x1=4 melgram -->  red_pig, the most popular setting
 
 
 
