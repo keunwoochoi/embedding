@@ -33,6 +33,14 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (2,2)
 		pool_sizes[3] = (4,2) # --> output: 4x4=16 melgram -->  red_pig, the most popular setting
 
+		# 09 Feb. more temporal pooling, add more feature maps
+		
+		vgg_modi_weight = [[2,2], [4,4], [8,8], [12,12]] 
+		pool_sizes[0] = (2,4)
+		pool_sizes[1] = (2,4)
+		pool_sizes[2] = (2,4)
+		pool_sizes[3] = (2,4) # --> output: 8x1=8 melgram -->  red_pig, the most popular setting
+
 
 
 		# pool_sizes[0] = (1,4)
@@ -401,6 +409,14 @@ def design_2d_convnet_graph(setting_dict):
 					input='input',
 					name = 'zeropad')
 	last_node_name = 'zeropad'
+	if 'input_normalisation' in setting_dict:
+		if setting_dict['input_normalisation']:
+			print 'add 1x1 conv for input normalisation.'
+			this_node_name = 'input_cv1x1_normalsation'
+			model.add_node(Convolution2D(1, 1, 1, border_mode='same', init='he_normal'),
+							input=last_node_name,
+							name=this_node_name)
+			last_node_name = this_node_name
 
 	for conv_idx in xrange(num_layers):
 		print 'Add conv layer %d' % conv_idx
