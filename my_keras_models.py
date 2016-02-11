@@ -39,9 +39,13 @@ def get_NIN_weights(num_layers):
 		pool_sizes[0] = (2,4)
 		pool_sizes[1] = (2,4)
 		pool_sizes[2] = (2,4)
-		pool_sizes[3] = (2,4) # --> output: 4x1=4 melgram -->  red_pig, the most popular setting
+		pool_sizes[3] = (2,4) # --> output: 8x1=8 melgram -->  red_pig, the most popular setting
 
-
+		vgg_modi_weight = [[2,2], [4,4], [8,8], [12,12]]  # 512 feature maps
+		pool_sizes[0] = (1,4) # two 3x3 layers --> 5x5 
+		pool_sizes[1] = (2,4) # four 3x3 --> 9x9
+		pool_sizes[2] = (2,4) ##  six --> 13x13 patches! (not yet here)
+		pool_sizes[3] = (2,4) # --> output: 16x1=16 melgram -->  red_pig, the most popular setting
 
 		# pool_sizes[0] = (1,4)
 		# pool_sizes[1] = (2,4)
