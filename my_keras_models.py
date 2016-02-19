@@ -41,12 +41,19 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (2,4)
 		pool_sizes[3] = (2,4) # --> output: 8x1=8 melgram -->  red_pig, the most popular setting
 
+		# from 11 Feb. 03:33.
 		vgg_modi_weight = [[2,2], [4,4], [8,8], [12,12]]  # 512 feature maps
 		pool_sizes[0] = (1,4) # two 3x3 layers --> 5x5 
 		pool_sizes[1] = (2,4) # four 3x3 --> 9x9
 		pool_sizes[2] = (2,4) ##  six --> 13x13 patches! (not yet here)
 		pool_sizes[3] = (2,4) # --> output: 16x1=16 melgram -->  red_pig, the most popular setting
-
+		
+		# or even?
+		vgg_modi_weight = [[2,2], [4,4], [8,8], [12,12]]  # 512 feature maps
+		pool_sizes[0] = (1,4) # two 3x3 layers --> 5x5 
+		pool_sizes[1] = (1,4) # four 3x3 --> 9x9
+		pool_sizes[2] = (2,4) ##  six --> 13x13 patches! (not yet here)
+		pool_sizes[3] = (4,4) # --> output: 16x1=16 melgram -->  red_pig, the most popular setting
 		# pool_sizes[0] = (1,4)
 		# pool_sizes[1] = (2,4)
 		# pool_sizes[2] = (2,4)
@@ -280,12 +287,12 @@ def design_2d_convnet_model(setting_dict):
 		# add activation
 		model.add(get_activation(activations[0]))
 		
-		if not dropouts[conv_idx] == 0.0:
-			model.add(Dropout(dropouts[conv_idx]))
-			print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
-	
 		# [second conv layers] for vgg_original or vgg_modi
 		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
+			# add dropout
+			if not dropouts[conv_idx] == 0.0:
+				model.add(Dropout(dropouts[conv_idx]))
+				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 
 			if model_type.startswith('vgg_modi'):
 				n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
@@ -312,6 +319,10 @@ def design_2d_convnet_model(setting_dict):
 				model.add(BatchNormalization(axis=1))
 			# add activation
 			model.add(get_activation(activations[0]))
+					# add dropout
+			if not dropouts[conv_idx] == 0.0:
+				model.add(Dropout(dropouts[conv_idx]))
+				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 		
 		#[third conv layer] for vgg_modi_3x3
 		if model_type == 'vgg_modi_3x3':
@@ -332,12 +343,12 @@ def design_2d_convnet_model(setting_dict):
 		elif model_type.startswith('vgg_simple'):
 			print ' ---->>MP is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
-		if model_type == 'vgg_simple':
-			# add dropout
-			if not dropouts[conv_idx] == 0.0:
-				model.add(Dropout(dropouts[conv_idx]))
-				print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
 		
+		# add dropout
+		if not dropouts[conv_idx] == 0.0:
+			model.add(Dropout(dropouts[conv_idx]))
+			print ' ---->>Add dropout of %f for %d-th conv layer' % (dropouts[conv_idx], conv_idx)
+	
 	#[Fully Connected Layers]
 	model.add(Flatten())
 	for fc_idx in xrange(num_fc_layers):
