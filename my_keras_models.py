@@ -71,6 +71,14 @@ def get_NIN_weights(num_layers):
 		pool_sizes[2] = (2,2)
 		pool_sizes[3] = (2,2)
 		pool_sizes[4] = (2,2) # --> 4x4 same as red_pig
+
+		# tall thing.
+
+		pool_sizes[0] = (1,4) # mel input: 128x252
+		pool_sizes[1] = (1,4)
+		pool_sizes[2] = (2,4)
+		pool_sizes[3] = (2,2)
+		pool_sizes[4] = (2,2) # --> 16x1
 		# mp_strides[0] = (1,1)
 		# mp_strides[1] = (1,1)
 		# mp_strides[2] = (1,1)
@@ -214,7 +222,7 @@ def design_2d_convnet_model(setting_dict):
 
 	if model_type.startswith('vgg'):
 		# layers = 4,5,6
-		if model_type.startswith('vgg_modi_'): # vgg_modi_1x1, vgg_modi_3x3
+		if model_type.startswith('vgg_'): # vgg_modi_1x1, vgg_modi_3x3, and even vgg_simple
 			if setting_dict['tf_type'] in ['cqt', 'stft', 'melgram']:
 				image_patch_sizes = [[3,3]]*num_layers
 				pool_sizes = [(2,2)]*num_layers
@@ -263,7 +271,7 @@ def design_2d_convnet_model(setting_dict):
 		W_regularizer = get_regulariser(setting_dict['regulariser'][conv_idx])
 			
 		# add conv layer
-		if model_type.startswith('vgg_modi'):
+		if model_type.startswith('vgg_'):
 			n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 		else:
 			n_feat_here = num_stacks[conv_idx]
@@ -337,12 +345,12 @@ def design_2d_convnet_model(setting_dict):
 			model.add(get_activation(activations[0]))
 
 		# add pooling
-		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3']:
+		if model_type in ['vgg_original', 'vgg_modi_1x1', 'vgg_modi_3x3', 'vgg_simple']:
 			print ' ---->>MP is added', pool_sizes[conv_idx]
 			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
-		elif model_type.startswith('vgg_simple'):
-			print ' ---->>MP is added', pool_sizes[conv_idx]
-			model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
+		# elif model_type.startswith('vgg_simple'):
+		# 	print ' ---->>MP is added', pool_sizes[conv_idx]
+		# 	model.add(MaxPooling2D(pool_size=pool_sizes[conv_idx]))
 		
 		# add dropout
 		if not dropouts[conv_idx] == 0.0:
