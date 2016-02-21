@@ -425,6 +425,8 @@ def design_2d_convnet_graph(setting_dict):
 
 	cond_multi_input = (model_type == 'multi_input')
 	mfcc_image_patch_size = [[mfcc_height/3,1], [1,1], [1,1], [1,1]]
+	mfcc_pool_sizes = [(1,4), (1,4), (1,4), (1,4)]
+	mfcc_num_stacks = [128, 256, 512, 1024]
 	#------------------------------------------------------------------#
 	num_channels=1
 	image_patch_sizes = [[3,3]]*num_layers
@@ -444,7 +446,7 @@ def design_2d_convnet_graph(setting_dict):
 
 	for conv_idx in xrange(num_layers):
 		print 'Add conv layer %d' % conv_idx
-		n_feat_here = num_stacks[conv_idx]
+		n_feat_here = int(num_stacks[conv_idx]*vgg_modi_weight[conv_idx][0])
 		# conv 0
 		this_node_name = 'conv_%d_0' % conv_idx
 		model.add_node(Convolution2D(n_feat_here, image_patch_sizes[conv_idx][0], image_patch_sizes[conv_idx][1], 
@@ -510,14 +512,14 @@ def design_2d_convnet_graph(setting_dict):
 		for conv_idx in xrange(num_layers):
 			mfcc_this_node_name = 'mfcc_conv_%d_0' % conv_idx
 			if conv_idx ==0:
-				model.add_node(Convolution2D(num_stacks[conv_idx], mfcc_image_patch_size[conv_idx][0], mfcc_image_patch_size[conv_idx][1],
+				model.add_node(Convolution2D(mfcc_num_stacks[conv_idx], mfcc_image_patch_size[conv_idx][0], mfcc_image_patch_size[conv_idx][1],
 											border_mode='valid',
 											subsample=(mfcc_height/3, 1),
 											init='he_normal'),
 								input=mfcc_last_node_name,
 								name=mfcc_this_node_name)
 			else:
-				model.add_node(Convolution2D(num_stacks[conv_idx], mfcc_image_patch_size[conv_idx][0], mfcc_image_patch_size[conv_idx][1],
+				model.add_node(Convolution2D(mfcc_num_stacks[conv_idx], mfcc_image_patch_size[conv_idx][0], mfcc_image_patch_size[conv_idx][1],
 											border_mode='same',
 											init='he_normal'),
 								input=mfcc_last_node_name,
@@ -537,7 +539,7 @@ def design_2d_convnet_graph(setting_dict):
 			mfcc_last_node_name = mfcc_this_node_name
 
 			mfcc_this_node_name = 'mfcc_mp_%d' % conv_idx
-			model.add_node(MaxPooling2D(pool_size=pool_sizes[conv_idx]),
+			model.add_node(MaxPooling2D(pool_size=mfcc_pool_sizes[conv_idx]),
 							input=mfcc_last_node_name,
 							name=mfcc_this_node_name)
 			mfcc_last_node_name = mfcc_this_node_name
