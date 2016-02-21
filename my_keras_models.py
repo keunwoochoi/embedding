@@ -169,6 +169,8 @@ def build_convnet_model(setting_dict):
 		model = design_residual_model(setting_dict)
 	elif model_type == 'multi_task':
 		model = design_2d_convnet_graph(setting_dict)
+	elif model_type == 'multi_input':
+		model = design_2d_convnet_graph(setting_dict)
 	#------------------------------------------------------------------#
 	if optimizer_name == 'sgd':
 		optimiser = SGD(lr=learning_rate, momentum=0.9, decay=1e-5, nesterov=True)
@@ -416,7 +418,12 @@ def design_2d_convnet_graph(setting_dict):
 	dropouts_fc_layers = setting_dict["dropouts_fc_layers"]
 	nums_units_fc_layers = setting_dict["nums_units_fc_layers"]
 	activations_fc_layers = setting_dict["activations_fc_layers"]
+
+	mfcc_height = setting_dict["mfcc_height_image"]
+	mfcc_width = setting_dict["mfcc_width_image"]
 	# mp_strides = [(2,2)]*setting_dict['num_layers']
+
+	cond_multi_input = (model_type == 'multi_input')
 	#------------------------------------------------------------------#
 	num_channels=1
 	image_patch_sizes = [[3,3]]*num_layers
@@ -424,6 +431,7 @@ def design_2d_convnet_graph(setting_dict):
 	print vgg_modi_weight
 	print pool_sizes
 	#------------------------------------------------------------------#
+
 	model = Graph()
 	print 'Add zero padding '
 	model.add_input(name='input', input_shape=(num_channels, height, width), dtype='float')
@@ -432,14 +440,6 @@ def design_2d_convnet_graph(setting_dict):
 					input='input',
 					name = 'zeropad')
 	last_node_name = 'zeropad'
-	# if 'input_normalisation' in setting_dict:
-	# 	if setting_dict['input_normalisation']:
-	# 		print 'add 1x1 conv for input normalisation.'
-	# 		this_node_name = 'input_cv1x1_normalsation'
-	# 		model.add_node(Convolution2D(1, 1, 1, border_mode='same', init='he_normal'),
-	# 						input=last_node_name,
-	# 						name=this_node_name)
-	# 		last_node_name = this_node_name
 
 	for conv_idx in xrange(num_layers):
 		print 'Add conv layer %d' % conv_idx
@@ -464,32 +464,88 @@ def design_2d_convnet_graph(setting_dict):
 										input=last_node_name,
 										name=this_node_name)
 		last_node_name = this_node_name
-		# conv 1
-		this_node_name = 'conv_%d_1' % conv_idx
-		model.add_node(Convolution2D(n_feat_here, 1,1, 
-						border_mode='same',  # no input shape after adding zero-padding
-						init='he_normal'),
-						input=last_node_name,
-						name=this_node_name)
-		last_node_name = this_node_name		
+		# # conv 1
+		# this_node_name = 'conv_%d_1' % conv_idx
+		# model.add_node(Convolution2D(n_feat_here, 1,1, 
+		# 				border_mode='same',  # no input shape after adding zero-padding
+		# 				init='he_normal'),
+		# 				input=last_node_name,
+		# 				name=this_node_name)
+		# last_node_name = this_node_name		
 
-		this_node_name = 'bn_conv_%d_1' % conv_idx
-		model.add_node(BatchNormalization(axis=1),
-										input=last_node_name,
-										name=this_node_name)
-		last_node_name = this_node_name
+		# this_node_name = 'bn_conv_%d_1' % conv_idx
+		# model.add_node(BatchNormalization(axis=1),
+		# 								input=last_node_name,
+		# 								name=this_node_name)
+		# last_node_name = this_node_name
 
-		this_node_name = 'elu_conv_%d_1' % conv_idx
-		model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
-										input=last_node_name,
-										name=this_node_name)
-		last_node_name = this_node_name
+		# this_node_name = 'elu_conv_%d_1' % conv_idx
+		# model.add_node(keras.layers.advanced_activations.ELU(alpha=1.0),
+		# 								input=last_node_name,
+		# 								name=this_node_name)
+		# last_node_name = this_node_name
 
 		this_node_name = 'mp_%d' % conv_idx
 		model.add_node(MaxPooling2D(pool_size=pool_sizes[conv_idx]),
 									input=last_node_name,
 									name=this_node_name)
+		last_node_name = this_node_name
+
+		this_node_name = 'dropout_conv_%d' % conv_idx
+		model.add_node(Dropout(dropouts[conv_idx]),
+									input=last_node_name,
+									name=this_node_name)
 		last_node_name = this_node_name		
+
+	if cond_multi_input:
+		print '=== Multi input! ==='
+		model.add_input(name='mfcc_input', input_shape=(1, mfcc_height, mfcc_width), dtype='float')
+		model.add_node(keras.layers.convolutional.ZeroPadding2D(padding=(0,3),  # melgram.
+						dim_ordering='th'),
+						input='mfcc_input',
+						name = 'mfcc_zeropad')
+		mfcc_last_node_name = 'mfcc_zeropad'
+		# conv layers
+		for conv_idx in xrange(num_layers):
+			mfcc_this_node_name = 'mfcc_conv_%d_0' % conv_idx
+			if conv_idx ==0:
+				model.add_node(Convolution2D(num_stacks[conv_idx], mfcc_image_patch_size[conv_idx][0], mfcc_image_patch_size[conv_idx][1],
+											border_mode='valid',
+											subsample=(mfcc_height/3, 1),
+											init='he_normal'),
+								input=mfcc_last_node_name,
+								name=mfcc_this_node_name)
+			else:
+				model.add_node(Convolution2D(num_stacks[conv_idx], mfcc_image_patch_size[conv_idx][0], mfcc_image_patch_size[conv_idx][1],
+											border_mode='same',
+											init='he_normal'),
+								input=mfcc_last_node_name,
+								name=mfcc_this_node_name)
+			mfcc_last_node_name = mfcc_this_node_name
+
+			mfcc_this_node_name = 'mfcc_bn_%d' % conv_idx
+			model.add_node(BatchNormalization(),
+							input=mfcc_last_node_name,
+							name=mfcc_this_node_name)
+			mfcc_last_node_name = mfcc_this_node_name
+
+			mfcc_this_node_name = 'mfcc_elu_%d' % conv_idx
+			model.add_node(get_activation(activations[0]),
+							input=mfcc_last_node_name,
+							name=mfcc_this_node_name)
+			mfcc_last_node_name = mfcc_this_node_name
+
+			mfcc_this_node_name = 'mfcc_mp_%d' % conv_idx
+			model.add_node(MaxPooling2D(pool_size=pool_sizes[conv_idx]),
+							input=mfcc_last_node_name,
+							name=mfcc_this_node_name)
+			mfcc_last_node_name = mfcc_this_node_name
+
+		mfcc_this_node_name='mfcc_flatten'
+		model.add_node(Flatten(), input=mfcc_last_node_name,
+									name=mfcc_this_node_name)
+		mfcc_last_node_name = mfcc_this_node_name
+
 
 	# end of conv
 	print 'Add flatten layer'
@@ -498,14 +554,25 @@ def design_2d_convnet_graph(setting_dict):
 								name=this_node_name)
 	last_node_name = this_node_name
 	
+	# merge if needed
+
+
+
 	for fc_idx in xrange(num_fc_layers):
 		print 'Add fc layer %d' % fc_idx
 		this_node_name = 'maxout_%d' % fc_idx
 		nb_feature = 4
-		model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], 
-								nb_feature=nb_feature),
-								input=last_node_name,
-								name=this_node_name)
+		if cond_multi_input:
+			model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], 
+									nb_feature=nb_feature),
+							inputs=['flatten', 'mfcc_flatten'],
+							name=this_node_name,
+							merge_mode='concat')
+		else:
+			model.add_node(MaxoutDense(nums_units_fc_layers[fc_idx], 
+									nb_feature=nb_feature),
+							input=last_node_name,
+							name=this_node_name)
 		last_node_name = this_node_name
 
 		this_node_name = 'bn_fc_%d' % fc_idx
@@ -532,11 +599,17 @@ def design_2d_convnet_graph(setting_dict):
 			if not setting_dict['maxout_sparse_layer']:
 
 				if sparse_idx == 0:
-					model.add_node(Dense(num_sparse_units), # use relu for simplicity.
-									input=last_node_name,
-									name=sparse_node_name)
+					if cond_multi_input and num_fc_layers == 0: # multi-input and fully sparse.
+						model.add_node(Dense(num_sparse_units), 
+									inputs=['flatten', 'mfcc_flatten'],
+									name=sparse_node_name,
+									merge_mode='concat')
+					else:
+						model.add_node(Dense(num_sparse_units), 
+										input=last_node_name,
+										name=sparse_node_name)
 				else:
-					model.add_node(Dense(num_sparse_units), # use relu for simplicity.
+					model.add_node(Dense(num_sparse_units), 
 									input=bn_node_name,
 									name=sparse_node_name)
 
@@ -549,9 +622,15 @@ def design_2d_convnet_graph(setting_dict):
 
 			else:
 				if sparse_idx == 0:
-					model.add_node(MaxoutDense(num_sparse_units, nb_feature=nb_maxout_feature ),
-									input=last_node_name,
-									name=sparse_node_name)
+					if cond_multi_input and num_fc_layers ==0:
+						model.add_node(MaxoutDense(num_sparse_units, nb_feature=nb_maxout_feature ),
+									inputs=['flatten', 'mfcc_flatten'],
+									name=sparse_node_name,
+									merge_mode='concat')
+					else:
+						model.add_node(MaxoutDense(num_sparse_units, nb_feature=nb_maxout_feature ),
+										input=last_node_name,
+										name=sparse_node_name)
 				else:
 					model.add_node(MaxoutDense(num_sparse_units, nb_feature=nb_maxout_feature ),
 									input=bn_node_name,
