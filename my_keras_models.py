@@ -424,6 +424,7 @@ def design_2d_convnet_graph(setting_dict):
 	# mp_strides = [(2,2)]*setting_dict['num_layers']
 
 	cond_multi_input = (model_type == 'multi_input')
+	mfcc_image_patch_size = [[mfcc_height/3,1], [1,1], [1,1], [1,1]]
 	#------------------------------------------------------------------#
 	num_channels=1
 	image_patch_sizes = [[3,3]]*num_layers
