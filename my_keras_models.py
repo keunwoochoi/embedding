@@ -185,7 +185,7 @@ def build_convnet_model(setting_dict):
 	else:
 		raise RuntimeError('no optimiser? no! - %s' % optimizer_name )
 	print ' ---->>--- ready to compile keras model ---'
-	if model_type not in ['multi_task']:
+	if model_type not in ['multi_task', 'multi_input']:
 		model.compile(loss=loss_function, optimizer=optimiser, class_mode='binary') 
 	else:
 		loss_dict = {}
