@@ -432,6 +432,24 @@ if __name__ == "__main__":
 	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
 	TR_CONST["num_layers"] = 4
 	TR_CONST["model_type"] = 'vgg_simple'
+	TR_CONST["tf_type"] = 'melgram'
+
+	# TR_CONST["num_fc_layers"] = 2 
+
+	TR_CONST["BN_fc_layers"] = True
+	TR_CONST["dropouts_fc_layers"] = [0.5]*max(TR_CONST["num_fc_layers"], 1)
+
+	TR_CONST["nums_units_fc_layers"] = [4096]*max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["activations_fc_layers"] = ['elu']*max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["act_regulariser_fc_layers"] = [('activity_l1l2', 0.0)] *max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["BN_fc_layers"] = True
+	TR_CONST["maxout"] = True
+	TR_CONST['nb_maxout_feature'] = 4
+
+	TR_CONST['num_sparse_layer'] = 3
+	TR_CONST['maxout_sparse_layer'] = True
+	TR_CONST['num_sparse_units'] = 128
 
 
 	update_setting_dict(TR_CONST)
