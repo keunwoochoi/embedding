@@ -22,6 +22,17 @@ import my_plots
 import my_keras_models
 import my_keras_utils
 
+def evaluate_result(y_true, y_pred):
+	ret = {}
+	ret['auc'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
+	ret['mse'] = metrics.mean_squared_error(y_true, y_pred)
+
+	print '.'*60
+	for key in ret:
+		print key, ret[key]
+	print '.'*60
+	return ret
+
 
 def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
@@ -57,10 +68,14 @@ def run_with_setting(hyperparams, argv):
 	print '#'*60
 	#function: input args: TR_CONST, sys.argv.
 	# -------------------------------
+	if os.path.exists('stop_asap.keunwoo'):
+		os.remove('stop_asap.keunwoo')
+	
 	if hyperparams["is_test"]:
 		print '==== This is a test, to quickly check the code. ===='
 		print 'excuted by $ ' + ' '.join(argv)
 	
+	auc_history = []
 	# label matrix
 	dim_latent_feature = hyperparams["dim_labels"]
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -80,11 +95,10 @@ def run_with_setting(hyperparams, argv):
 	print label_matrix.shape
 
 	# load dataset
-	
 	train_x, valid_x, test_x, = my_utils.load_all_sets_from_hdf(tf_type=hyperparams["tf_type"],
 																				n_dim=dim_latent_feature,
 																				task_cla=hyperparams['isClass'])
-	# *_y is not correct - 01 Jan 2016. Use nympy files directly.
+	# *_y is not correct - 01 Jan 2016. Use numpy files directly.
 	train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
 														num_fold=10, 
 														clips_per_song=3)
@@ -122,24 +136,20 @@ def run_with_setting(hyperparams, argv):
 	model_name_dir = model_name + '/'
 	model_weight_name_dir = 'w_' + model_name + '/'
 	fileout = model_name + '_results'
-	
+	 	
+	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
+	model.summary()
 	if not os.path.exists(PATH_RESULTS + model_name_dir):
 		os.mkdir(PATH_RESULTS + model_name_dir)
 		os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 		os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
 		os.mkdir(PATH_RESULTS_W + model_weight_name_dir)
 	
-
 	hp_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
  	hp_manager.print_setting(hyperparams)
- 	
-	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
 
  	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
 	#prepare callbacks
-	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
-													verbose=1, 
-								             		save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	patience = 3
 	if hyperparams["is_test"] is True:
@@ -149,21 +159,12 @@ def run_with_setting(hyperparams, argv):
 	else:
 		value_to_monitor = 'val_acc'
 		#history = my_keras_utils.History_Regression_Val()
-	early_stopping = keras.callbacks.EarlyStopping(monitor=value_to_monitor, 
-													patience=patience, 
-													verbose=0)
+	# early_stopping = keras.callbacks.EarlyStopping(monitor=value_to_monitor, 
+	# 												patience=patience, 
+	# 												verbose=0)
 	
 	# other constants
-	if hyperparams["tf_type"] == 'cqt':
-		batch_size = 24
-	elif hyperparams["tf_type"] == 'stft':
-		batch_size = 24
-	elif hyperparams["tf_type"] == 'mfcc':
-		batch_size = 96
-	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 96
-	else:
-		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
+	batch_size = 32
 	# if hyperparams['model_type'] == 'vgg_original':
 	# 	batch_size = (batch_size * 3)/5
 
@@ -189,52 +190,42 @@ def run_with_setting(hyperparams, argv):
 	total_history = {}
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
-	if hyperparams['is_test']:
-		callbacks = [weight_image_monitor]
-	else:
-		callbacks = [weight_image_monitor, early_stopping, checkpointer]
+	
+	callbacks = [weight_image_monitor]
+	best_auc = 0.5
 
 	while True:
-		num_sub_epoch = 3
-		for sub_epoch_idx in range(num_sub_epoch):
-			seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
-			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
-			train_x_here = train_x[seg_from:seg_to]
-			train_y_here = train_y[seg_from:seg_to]
-			history=model.fit(train_x_here, train_y_here, validation_data=(valid_x, valid_y), 
-														batch_size=batch_size, 
-														nb_epoch=1, 
-														show_accuracy=hyperparams['isClass'], 
-														verbose=1, 
-														callbacks=callbacks,
-														shuffle='batch')
-			my_utils.append_history(total_history, history.history)
-			
+		# [run]
+		if os.path.exists('stop_asap.keunwoo'):
+			print ' stop by stop_asap.keunwoo file'
+			break
+		history = model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
+											batch_size=batch_size, 
+											nb_epoch=1, 
+											show_accuracy=hyperparams['isClass'], 
+											verbose=1, 
+											callbacks=callbacks,
+											shuffle='batch')
+		my_utils.append_history(total_history, history.history)
+		# [validation]
+		val_result = evaluate_result(valid_y, predicted) # auc
+		if val_result > best_auc:
+			model.save_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5")
+		auc_history.append(val_result)
+
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
 		total_epoch += 1
 		
-
-		if os.path.exists('will_stop.keunwoo'):
-			if total_epoch < num_epoch:
-				pass
-			else:
-				if hyperparams["isRegre"]:
-					loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
-				else:
-					loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-				break
-		else:
+		# if os.path.exists('will_stop.keunwoo'):
+		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
+		# else:
 			
-			print ' *** will go for another one epoch. '
-			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
+		# 	print ' *** will go for another one epoch. '
+		# 	print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
-	best_batch = np.argmin(total_history[value_to_monitor])+1
-	
-	if hyperparams["debug"] == True:
-		pdb.set_trace()
+	best_batch = np.argmax(auc_history)+1
 
-	if not hyperparams['is_test']:
-		model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
+	model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 
 	predicted = model.predict(test_x, batch_size=batch_size)
 	print 'predicted example using best model'
@@ -242,25 +233,16 @@ def run_with_setting(hyperparams, argv):
 	print 'and truths'
 	print test_y[:10]
 	#save results
-	if hyperparams['isRegre']:
-		np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
-	else:
-		np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', total_history)
+	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['loss'], total_history['val_loss']])
 	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
-	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
-	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
+	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted, test_y])
+	# np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
 
 	# ADD weight change saving code
-	if hyperparams["isRegre"]:
-		my_plots.export_history(total_history['loss'], total_history['val_loss'],
-												acc=None, 
-												val_acc=None, 
-												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
-	else:
-		my_plots.export_history(total_history['loss'], total_history['val_loss'], 
-												acc=total_history['acc'], 
-												val_acc=total_history['val_acc'], 
-												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
+	my_plots.export_history(total_history['loss'], total_history['val_loss'],
+											acc=None, 
+											val_acc=None, 
+											out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	
 	
 	min_loss = np.min(total_history[value_to_monitor])
@@ -449,10 +431,22 @@ if __name__ == "__main__":
 	TR_CONST["dropouts_fc_layers"] = [0.5]
 	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
 	TR_CONST["num_layers"] = 4
+	TR_CONST["model_type"] = 'vgg_simple'
+
+
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
 	#------------------
+	
+
+
+
+
+
+
+
+
 	min_losses = []
 	nus = [(1,4096), (1,2048), (1,256), (1,512), (1,1024), (2,64), (2,256), (3, 32)]
 	for num_fc_lyr, nu in nus:
