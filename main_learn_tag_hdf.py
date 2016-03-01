@@ -215,7 +215,7 @@ def run_with_setting(hyperparams, argv):
 		# [validation]
 		val_result = evaluate_result(valid_y, predicted) # auc
 		if val_result > best_auc:
-			model.save_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5")
+			model.save_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", overwrite=True)
 		auc_history.append(val_result)
 
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
