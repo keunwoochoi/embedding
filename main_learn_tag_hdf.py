@@ -105,7 +105,7 @@ def run_with_setting(hyperparams, argv):
 														num_fold=10, 
 														clips_per_song=3)
 	if hyperparams["is_test"]:
-		train_x, valid_x, test_x, train_y, valid_y, test_y = [ele[:128] for ele in [train_x, valid_x, text_x, train_y, valid_y, test_y]]
+		train_x, valid_x, test_x, train_y, valid_y, test_y = [ele[:128] for ele in [train_x, valid_x, test_x, train_y, valid_y, test_y]]
 
 	threshold_label = 1.0
 	if hyperparams['isClass']:
