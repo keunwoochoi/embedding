@@ -169,7 +169,7 @@ def run_with_setting(hyperparams, argv):
 	# 												verbose=0)
 	
 	# other constants
-	batch_size = 32
+	batch_size = 16
 	# if hyperparams['model_type'] == 'vgg_original':
 	# 	batch_size = (batch_size * 3)/5
 
