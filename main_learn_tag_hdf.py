@@ -432,7 +432,7 @@ if __name__ == "__main__":
 	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
 	TR_CONST["num_layers"] = 4
 	TR_CONST["model_type"] = 'vgg_simple'
-	TR_CONST["tf_type"] = 'melgram'
+	TR_CONST["tf_type"] = 'stft'
 
 	# TR_CONST["num_fc_layers"] = 2 
 
