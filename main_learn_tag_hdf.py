@@ -13,6 +13,8 @@ import keras
 import hyperparams_manager
 from keras.utils.visualize_util import plot as keras_plot
 import cPickle as cP
+from sklearn import metrics
+
 
 from constants import *
 from environments import *
@@ -102,6 +104,9 @@ def run_with_setting(hyperparams, argv):
 	train_y, valid_y, test_y = my_utils.load_all_labels(n_dim=dim_latent_feature, 
 														num_fold=10, 
 														clips_per_song=3)
+	if hyperparams["is_test"]:
+		train_x, valid_x, text_x, train_y, valid_y, test_y = [ele[:128] for ele in [train_x, valid_x, text_x, train_y, valid_y, test_y]]
+
 	threshold_label = 1.0
 	if hyperparams['isClass']:
 		train_y = (train_y>=threshold_label).astype(int)
@@ -216,12 +221,12 @@ def run_with_setting(hyperparams, argv):
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
 		total_epoch += 1
 		
-		# if os.path.exists('will_stop.keunwoo'):
-		loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
-		# else:
+		if os.path.exists('will_stop.keunwoo'):
+			loss_testset = model.evaluate(test_x, test_y, show_accuracy=False, batch_size=batch_size)
+		else:
 			
-		# 	print ' *** will go for another one epoch. '
-		# 	print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
+			print ' *** will go for another one epoch. '
+			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
 	best_batch = np.argmax(auc_history)+1
 
@@ -422,8 +427,8 @@ if __name__ == "__main__":
 	TR_CONST['isRegre'] = False
 	# TR_CONST['loss_function'] = 'categorical_crossentropy'
 	# TR_CONST["output_activation"] = 'sigmoid'
-	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
-	TR_CONST["activations_fc_layers"] = ['lrelu']
+	TR_CONST["activations"] = ['elu'] # alpha is 0.3 now
+	TR_CONST["activations_fc_layers"] = ['elu']
 	TR_CONST["BN"] = True
 	TR_CONST["BN_fc_layers"] = True
 	
