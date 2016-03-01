@@ -423,8 +423,8 @@ if __name__ == "__main__":
 
 	#------------------
 	# do it like an approximated classification.
-	TR_CONST['isClass'] = True
-	TR_CONST['isRegre'] = False
+	TR_CONST['isClass'] = False
+	TR_CONST['isRegre'] = True
 	# TR_CONST['loss_function'] = 'categorical_crossentropy'
 	# TR_CONST["output_activation"] = 'sigmoid'
 	TR_CONST["activations"] = ['elu'] # alpha is 0.3 now
