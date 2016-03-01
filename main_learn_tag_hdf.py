@@ -26,7 +26,7 @@ import my_keras_utils
 
 def evaluate_result(y_true, y_pred):
 	ret = {}
-	ret['auc'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
+	# ret['auc'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
 	ret['mse'] = metrics.mean_squared_error(y_true, y_pred)
 
 	print '.'*60
@@ -77,7 +77,7 @@ def run_with_setting(hyperparams, argv):
 		print '==== This is a test, to quickly check the code. ===='
 		print 'excuted by $ ' + ' '.join(argv)
 	
-	auc_history = []
+	mse_history = []
 	# label matrix
 	dim_latent_feature = hyperparams["dim_labels"]
 	# label_matrix_filename = (FILE_DICT["mood_latent_matrix"] % dim_latent_feature)
@@ -197,7 +197,7 @@ def run_with_setting(hyperparams, argv):
 	total_epoch = 0
 	
 	callbacks = [weight_image_monitor]
-	best_auc = 0.5
+	best_mse = 0.5
 
 	while True:
 		# [run]
@@ -213,10 +213,11 @@ def run_with_setting(hyperparams, argv):
 											shuffle='batch')
 		my_utils.append_history(total_history, history.history)
 		# [validation]
-		val_result = evaluate_result(valid_y, predicted) # auc
-		if val_result > best_auc:
+		val_result = evaluate_result(valid_y, predicted) # mse
+		if val_result['mse'] < best_mse:
 			model.save_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", overwrite=True)
-		auc_history.append(val_result)
+			best_mse = val_result['mse']
+		mse_history.append(val_result['mse'])
 
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
 		total_epoch += 1
@@ -228,7 +229,7 @@ def run_with_setting(hyperparams, argv):
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
-	best_batch = np.argmax(auc_history)+1
+	best_batch = np.argmin(mse_history)+1
 
 	model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 
@@ -256,8 +257,8 @@ def run_with_setting(hyperparams, argv):
 	oneline_result = '%s, %6.4f, %d_of_%d, %s' % (value_to_monitor, min_loss, best_batch, num_run_epoch, model_name)
 	with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
 		pass
-	f = open( (PATH_RESULTS + '%s_%s_%s_%06.4f_at_(%d_of_%d)_%s'  % \
-		(timename, hyperparams["loss_function"], value_to_monitor, min_loss, best_batch, num_run_epoch, nickname)), 'w')
+	f = open( (PATH_RESULTS + '%s_%s_%s_%06.4f_at_(%d_of_%d)_mse_%06.4f_%s'  % \
+		(timename, hyperparams["loss_function"], value_to_monitor, min_loss, best_batch, num_run_epoch, best_mse, nickname)), 'w')
 	f.close()
 	with open('one_line_log.txt', 'a') as f:
 		f.write(oneline_result)
