@@ -301,7 +301,7 @@ if __name__ == "__main__":
 	parser.add_argument('-nu', '--number_units', type=int,
 												help='set number of units in fc layers, \ndefault=512',
 												required=False)	
-	parser.add_argument('-it', '--is_test', type=int,
+	parser.add_argument('-it', '--is_test', type=str,
 												help='say if it is test \ndefault=0 (False)',
 												required=False)
 	parser.add_argument('-memo', '--memo', 	help='short memo \ndefault=""',
@@ -371,7 +371,7 @@ if __name__ == "__main__":
 	if args.number_units:
 		TR_CONST["nums_units_fc_layers"] = [args.number_units]*TR_CONST["num_fc_layers"]
 	if args.is_test:
-		TR_CONST["is_test"] = bool(int(args.is_test))
+		TR_CONST["is_test"] = str2bool(args.is_test)
 	if args.memo:
 		TR_CONST["!memo"] = args.memo
 	else:
